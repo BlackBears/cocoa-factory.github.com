@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-06T15:54:29-07:00</updated>
+  <updated>2012-09-06T16:23:24-07:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,5 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Moving to Octopress]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/09/06/moving-to-octopress/"/>
+    <updated>2012-09-06T15:57:00-07:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/09/06/moving-to-octopress</id>
+    <content type="html"><![CDATA[<h2>Goodbye Wordpress, hello Octopress</h2>
+
+<p>We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github.  For several years, we maintained a presence on a dedicated site mostly setup with Wordpress.  Why the switch?</p>
+
+<p>It came down to several factors:</p>
+
+<ul>
+<li><p>Lightweight vs. heavyweight solutions</p>
+
+<p>  Wordpess is a great blogging platform; but there&#8217;s a lot of &#8220;stuff&#8221; to manage.  Further, it&#8217;s a dynamic content system - meaning, your content has to be generated from a database each time the page is rendered.  Octopress, instead, serves static pages.  There&#8217;s something appealingly simple about static content.</p></li>
+<li><p>Workflow</p>
+
+<p>  We develop software first, and blog second.  Writing about our work is important; but it has to fit into our workflow.  Since we are always working in <code>git</code> using Octopress feels very comfortable.</p></li>
+<li><p>Kick-start</p>
+
+<p>  Working through the challenges of getting Octopress installed (and they were significant) was paradoxically a motivator to get down to writing more.  I mean - having spent all this time getting Octopress installed, I&#8217;m not about to let the effort be wasted!</p></li>
+<li><p>Comments</p>
+
+<p>  I got tired of seeing queues of comments 99.9% of which was spam.  I&#8217;m sure Wordpress has better ways of dealing with comment spam - but I decided it was just eaiser to turn comments off on the new weblog.  The thing is, the real discussion isn&#8217;t happening on the weblog; it&#8217;s happening on Twitter and everywhere else.  You really should read Matt Gemmell&#8217;s <a href="http://mattgemmell.com/2011/11/29/comments-off/">comments on comments</a> about the phenomenon.</p></li>
+</ul>
+
+
+<h2>Installing Octopress</h2>
+
+<p>Octopress installation was a little cumbersome owing mainly to difficulty with versioning of <code>rvm</code>.  After reading about the difficulties of installing on OS X 10.8, I decided to install it on Ubuntu 12.04 which I run as a virtual machine alongside Mountain Lion.  Again, it was mainly about making sure that the versioning of <code>rvm</code> was correct.  There are detailed instructions online, but I would add a couple of pointers:</p>
+
+<p>We used <a href="http://www.lennu.net/2012/05/11/octopress-installation-in-ubuntu-12-dot-04-with-rsync/">a tutorial</a> on lennu.net to get started.  Just make sure you get <code>rvm 1.9.2</code> installed.  If you install the latest stable version, you&#8217;ll come to grief later in the installation.</p>
+
+<p>Apart from that, all of the instructions are at Github and on the lennu.net tutorial.</p>
+]]></content>
+  </entry>
   
 </feed>

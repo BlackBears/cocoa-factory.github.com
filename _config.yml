@@ -2,12 +2,12 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://cocoa-factory.github.com
+title: Cocoa Factory
+subtitle: Industrial strength software for iOS and Mac
+author:  Alan Duncan
 simple_search: http://google.com/search
-description:
+description: A weblog for developers and clients interested in development and projects on the Apple mobile and desktop platforms
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in

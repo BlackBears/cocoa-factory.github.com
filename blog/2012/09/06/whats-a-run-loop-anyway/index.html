@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Cocoa Factory</title>
+  <title>What's a run loop anyway?  NSRunLoop 101 - Cocoa Factory</title>
   <meta name="author" content="Alan Duncan">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cocoa-factory.github.com/">
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -62,15 +62,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a Run Loop Anyway? NSRunLoop 101</a></h1>
+      <h1 class="entry-title">What's a Run Loop Anyway? NSRunLoop 101</h1>
     
     
       <p class="meta">
@@ -93,7 +90,7 @@
   </header>
 
 
-  <div class="entry-content"><p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I&#8217;d share what I learned about run loops.</p>
+<div class="entry-content"><p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I&#8217;d share what I learned about run loops.</p>
 
 <h2>Facts about run loops</h2>
 
@@ -151,22 +148,16 @@ while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NS
 
 <p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/06/moving-to-octopress/">We&#8217;re Moving (Blogs)</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
 
 
 
@@ -178,55 +169,38 @@ while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NS
   
 
 
-<time datetime="2012-09-06T15:57:00-07:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
-        
-      </p>
+<time datetime="2012-09-06T18:10:00-07:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cocoa-/'>cocoa,</a>, <a class='category' href='/blog/categories/coreos/'>coreos</a>, <a class='category' href='/blog/categories/networking-/'>networking,</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><h2>Goodbye Wordpress, hello Octopress</h2>
-
-<p>We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github.  For several years, we maintained a presence on a dedicated site mostly setup with Wordpress.  Why the switch?</p>
-
-<p>It came down to several factors:</p>
-
-<ul>
-<li><p>Lightweight vs. heavyweight solutions</p>
-
-<p>  Wordpress is a great blogging platform; but there&#8217;s a lot of &#8220;stuff&#8221; to manage.  Further, it&#8217;s a dynamic content system - meaning, your content has to be generated from a database each time the page is rendered.  Octopress, instead, serves static pages.  There&#8217;s something appealingly simple about static content.</p></li>
-<li><p>Workflow</p>
-
-<p>  We develop software first, and blog second.  Writing about our work is important; but it has to fit into our workflow.  Since we are always working in <code>git</code> using Octopress feels very comfortable.</p></li>
-<li><p>Kick-start</p>
-
-<p>  Working through the challenges of getting Octopress installed (and they were significant) was paradoxically a motivator to get down to writing more.  I mean - having spent all this time getting Octopress installed, I&#8217;m not about to let the effort be wasted!</p></li>
-<li><p>Comments</p>
-
-<p>  I got tired of seeing queues of comments 99.9% of which was spam.  I&#8217;m sure Wordpress has better ways of dealing with comment spam - but I decided it was just easier to turn comments off on the new weblog.  The thing is, the real discussion isn&#8217;t happening on the weblog; it&#8217;s happening on Twitter and everywhere else.  You really should read Matt Gemmell&#8217;s <a href="http://mattgemmell.com/2011/11/29/comments-off/">comments on comments</a> about the phenomenon.</p></li>
-</ul>
-
-
-<h2>Installing Octopress</h2>
-
-<p>Octopress installation was a little cumbersome owing mainly to difficulty with versioning of <code>rvm</code>.  After reading about the difficulties of installing on OS X 10.8, I decided to install it on Ubuntu 12.04 which I run as a virtual machine alongside Mountain Lion.  Again, it was mainly about making sure that the versioning of <code>rvm</code> was correct.  There are detailed instructions online, but I would add a couple of pointers:</p>
-
-<p>We used <a href="http://www.lennu.net/2012/05/11/octopress-installation-in-ubuntu-12-dot-04-with-rsync/">a tutorial</a> on lennu.net to get started.  Just make sure you get <code>rvm 1.9.2</code> installed.  If you install the latest stable version, you&#8217;ll come to grief later in the installation.</p>
-
-<p>Apart from that, all of the instructions are at Github and on the lennu.net tutorial.</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway/" data-via="" data-counturl="http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/06/moving-to-octopress/" title="Previous Post: We're moving (blogs)">&laquo; We're moving (blogs)</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -238,11 +212,11 @@ while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NS
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a run loop anyway?  NSRunLoop 101</a>
+        <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What's a run loop anyway?  NSRunLoop 101</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2012/09/06/moving-to-octopress/">We&#8217;re moving (blogs)</a>
+        <a href="/blog/2012/09/06/moving-to-octopress/">We're moving (blogs)</a>
       </li>
     
   </ul>
@@ -255,6 +229,7 @@ while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NS
 
   
 </aside>
+
 
     </div>
   </div>

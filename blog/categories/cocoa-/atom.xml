@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cocoa, | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/cocoa-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-06T19:05:29-07:00</updated>
+  <updated>2012-09-06T19:11:16-07:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -47,30 +47,33 @@
 
 <p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
 
-<pre><code>BOOL shouldRun = YES;   // this is in a "global" context
+<p>```
+BOOL shouldRun = YES;   // this is in a "global" context
 NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NSDate distantFuture]] );
+while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NSDate distantFuture]] );</p>
 
-// set shouldRun to NO somewhere else to terminate the run loop
-</code></pre>
+<p>// set shouldRun to NO somewhere else to terminate the run loop
+```</p>
 
 <h3>Run loops have modes and you can create your own</h3>
 
 <p>Run loops have modes that specify groups of input sources that are monitored for the run loop running in that mode.  Usually you will just use the <code>NSDefaultRunLoopMode</code>; but the others are:</p>
 
-<pre><code>`NSConnectionReplyMode` used with `NSConnection` objects
-`NSModalPanelRunLoopMode` used with events associated with modal panels in OS X
-`NSEventTrackingRunLoopMode` used with UI tracking events
-`NSRunLoopCommonModes` is a configurable group of common modes.  In Foundation is includes all of the modes except `NSConnectionReplyMode` by default.  
-</code></pre>
+<p><code>NSConnectionReplyMode</code> used with <code>NSConnection</code> objects</p>
+
+<p><code>NSModalPanelRunLoopMode</code> used with events associated with modal panels in OS X</p>
+
+<p><code>NSEventTrackingRunLoopMode</code> used with UI tracking events</p>
+
+<p><code>NSRunLoopCommonModes</code> is a configurable group of common modes.  In Foundation is includes all of the modes except <code>NSConnectionReplyMode</code> by default.</p>
 
 <p>If you want to create your own mode, just use a different string:</p>
 
-<pre><code>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+<p><code>
+NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
 [runLoop addPort:[NSPort port] forMode:@"com.cocoafactory.MySpecialMode"];
-</code></pre>
-
-<p>Apple recommends reverse DNS notation to avoid stepping on someone else's run loop.</p>
+</code>
+Apple recommends reverse DNS notation to avoid stepping on someone else's run loop.</p>
 
 <h3>You rarely need to work directly with run loops</h3>
 

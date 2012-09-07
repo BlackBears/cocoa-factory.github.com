@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cocoa, | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/cocoa-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-06T19:11:16-07:00</updated>
+  <updated>2012-09-06T19:13:47-07:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -38,12 +38,13 @@
 
 <p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>"If no input sources or timers are attached to the run loop, this method exits immediately..."</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
 
-<pre><code>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-[runLoop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+<p>```
+NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+[runLoop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];</p>
 
-// now when we start the runLoop, we have an event source
+<p>// now when we start the runLoop, we have an event source
 [runLoop run];
-</code></pre>
+```</p>
 
 <p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
 

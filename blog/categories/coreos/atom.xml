@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coreos | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/coreos/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-06T19:16:59-07:00</updated>
+  <updated>2012-09-12T05:39:33-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[What's a run loop anyway?  NSRunLoop 101]]></title>
     <link href="http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway/"/>
-    <updated>2012-09-06T18:10:00-07:00</updated>
+    <updated>2012-09-06T18:10:00-05:00</updated>
     <id>http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway</id>
     <content type="html"><![CDATA[<p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I'd share what I learned about run loops.</p>
 

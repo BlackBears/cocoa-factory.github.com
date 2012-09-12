@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: cocoa | Cocoa Factory]]></title>
+  <link href="http://cocoa-factory.github.com/blog/categories/cocoa/atom.xml" rel="self"/>
+  <link href="http://cocoa-factory.github.com/"/>
+  <updated>2012-09-12T05:39:33-05:00</updated>
+  <id>http://cocoa-factory.github.com/</id>
+  <author>
+    <name><![CDATA[Alan Duncan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[NSArrayController thread safety]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety/"/>
+    <updated>2012-09-12T03:18:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety</id>
+    <content type="html"><![CDATA[<p><code>NSArrayController</code> is a work-horse of Cocoa bindings.  We recently ran into a problem with thread-safety which is not mentioned <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSArrayController_Class/Reference/Reference.html">in the documentation</a>.</p>
+
+<p>Consider this piece of code that downloads some resources and populates an <code>NSArrayController</code>:</p>
+
+<pre><code>- (void)downloadUsers {
+    CCFUserListDownloader *downloader = [[CCFUserListDownloader alloc] initWithSessionID:self.sessionID];
+    [downloader downloadWithCompletionBlock:^(CCFAPIStatus status,NSArray *remoteObjects) {
+        [remoteObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            CCFRemoteUser *user = [[CCFRemoteUser alloc] initWithDictionary:obj];
+            if( user )
+                [[self userArrayController] addObject:user];
+        }];
+        [[self userArrayController] removeObjectAtArrangedObjectIndex:0];
+}];
+</code></pre>
+
+<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, it's completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+
+<pre><code>dispatch_async(dispatch_get_main_queue(), ^{
+    [[self userArrayController] addObject:user];
+});
+</code></pre>
+
+<p>So, don't add objects to instances of <code>NSArrayController</code> on a background queue.</p>
+]]></content>
+  </entry>
+  
+</feed>

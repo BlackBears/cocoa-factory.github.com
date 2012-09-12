@@ -83,7 +83,7 @@
   
 
 
-<time datetime="2012-09-06T18:10:00-07:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+<time datetime="2012-09-06T18:10:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
         
       </p>
     
@@ -110,30 +110,32 @@
 
 <p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>&#8220;If no input sources or timers are attached to the run loop, this method exits immediately&#8230;&#8221;</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-</span><span class='line'>[runLoop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>// now when we start the runLoop, we have an event source
-</span><span class='line'>[runLoop run];</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c1">// now when we start the runLoop, we have an event source</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="n">run</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>BOOL shouldRun = YES;    // this is in a "global" context
-</span><span class='line'>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-</span><span class='line'>while( shouldRun && [runLoop runMode:NSDefaultRunLoopMode beforeData:[NSDate distantFuture]] );
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">shouldRun</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>    <span class="c1">// this is in a &quot;global&quot; context</span>
+</span><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="k">while</span><span class="p">(</span> <span class="n">shouldRun</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">runLoop</span> <span class="nl">runMode:</span><span class="n">NSDefaultRunLoopMode</span> <span class="nl">beforeData:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">distantFuture</span><span class="p">]]</span> <span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>// set shouldRun to NO somewhere else to terminate the run loop</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c1">// set shouldRun to NO somewhere else to terminate the run loop</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Run loops have modes and you can create your own</h3>
@@ -150,10 +152,11 @@
 
 <p>If you want to create your own mode, just use a different string:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-</span><span class='line'>[runLoop addPort:[NSPort port] forMode:@"com.cocoafactory.MySpecialMode"];</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="s">@&quot;com.cocoafactory.MySpecialMode&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Apple recommends reverse DNS notation to avoid stepping on someone else&#8217;s run loop.</p>
@@ -183,7 +186,7 @@
   
 
 
-<time datetime="2012-09-06T18:10:00-07:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+<time datetime="2012-09-06T18:10:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
       
 
 <span class="categories">
@@ -209,6 +212,8 @@
         <a class="basic-alignment left" href="/blog/2012/09/06/moving-to-octopress/" title="Previous Post: We're moving (blogs)">&laquo; We're moving (blogs)</a>
       
       
+        <a class="basic-alignment right" href="/blog/2012/09/12/nsarraycontroller-thread-safety/" title="Next Post: NSArrayController thread safety">NSArrayController thread safety &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -224,6 +229,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController thread safety</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What's a run loop anyway?  NSRunLoop 101</a>

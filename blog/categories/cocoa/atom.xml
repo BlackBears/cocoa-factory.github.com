@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cocoa | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/cocoa/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-12T05:39:33-05:00</updated>
+  <updated>2012-09-12T05:44:30-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -22,6 +22,8 @@
 
 <p>Consider this piece of code that downloads some resources and populates an <code>NSArrayController</code>:</p>
 
+<p>``` objc</p>
+
 <pre><code>- (void)downloadUsers {
     CCFUserListDownloader *downloader = [[CCFUserListDownloader alloc] initWithSessionID:self.sessionID];
     [downloader downloadWithCompletionBlock:^(CCFAPIStatus status,NSArray *remoteObjects) {
@@ -34,14 +36,19 @@
 }];
 </code></pre>
 
+<p>```</p>
+
 <p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, it's completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+
+<p>``` objc</p>
 
 <pre><code>dispatch_async(dispatch_get_main_queue(), ^{
     [[self userArrayController] addObject:user];
 });
 </code></pre>
 
-<p>So, don't add objects to instances of <code>NSArrayController</code> on a background queue.</p>
+<p><code>``
+So, don't add objects to instances of</code>NSArrayController` on a background queue.</p>
 ]]></content>
   </entry>
   

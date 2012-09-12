@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>NSArrayController thread safety - Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
+
+  
+  <meta name="description" content="NSArrayController is a work-horse of Cocoa bindings. We recently ran into a problem with thread-safety which is not mentioned in the documentation. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">NSArrayController Thread Safety</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-12T03:18:00-05:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><code>NSArrayController</code> is a work-horse of Cocoa bindings.  We recently ran into a problem with thread-safety which is not mentioned <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSArrayController_Class/Reference/Reference.html">in the documentation</a>.</p>
+
+<p>Consider this piece of code that downloads some resources and populates an <code>NSArrayController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadUsers</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CCFUserListDownloader</span> <span class="o">*</span><span class="n">downloader</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFUserListDownloader</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSessionID:</span><span class="n">self</span><span class="p">.</span><span class="n">sessionID</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">downloader</span> <span class="nl">downloadWithCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">CCFAPIStatus</span> <span class="n">status</span><span class="p">,</span><span class="n">NSArray</span> <span class="o">*</span><span class="n">remoteObjects</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">remoteObjects</span> <span class="nl">enumerateObjectsUsingBlock:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">CCFRemoteUser</span> <span class="o">*</span><span class="n">user</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFRemoteUser</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithDictionary:</span><span class="n">obj</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span> <span class="n">user</span> <span class="p">)</span>
+</span><span class='line'>                <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">removeObjectAtArrangedObjectIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, it&#8217;s completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, don&#8217;t add objects to instances of <code>NSArrayController</code> on a background queue.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-12T03:18:00-05:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bindings/'>bindings</a>, <a class='category' href='/blog/categories/cocoa/'>cocoa</a>, <a class='category' href='/blog/categories/concurrency/'>concurrency</a>, <a class='category' href='/blog/categories/mac-os/'>mac os</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety/" data-via="" data-counturl="http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/06/whats-a-run-loop-anyway/" title="Previous Post: What's a run loop anyway?  NSRunLoop 101">&laquo; What's a run loop anyway?  NSRunLoop 101</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController thread safety</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What's a run loop anyway?  NSRunLoop 101</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/06/moving-to-octopress/">We're moving (blogs)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

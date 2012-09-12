@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding style | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/coding-style/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-12T08:40:49-05:00</updated>
+  <updated>2012-09-12T08:47:35-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Not window dressing]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/12/not-window-dressing/"/>
-    <updated>2012-09-12T07:59:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/12/not-window-dressing</id>
+    <link href="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/"/>
+    <updated>2012-09-19T10:00:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing</id>
     <content type="html"><![CDATA[<p>After 3 years of full-time development on iOS and Mac (and many years of dabbling), I've had the chance to write and read a lot of code.  The exponential growth of these platforms has been amazing; but it has brought a number of challenges.  One of the challenges has been how to bring developers new to Objective-C and Cocoa to the community in a way that helps us all write better code.  Code that's readable and code that us mortals can maintain long after it was written.</p>
 
 <h2>Broken windows</h2>

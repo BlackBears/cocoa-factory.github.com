@@ -120,7 +120,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, it&#8217;s completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, its completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

@@ -67,7 +67,7 @@ Class users will use this method to get information about the size of the image 
 
 Finally we have a couple methods to set the frame and/or the action handler.  On to the implementation, let's look at the `initWithFrame:` method:
 
-```obc
+```objc
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];

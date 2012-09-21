@@ -1,24 +1,96 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Cocoa Factory]]></title>
-  <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
-  <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-09-21T15:25:17-05:00</updated>
-  <id>http://cocoa-factory.github.com/</id>
-  <author>
-    <name><![CDATA[Alan Duncan]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Introducing CCFBrowserTextField - Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
 
   
-  <entry>
-    <title type="html"><![CDATA[Introducing CCFBrowserTextField]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield/"/>
-    <updated>2012-09-21T06:10:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield</id>
-    <content type="html"><![CDATA[<p>We just released <code>CCFBrowserTextField</code> for public consumption.  Take a look at <a href="https://github.com/cocoa-factory/CCFBrowserTextField">our github repository</a> to get started using it.  Here&#8217;s what this <code>NSTextField</code> subclass looks like:</p>
+  <meta name="description" content="We just released CCFBrowserTextField for public consumption. Take a look at our github repository to get started using it. Here&#8217;s what this &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Introducing CCFBrowserTextField</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-21T06:10:00-05:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>We just released <code>CCFBrowserTextField</code> for public consumption.  Take a look at <a href="https://github.com/cocoa-factory/CCFBrowserTextField">our github repository</a> to get started using it.  Here&#8217;s what this <code>NSTextField</code> subclass looks like:</p>
 
 <p><img class="right" src="http://tinypic.com/r/2nlz5ah/6"></p>
 
@@ -265,202 +337,131 @@
 <p>Enough of the swizzly stuff.  Let&#8217;s look add some of the subtleties that we could have easily forgotten, like the cursor.  Over text fields, we are accustomed to seeing the I beam cursor.  But over a button, it looks silly.  So we override <code>resetCursorRect</code>.  The documentation succinctly says what it does:  &#8220;Overridden by subclasses to define their default cursor rectangles.&#8221;  So, we just add the two rects with the correct cursors to the two parts of our field using <code>addCursorRect:cursor:</code>.</p>
 
 <p>That&#8217;s about it for the internals of <code>CCFBrowserTextField</code>; hopefully you can put it to use in your projects.</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[Not window dressing]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/"/>
-    <updated>2012-09-19T10:00:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing</id>
-    <content type="html"><![CDATA[<p>After 3 years of full-time development on iOS and Mac (and many years of dabbling), I&#8217;ve had the chance to write and read a lot of code.  The exponential growth of these platforms has been amazing; but it has brought a number of challenges.  One of the challenges has been how to bring developers new to Objective-C and Cocoa to the community in a way that helps us all write better code.  Code that&#8217;s readable and code that us mortals can maintain long after it was written.</p>
 
-<h2>Broken windows</h2>
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
 
-<p>The broken windows theory is a construct in the social sciences that deals with the establishment of norms around vandalism and other criminal behavior.  The idea is that communities that fail to care for their physical appearance are subject to more decline as the outward appearances signal an area of low value.</p>
+      
 
-<p>James Wilson and George Kelling, in the article &#8220;Broken Windows&#8221; (The Atlantic Monthly, March 1982) described this example:</p>
 
-<blockquote><blockquote><p><em>&#8220;Consider a building with a few broken windows. If the windows are not repaired, the tendency is for vandals to break a few more windows. Eventually, they may even break into the building, and if it&#8217;s unoccupied, perhaps become squatters or light fires inside. Or consider a sidewalk. Some litter accumulates. Soon, more litter accumulates. Eventually, people even start leaving bags of trash from take-out restaurants there or breaking into cars.&#8221;</em></p></blockquote></blockquote>
 
-<p>Does code suffer from the same social phenomena?  Who knows - but what developers do is a craft.  And it is a craft that contributes to a body of work, whether formalized in a discrete project or whether implicitly in the way we post code on Stack Overflow.  Ultimately, code finds itself in a body of literature that sets the standards for the community.  As craftspeople, we have a responsibility to the community to set standards that encourage clear thinking.</p>
 
-<h2>Foolish thoughts</h2>
 
-<p>The famous British author George Orwell wrote an essay entitled &#8220;Politics and the English Language&#8221; in 1946.  In this brief work, he describes several problems with the use of his native language and how it obscures meaning.  But the most powerful hypothesis that he puts forward is that the sloppy use of language leads to flawed reasoning:</p>
 
-<blockquote><blockquote><p><em>&#8220;Now, it is clear that the decline of a language must ultimately have political and economic causes: it is not due simply to the bad influence of this or that individual writer. But an effect can become a cause, reinforcing the original cause and producing the same effect in an intensified form, and so on indefinitely. A man may take to drink because he feels himself to be a failure, and then fail all the more completely because he drinks. It is rather the same thing that is happening to the English language. It becomes ugly and inaccurate because our thoughts are foolish, but the slovenliness of our language makes it easier for us to have foolish thoughts.&#8221;</em> (George Orwell, &#8220;Politics and the English Language&#8221;, Horizon, April 1946)</p></blockquote></blockquote>
 
-<p>Code follows this same pattern.  The manner in which we write code both reflects the way we think about a problem <strong>and</strong> in turn, it causes us to to frame our thoughts about the problem in the context of the solution we&#8217;ve crafted.  Cause and effect exert a bidirectional influence on each other.  It&#8217;s clear that poor use of our language, the formal language of Objective-C, may cause us to think about the problems we&#8217;re solving in faulty ways.</p>
 
-<p>At Cocoa Factory, we love to code and we love to code well.  So, we&#8217;re taking the next few weeks to describe our approach to readable, maintainable, functional, and beautiful code.</p>
-]]></content>
-  </entry>
   
-  <entry>
-    <title type="html"><![CDATA[NSArrayController thread safety]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety/"/>
-    <updated>2012-09-12T03:18:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/12/nsarraycontroller-thread-safety</id>
-    <content type="html"><![CDATA[<p><code>NSArrayController</code> is a work-horse of Cocoa bindings.  We recently ran into a problem with thread-safety which is not mentioned <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSArrayController_Class/Reference/Reference.html">in the documentation</a>.</p>
-
-<p>Consider this piece of code that downloads some resources and populates an <code>NSArrayController</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadUsers</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">CCFUserListDownloader</span> <span class="o">*</span><span class="n">downloader</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFUserListDownloader</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSessionID:</span><span class="n">self</span><span class="p">.</span><span class="n">sessionID</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">downloader</span> <span class="nl">downloadWithCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">CCFAPIStatus</span> <span class="n">status</span><span class="p">,</span><span class="n">NSArray</span> <span class="o">*</span><span class="n">remoteObjects</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">remoteObjects</span> <span class="nl">enumerateObjectsUsingBlock:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">CCFRemoteUser</span> <span class="o">*</span><span class="n">user</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFRemoteUser</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithDictionary:</span><span class="n">obj</span><span class="p">];</span>
-</span><span class='line'>            <span class="k">if</span><span class="p">(</span> <span class="n">user</span> <span class="p">)</span>
-</span><span class='line'>                <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}];</span>
-</span><span class='line'>        <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">removeObjectAtArrangedObjectIndex:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'><span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, its completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+<time datetime="2012-09-21T06:10:00-05:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
+      
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So, don&#8217;t add objects to instances of <code>NSArrayController</code> on a background queue.</p>
-]]></content>
-  </entry>
+<span class="categories">
   
-  <entry>
-    <title type="html"><![CDATA[What's a run loop anyway?  NSRunLoop 101]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway/"/>
-    <updated>2012-09-06T18:10:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway</id>
-    <content type="html"><![CDATA[<p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I&#8217;d share what I learned about run loops.</p>
-
-<h2>Facts about run loops</h2>
-
-<h3>Run loops manage input source events</h3>
-
-<p>A run loop - <code>NSRunLoop</code> in Cocoa - is a class of objects that manages input sources, like user events (mouse, keyboard, etc.), <code>NSPort</code> events, and those that emanate from <code>NSConnection</code> objects.  You might think that the latter is the superclass of <code>NSURLConnection</code> objects; but you&#8217;d be wrong.  <code>NSURLConnection</code> is a subclass of <code>NSObject</code> - even though run loops manage events from <code>NSURLConnection</code> also.  So, you get the picture?  <code>NSRunLoop</code> manages events.</p>
-
-<h3>Every thread gets a run loop</h3>
-
-<p>If you create a thread, you get an <code>NSRunLoop</code> with it.</p>
-
-<h3>(Most) run loops don&#8217;t run by themselves</h3>
-
-<p>You must explictly run any run loop other than the main thread run loop.</p>
-
-<h3>Run loops that have no input sources don&#8217;t run.</h3>
-
-<p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>&#8220;If no input sources or timers are attached to the run loop, this method exits immediately&#8230;&#8221;</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// now when we start the runLoop, we have an event source</span>
-</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="n">run</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">shouldRun</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>    <span class="c1">// this is in a &quot;global&quot; context</span>
-</span><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="k">while</span><span class="p">(</span> <span class="n">shouldRun</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">runLoop</span> <span class="nl">runMode:</span><span class="n">NSDefaultRunLoopMode</span> <span class="nl">beforeData:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">distantFuture</span><span class="p">]]</span> <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// set shouldRun to NO somewhere else to terminate the run loop</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Run loops have modes and you can create your own</h3>
-
-<p>Run loops have modes that specify groups of input sources that are monitored for the run loop running in that mode.  Usually you will just use the <code>NSDefaultRunLoopMode</code>; but the others are:</p>
-
-<p><code>NSConnectionReplyMode</code> used with <code>NSConnection</code> objects</p>
-
-<p><code>NSModalPanelRunLoopMode</code> used with events associated with modal panels in OS X</p>
-
-<p><code>NSEventTrackingRunLoopMode</code> used with UI tracking events</p>
-
-<p><code>NSRunLoopCommonModes</code> is a configurable group of common modes.  In Foundation is includes all of the modes except <code>NSConnectionReplyMode</code> by default.</p>
-
-<p>If you want to create your own mode, just use a different string:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="s">@&quot;com.cocoafactory.MySpecialMode&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Apple recommends reverse DNS notation to avoid stepping on someone else&#8217;s run loop.</p>
-
-<h3>You rarely need to work directly with run loops</h3>
-
-<p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
-]]></content>
-  </entry>
+    <a class='category' href='/blog/categories/cocoa/'>cocoa</a>, <a class='category' href='/blog/categories/goodies/'>goodies</a>, <a class='category' href='/blog/categories/mac-os/'>mac os</a>, <a class='category' href='/blog/categories/open-source/'>open source</a>
   
-  <entry>
-    <title type="html"><![CDATA[We're moving (blogs)]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/06/moving-to-octopress/"/>
-    <updated>2012-09-06T15:57:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/06/moving-to-octopress</id>
-    <content type="html"><![CDATA[<h2>Goodbye Wordpress, hello Octopress</h2>
-
-<p>We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github.  For several years, we maintained a presence on a dedicated site mostly setup with Wordpress.  Why the switch?</p>
-
-<p>It came down to several factors:</p>
-
-<ul>
-<li><p>Lightweight vs. heavyweight solutions</p>
-
-<p>  Wordpress is a great blogging platform; but there&#8217;s a lot of &#8220;stuff&#8221; to manage.  Further, it&#8217;s a dynamic content system - meaning, your content has to be generated from a database each time the page is rendered.  Octopress, instead, serves static pages.  There&#8217;s something appealingly simple about static content.</p></li>
-<li><p>Workflow</p>
-
-<p>  We develop software first, and blog second.  Writing about our work is important; but it has to fit into our workflow.  Since we are always working in <code>git</code> using Octopress feels very comfortable.</p></li>
-<li><p>Kick-start</p>
-
-<p>  Working through the challenges of getting Octopress installed (and they were significant) was paradoxically a motivator to get down to writing more.  I mean - having spent all this time getting Octopress installed, I&#8217;m not about to let the effort be wasted!</p></li>
-<li><p>Comments</p>
-
-<p>  I got tired of seeing queues of comments 99.9% of which was spam.  I&#8217;m sure Wordpress has better ways of dealing with comment spam - but I decided it was just easier to turn comments off on the new weblog.  The thing is, the real discussion isn&#8217;t happening on the weblog; it&#8217;s happening on Twitter and everywhere else.  You really should read Matt Gemmell&#8217;s <a href="http://mattgemmell.com/2011/11/29/comments-off/">comments on comments</a> about the phenomenon.</p></li>
-</ul>
+</span>
 
 
-<h2>Installing Octopress</h2>
-
-<p>Octopress installation was a little cumbersome owing mainly to difficulty with versioning of <code>rvm</code>.  After reading about the difficulties of installing on OS X 10.8, I decided to install it on Ubuntu 12.04 which I run as a virtual machine alongside Mountain Lion.  Again, it was mainly about making sure that the versioning of <code>rvm</code> was correct.  There are detailed instructions online, but I would add a couple of pointers:</p>
-
-<p>We used <a href="http://www.lennu.net/2012/05/11/octopress-installation-in-ubuntu-12-dot-04-with-rsync/">a tutorial</a> on lennu.net to get started.  Just make sure you get <code>rvm 1.9.2</code> installed.  If you install the latest stable version, you&#8217;ll come to grief later in the installation.</p>
-
-<p>Apart from that, all of the instructions are at Github and on the lennu.net tutorial.</p>
-]]></content>
-  </entry>
+    </p>
+    
+      <div class="sharing">
   
-</feed>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield/" data-via="" data-counturl="http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/19/not-window-dressing/" title="Previous Post: Not window dressing">&laquo; Not window dressing</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/21/introducing-ccfbrowsertextfield/">Introducing CCFBrowserTextField</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/19/not-window-dressing/">Not window dressing</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController thread safety</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What's a run loop anyway?  NSRunLoop 101</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/06/moving-to-octopress/">We're moving (blogs)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

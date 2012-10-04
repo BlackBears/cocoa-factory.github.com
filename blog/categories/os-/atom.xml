@@ -4,7 +4,7 @@
   <title><![CDATA[Category: os, | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/os-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T14:28:05-05:00</updated>
+  <updated>2012-10-04T14:35:54-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -73,6 +73,23 @@
 </tbody>
 </table>
 
+
+<p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
+
+<p>``` objc</p>
+
+<h1>if TARGET_OS_IPHONE</h1>
+
+<p>NSString *dataString = [NSString stringWithFormat:"data = %d",count];</p>
+
+<h1>else</h1>
+
+<p>// this compiles on Mac OS
+NSString *dataString = [NSString stringWithFormat:"data = %ld",count];</p>
+
+<h1>endif</h1>
+
+<p>```</p>
 ]]></content>
   </entry>
   

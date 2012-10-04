@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T14:28:05-05:00</updated>
+  <updated>2012-10-04T14:35:54-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -72,6 +72,23 @@
 </tr>
 </tbody>
 </table>
+
+
+<p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if TARGET_OS_IPHONE</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %d&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'><span class="c1">// this compiles on Mac OS</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %ld&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>

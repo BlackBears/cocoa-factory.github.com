@@ -4,7 +4,7 @@
   <title><![CDATA[Category: os, | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/os-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T15:53:28-05:00</updated>
+  <updated>2012-10-04T16:11:44-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -27,38 +27,33 @@
 <table>
 <thead>
 <tr>
-<th></th>
-<th> Conditional                  </th>
+<th>  Conditional                  </th>
 <th> Mac OS </th>
 <th> iOS device </th>
-<th> iOS sim </th>
+<th> iOS sim</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td></td>
-<td> <code>TARGET_OS_MAC</code>              </td>
+<td>  <code>TARGET_OS_MAC</code>              </td>
 <td>   X    </td>
 <td>    X       </td>
 <td>    X    </td>
 </tr>
 <tr>
-<td></td>
-<td> <code>TARGET_OS_IPHONE</code>           </td>
+<td>  <code>TARGET_OS_IPHONE</code>           </td>
 <td>        </td>
 <td>    X       </td>
 <td>    X    </td>
 </tr>
 <tr>
-<td></td>
-<td> <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>  <code>TARGET_OS_EMBEDDED</code>         </td>
 <td>        </td>
 <td>    X       </td>
 <td>         </td>
 </tr>
 <tr>
-<td></td>
-<td> <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>  <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
 <td>        </td>
 <td>            </td>
 <td>    X    </td>

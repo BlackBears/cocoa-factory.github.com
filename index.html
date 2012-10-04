@@ -144,7 +144,7 @@
 </table>
 
 
-<p>(Credits to Greg Parker for the table)</p>
+<p>(Credits to Greg Parker, <a href="http://www.sealiesoftware.com/blog/archive/2010/8/16/TargetConditionalsh.html"><em>Hamster Emporium Target Conditionals</em></a> for the table)</p>
 
 <p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
 
@@ -203,7 +203,28 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The first check is a compile-time check to ensure that we can compile on lower SDK&#8217;s and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.</p>
+<p>The first check is a compile-time check to ensure that we can compile on lower SDK&#8217;s and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.  Of course, we can also test for method availability instead:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">someNewMethod</span><span class="p">)]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// we can use fancy new method on UIImage</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>What is __IPHONE_OS_VERSION_MIN_REQUIRED?</h2>
+
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for __MAC_OS_VERSION_MIN_REQUIRED.  But you probably guessed that already.</p>
 </div>
   
   

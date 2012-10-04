@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="We just released CCFBrowserTextField for public consumption. Take a look at our github repository to get started using it. Here&#8217;s what this &hellip;">
+  <meta name="description" content="If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like this one - Preprocessor macro &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,96 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/04/target-conditionals/">Target Conditionals</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:04:00-05:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like <a href="http://stackoverflow.com/questions/12132933/preprocessor-macro-for-os-x-targets">this one - Preprocessor macro for OS X targets</a>; so here&#8217;s an attempt to sort it out:</p>
+
+<h2>How do you conditionally compile for Mac and iOS platforms?</h2>
+
+<p>This one is a little confusing because <code>TARGET_MAC_OS</code> doesn&#8217;t really do what you think.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th> Conditional                  </th>
+<th> Mac OS </th>
+<th> iOS device </th>
+<th> iOS sim </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_MAC</code>              </td>
+<td>   X    </td>
+<td>    x       </td>
+<td>    x    |</td>
+</tr>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_IPHONE</code>           </td>
+<td>        </td>
+<td>    X       </td>
+<td>    X    |</td>
+</tr>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>        </td>
+<td>    X       </td>
+<td>         |</td>
+</tr>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>        </td>
+<td>            </td>
+<td>    X    |</td>
+</tr>
+<tr>
+<td></td>
+<td> &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;- </td>
+<td> &#8212;&#8212; </td>
+<td> &#8212;&#8212;&#8212;- </td>
+<td> &#8212;&#8212;- |</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -675,6 +765,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/04/target-conditionals/">Target conditionals</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/21/introducing-ccfbrowsertextfield/">Introducing CCFBrowserTextField</a>
       </li>
     
@@ -688,10 +782,6 @@
     
       <li class="post">
         <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a run loop anyway?  NSRunLoop 101</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/06/moving-to-octopress/">We&#8217;re moving (blogs)</a>
       </li>
     
   </ul>

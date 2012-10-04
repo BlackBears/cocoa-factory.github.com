@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T14:01:58-05:00</updated>
+  <updated>2012-10-04T14:28:05-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Target conditionals]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals/"/>
+    <updated>2012-10-04T14:04:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals</id>
+    <content type="html"><![CDATA[<p>If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like <a href="http://stackoverflow.com/questions/12132933/preprocessor-macro-for-os-x-targets">this one - Preprocessor macro for OS X targets</a>; so here&#8217;s an attempt to sort it out:</p>
+
+<h2>How do you conditionally compile for Mac and iOS platforms?</h2>
+
+<p>This one is a little confusing because <code>TARGET_MAC_OS</code> doesn&#8217;t really do what you think.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th> Conditional                  </th>
+<th> Mac OS </th>
+<th> iOS device </th>
+<th> iOS sim </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_MAC</code>              </td>
+<td>   X    </td>
+<td>    x       </td>
+<td>    x    |</td>
+</tr>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_IPHONE</code>           </td>
+<td>        </td>
+<td>    X       </td>
+<td>    X    |</td>
+</tr>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>        </td>
+<td>    X       </td>
+<td>         |</td>
+</tr>
+<tr>
+<td></td>
+<td> <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>        </td>
+<td>            </td>
+<td>    X    |</td>
+</tr>
+<tr>
+<td></td>
+<td> &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;- </td>
+<td> &#8212;&#8212; </td>
+<td> &#8212;&#8212;&#8212;- </td>
+<td> &#8212;&#8212;- |</td>
+</tr>
+</tbody>
+</table>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introducing CCFBrowserTextField]]></title>

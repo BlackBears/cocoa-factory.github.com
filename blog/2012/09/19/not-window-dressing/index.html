@@ -148,7 +148,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/" data-via="" data-counturl="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/" data-via="NSBum" data-counturl="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/" >Tweet</a>
   
   
   
@@ -208,6 +208,22 @@
   </ul>
 </section>
 
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("NSBum", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/NSBum" class="twitter-follow-button" data-show-count="false">Follow @NSBum</a>
+  
+</section>
 
 
 

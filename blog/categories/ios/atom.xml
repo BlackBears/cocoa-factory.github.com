@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ios | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T15:41:56-05:00</updated>
+  <updated>2012-10-04T15:53:28-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -39,29 +39,29 @@
 <td></td>
 <td> <code>TARGET_OS_MAC</code>              </td>
 <td>   X    </td>
-<td>    x       </td>
-<td>    x    |</td>
+<td>    X       </td>
+<td>    X    </td>
 </tr>
 <tr>
 <td></td>
 <td> <code>TARGET_OS_IPHONE</code>           </td>
 <td>        </td>
 <td>    X       </td>
-<td>    X    |</td>
+<td>    X    </td>
 </tr>
 <tr>
 <td></td>
 <td> <code>TARGET_OS_EMBEDDED</code>         </td>
 <td>        </td>
 <td>    X       </td>
-<td>         |</td>
+<td>         </td>
 </tr>
 <tr>
 <td></td>
 <td> <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
 <td>        </td>
 <td>            </td>
-<td>    X    |</td>
+<td>    X    </td>
 </tr>
 </tbody>
 </table>
@@ -102,7 +102,9 @@ NSString *dataString = [NSString stringWithFormat:"data = %ld",count];</p>
 
 <h1>if __IPHONE_OS_VERSION_MAX_ALLOWED >= 50000</h1>
 
-<p>// compile this when the target base SDK is iOS 5.0 or greater.  We use this as a compile-time test to prevent errors if we try to recompile the project with a lower base SDK setting</p>
+<p>// compile this when the target base SDK is iOS 5.0 or greater.<br/>
+// We use this as a compile-time test to prevent errors if we
+// try to recompile the project with a lower base SDK setting</p>
 
 <h1>endif</h1>
 
@@ -143,7 +145,7 @@ So far, we will be able to compile for platforms between the OS ranges specified
 
 <h2>What is __IPHONE_OS_VERSION_MIN_REQUIRED?</h2>
 
-<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for __MAC_OS_VERSION_MIN_REQUIRED.  But you probably guessed that already.</p>
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
 ]]></content>
   </entry>
   

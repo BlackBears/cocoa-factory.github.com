@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T15:41:56-05:00</updated>
+  <updated>2012-10-04T15:53:28-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -39,29 +39,29 @@
 <td></td>
 <td> <code>TARGET_OS_MAC</code>              </td>
 <td>   X    </td>
-<td>    x       </td>
-<td>    x    |</td>
+<td>    X       </td>
+<td>    X    </td>
 </tr>
 <tr>
 <td></td>
 <td> <code>TARGET_OS_IPHONE</code>           </td>
 <td>        </td>
 <td>    X       </td>
-<td>    X    |</td>
+<td>    X    </td>
 </tr>
 <tr>
 <td></td>
 <td> <code>TARGET_OS_EMBEDDED</code>         </td>
 <td>        </td>
 <td>    X       </td>
-<td>         |</td>
+<td>         </td>
 </tr>
 <tr>
 <td></td>
 <td> <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
 <td>        </td>
 <td>            </td>
-<td>    X    |</td>
+<td>    X    </td>
 </tr>
 </tbody>
 </table>
@@ -101,8 +101,12 @@
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
-</span><span class='line'><span class="cp">// compile this when the target base SDK is iOS 5.0 or greater.  We use this as a compile-time test to prevent errors if we try to recompile the project with a lower base SDK setting</span>
+</span><span class='line'><span class="cp">// compile this when the target base SDK is iOS 5.0 or greater.  </span>
+</span><span class='line'><span class="cp">// We use this as a compile-time test to prevent errors if we </span>
+</span><span class='line'><span class="cp">// try to recompile the project with a lower base SDK setting</span>
 </span><span class='line'><span class="cp">#endif</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -147,7 +151,7 @@
 
 <h2>What is __IPHONE_OS_VERSION_MIN_REQUIRED?</h2>
 
-<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for __MAC_OS_VERSION_MIN_REQUIRED.  But you probably guessed that already.</p>
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
 ]]></content>
   </entry>
   

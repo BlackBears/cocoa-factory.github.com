@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ios | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T14:35:54-05:00</updated>
+  <updated>2012-10-04T15:13:30-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -74,6 +74,8 @@
 </table>
 
 
+<p>(Credits to Greg Parker for the table)</p>
+
 <p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
 
 <p>``` objc</p>
@@ -90,6 +92,46 @@ NSString *dataString = [NSString stringWithFormat:"data = %ld",count];</p>
 <h1>endif</h1>
 
 <p>```</p>
+
+<h2>How I support multiple iOS or Mac versions?</h2>
+
+<p>Usually this means that the developer wants to incorporate features in a new OS version while maintaing backwards compatibility.  The solution has a few steps:</p>
+
+<ul>
+<li>Set the base SDK on the target build setting to the newest vesion that you need.</li>
+<li>Set the deployment target to the oldest version that you support</li>
+</ul>
+
+
+<p>Having set the target build settings, we have to do some work in the code.  Let's say we want to incorporate iOS 5 features in an app that should support earlier versions, say iOS 4.3.  Then we'll set the base SDK to iOS 5+ and the deployment target to iOS 4.3.  In the code, we do something like this:</p>
+
+<p>``` objc</p>
+
+<h1>if __IPHONE_OS_VERSION_MAX_ALLOWED >= 50000</h1>
+
+<p>// compile this when the target base SDK is iOS 5.0 or greater.  We use this as a compile-time test to prevent errors if we try to recompile the project with a lower base SDK setting</p>
+
+<h1>endif</h1>
+
+<p><code>``
+So far, we will be able to compile for platforms between the OS ranges specified by our lower boundary of the deployment target and our upper boundary of the base SDK.  But what happens at runtime?  We'll crash on any features above our deployment target; so we need a runtime check for class availability.  As of the iOS 4.2 SDK, you should use the</code>NSObject<code></code>class<code>method to check for the availability of weakly linked classes at runtime.  This takes advantage of the</code>NS_CLASS_AVAILABLE` macro; so in our example:</p>
+
+<p>``` objc</p>
+
+<h1>if __IPHONE_OS_VERSION_MAX_ALLOWED >= 50000</h1>
+
+<p>if( [CIImage class]  ) {</p>
+
+<pre><code>// CIImage is available in iOS 5.0
+</code></pre>
+
+<p>}</p>
+
+<h1>endif</h1>
+
+<p>```</p>
+
+<p>The first check is a compile-time check to ensure that we can compile on lower SDK's and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.</p>
 ]]></content>
   </entry>
   

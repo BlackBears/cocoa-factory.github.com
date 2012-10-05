@@ -4,7 +4,7 @@
   <title><![CDATA[Category: os, | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/os-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-04T16:11:44-05:00</updated>
+  <updated>2012-10-04T20:12:58-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -138,7 +138,7 @@ So far, we will be able to compile for platforms between the OS ranges specified
 
 <p>```</p>
 
-<h2>What is __IPHONE_OS_VERSION_MIN_REQUIRED?</h2>
+<h2>What is <code>__IPHONE_OS_VERSION_MIN_REQUIRED?</code></h2>
 
 <p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
 ]]></content>

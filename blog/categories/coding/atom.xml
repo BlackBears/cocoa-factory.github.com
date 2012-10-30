@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-30T05:13:00-05:00</updated>
+  <updated>2012-10-30T05:17:56-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -44,15 +44,13 @@
 
 <p>We use Menlo 11 pt typeface for coding in Xcode.  The syntax highlighting theme is <a href="https://github.com/mhallendal/spacedust-theme">Spacedust</a>.</p>
 
-<p><img class="left" src="http://i.imgur.com/D77Mf.png" title="'IDE syntax highlighting'" ></p>
-
 <p>All other typographical considerations follow Apple's guidelines.  In other words, we use camel case without underscores or dashes to separate words.</p>
 
 <p>``` objc
-BOOL canProvideData //  CORRECT
+BOOL canProvideData     //  CORRECT
 BOOL can_provide_data   //  INCORRECT</p>
 
-<p>BOOL PNGIsValid     //  CORRECT (well-known abbreviations can be capitalized)
+<p>BOOL PNGIsValid         //  CORRECT (well-known abbreviations can be capitalized)
 ```</p>
 
 <h3>Organization of the implementation file</h3>
@@ -98,15 +96,15 @@ BOOL can_provide_data   //  INCORRECT</p>
 
 <h1>pragma mark - Object lifecycle</h1>
 
-<h1>pragma mark - View lifecylce   //  for view controller classes</h1>
+<h1>pragma mark - View lifecycle       //  for view controller classes</h1>
 
-<h1>pragma mark - KVO          //  key-value observing</h1>
+<h1>pragma mark - KVO                  //  key-value observing</h1>
 
 <h1>pragma mark - Interface actions    //  all IBActions go here</h1>
 
-<h1>pragma mark - Public       //  all public methods go here</h1>
+<h1>pragma mark - Public               //  all public methods go here</h1>
 
-<h1>pragma mark - Private      //  all private methods go here</h1>
+<h1>pragma mark - Private              //  all private methods go here</h1>
 
 <h1>pragma mark - NSTableViewDelegate  //  each protocol that the class adopts gets its own #pragma mark block</h1>
 
@@ -172,10 +170,10 @@ if (flag) {</p>
 <p>The method signature should be left-justified with one space after the scope (the + or -).  There should be a space after each segment of the method and a space between the object type and the pointer * for method arguments.</p>
 
 <p>``` objc
-- (void)setFoo:(NSString *)aFoo;        //  CORRECT</p>
+- (void)setFoo:(NSString *)aFoo;    //  CORRECT</p>
 
 <p>-(void)setFoo:(NSString <em>)aFoo;     //  INCORRECT - no space after the scope
-- (void)setFoo: (NSString </em>)aFoo;       //  INCORRECT - space after the colon
+- (void)setFoo: (NSString </em>)aFoo;   //  INCORRECT - space after the colon
 - (void)setFoo:(NSString*)aFoo;     //  INCORRECT - no space between type and pointer *
 ```</p>
 ]]></content>

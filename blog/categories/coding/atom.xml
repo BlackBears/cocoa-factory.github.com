@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-30T05:02:25-05:00</updated>
+  <updated>2012-10-30T05:07:44-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -32,7 +32,7 @@
 
 <p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'file system organization'" >  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.</p>
 
-<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'Xcode organization'" ></p>
+<p><img class="left" src="http://i.imgur.com/EZMkz.png" title="'Xcode organization'" ></p>
 
 <h3>Naming conventions</h3>
 
@@ -49,10 +49,10 @@
 <p>All other typographical considerations follow Apple's guidelines.  In other words, we use camel case without underscores or dashes to separate words.</p>
 
 <p>``` objc
-BOOL canProvideData     //  CORRECT
+BOOL canProvideData //  CORRECT
 BOOL can_provide_data   //  INCORRECT</p>
 
-<p>BOOL PNGIsValid         //  CORRECT (well-known abbreviations can be capitalized)
+<p>BOOL PNGIsValid     //  CORRECT (well-known abbreviations can be capitalized)
 ```</p>
 
 <h3>Organization of the implementation file</h3>
@@ -98,15 +98,15 @@ BOOL can_provide_data   //  INCORRECT</p>
 
 <h1>pragma mark - Object lifecycle</h1>
 
-<h1>pragma mark - View lifecylce       //  for view controller classes</h1>
+<h1>pragma mark - View lifecylce   //  for view controller classes</h1>
 
-<h1>pragma mark - KVO                  //  key-value observing</h1>
+<h1>pragma mark - KVO          //  key-value observing</h1>
 
 <h1>pragma mark - Interface actions    //  all IBActions go here</h1>
 
-<h1>pragma mark - Public               //  all public methods go here</h1>
+<h1>pragma mark - Public       //  all public methods go here</h1>
 
-<h1>pragma mark - Private              //  all private methods go here</h1>
+<h1>pragma mark - Private      //  all private methods go here</h1>
 
 <h1>pragma mark - NSTableViewDelegate  //  each protocol that the class adopts gets its own #pragma mark block</h1>
 
@@ -174,9 +174,9 @@ if (flag) {</p>
 <p>``` objc
 - (void)setFoo:(NSString *)aFoo;        //  CORRECT</p>
 
-<p>-(void)setFoo:(NSString <em>)aFoo;         //  INCORRECT - no space after the scope
+<p>-(void)setFoo:(NSString <em>)aFoo;     //  INCORRECT - no space after the scope
 - (void)setFoo: (NSString </em>)aFoo;       //  INCORRECT - space after the colon
-- (void)setFoo:(NSString*)aFoo;         //  INCORRECT - no space between type and pointer *
+- (void)setFoo:(NSString*)aFoo;     //  INCORRECT - no space between type and pointer *
 ```</p>
 ]]></content>
   </entry>

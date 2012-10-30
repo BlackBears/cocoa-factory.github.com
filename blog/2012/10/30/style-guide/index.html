@@ -106,7 +106,7 @@
 
 <p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'file system organization'" >  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.</p>
 
-<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'Xcode organization'" ></p>
+<p><img class="left" src="http://i.imgur.com/EZMkz.png" title="'Xcode organization'" ></p>
 
 <h3>Naming conventions</h3>
 
@@ -126,10 +126,10 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">canProvideData</span>       <span class="c1">// CORRECT</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">canProvideData</span>   <span class="c1">// CORRECT</span>
 </span><span class='line'><span class="kt">BOOL</span> <span class="n">can_provide_data</span>  <span class="c1">// INCORRECT</span>
 </span><span class='line'>
-</span><span class='line'><span class="kt">BOOL</span> <span class="n">PNGIsValid</span>            <span class="c1">// CORRECT (well-known abbreviations can be capitalized)</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">PNGIsValid</span>        <span class="c1">// CORRECT (well-known abbreviations can be capitalized)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -188,11 +188,11 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark - Object lifecycle</span>
-</span><span class='line'><span class="cp">#pragma mark - View lifecylce        </span><span class="c1">//  for view controller classes</span>
-</span><span class='line'><span class="cp">#pragma mark - KVO                   </span><span class="c1">//  key-value observing</span>
+</span><span class='line'><span class="cp">#pragma mark - View lifecylce    </span><span class="c1">//  for view controller classes</span>
+</span><span class='line'><span class="cp">#pragma mark - KVO           </span><span class="c1">//  key-value observing</span>
 </span><span class='line'><span class="cp">#pragma mark - Interface actions </span><span class="c1">//  all IBActions go here</span>
-</span><span class='line'><span class="cp">#pragma mark - Public                </span><span class="c1">//  all public methods go here</span>
-</span><span class='line'><span class="cp">#pragma mark - Private               </span><span class="c1">//  all private methods go here</span>
+</span><span class='line'><span class="cp">#pragma mark - Public        </span><span class="c1">//  all public methods go here</span>
+</span><span class='line'><span class="cp">#pragma mark - Private       </span><span class="c1">//  all private methods go here</span>
 </span><span class='line'><span class="cp">#pragma mark - NSTableViewDelegate   </span><span class="c1">//  each protocol that the class adopts gets its own #pragma mark block</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -242,9 +242,9 @@
 </span><span class='line'>  <span class="c1">// do something</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//   INCORRECT</span>
+</span><span class='line'><span class="c1">//  INCORRECT</span>
 </span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// do something</span>
+</span><span class='line'>  <span class="c1">//  do something</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -270,9 +270,9 @@
 <span class='line-number'>5</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>     <span class="c1">// CORRECT</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>           <span class="c1">// INCORRECT - no space after the scope</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>       <span class="c1">// INCORRECT - no space after the scope</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>     <span class="c1">// INCORRECT - space after the colon</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>           <span class="c1">// INCORRECT - no space between type and pointer *</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>       <span class="c1">// INCORRECT - no space between type and pointer *</span>
 </span></code></pre></td></tr></table></div></figure>
 
 

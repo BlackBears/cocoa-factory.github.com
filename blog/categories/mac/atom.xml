@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mac | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-20T07:36:03-05:00</updated>
+  <updated>2012-10-29T20:02:19-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,296 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to use custom NSAttributedString attributes]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/"/>
+    <updated>2012-10-29T19:36:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes</id>
+    <content type="html"><![CDATA[<h2>How to draw a custom attribute in <code>NSLayoutManager</code></h2>
+
+<p>The Cocoa Text System is incredibly flexible; but not nearly as well-documented as it should be given its power.  The classes and methods themselves are completely documented as is the "big picture" - but there's a lot of intermediate documentation that's missing.</p>
+
+<p>In this tutorial, we'll build an app that draws a custom attribute in an <code>NSTextView</code> like this:</p>
+
+<p><img src="http://i.imgur.com/mErdK.png" alt="CustomAttributeTestApp" /></p>
+
+<p><code>NSAttributedString</code> is great for drawing standard attributes such as font, font size, foreground and background colors; but it gets more complicated when you need to some something that requires actual drawing.  This tutorial will show you how to do simple drawing of a custom attribute.</p>
+
+<h3>Getting Started</h3>
+
+<p>Download the <a href="https://github.com/cocoa-factory/CCFCustomAttributeTutorial/zipball/master">example project</a> from Github.  You need Xcode 4.5 for this project; so if you don't have it - go update Xcode first.</p>
+
+<h3><code>NSAttributedString</code> for decorated text</h3>
+
+<p><code>NSAttributedString</code> and its mutable counterpart <code>NSMutableAttributedString</code> are used to draw decorated text.  Using these classes, you can create strings with attributes that describe how the string should look when drawn.  For example, you can add font and color attributes like this:</p>
+
+<p>``` objc
+NSString <em>sampleString = @"This is a sample string";
+NSAttributedString </em>attributedString;
+attributedString = [[NSAttributedString alloc] initWithString:sampleString</p>
+
+<pre><code>                                               attributes:@{NSFontSizeAttribute:@24}];
+</code></pre>
+
+<p>```</p>
+
+<p>This creates a string whose font size attribute is 24.0 pt.  And if we want to display the <code>attributedString</code> in an <code>NSTextView</code>:</p>
+
+<p><code>objc
+NSTextView *textView;
+[textView setAttributedString:attributedString];
+</code></p>
+
+<p>With the mutable variant <code>NSMutableAttributedString</code> you can add and remove attributes dynamically:</p>
+
+<p>``` objc
+NSMutableAttributedString *string;
+string = [[NSMutableAttributedString alloc] initWithString:@"The quick brown fox"</p>
+
+<pre><code>          attributes:@{NSBackgroundColorAttributeName : [NSColor yellowColor]}];
+</code></pre>
+
+<p>```</p>
+
+<p>which will render like this:</p>
+
+<p><img src="http://i.imgur.com/qMnbA.png" alt="background-color" /></p>
+
+<p>Of course, you can also combine attributes:</p>
+
+<p>``` objc
+NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];</p>
+
+<pre><code>[attributes setObject:[NSColor yellowColor] forKey:NSBackgroundColorAttributeName];
+
+NSFont *font = [[NSFontManager sharedFontManager] fontWithFamily:@"Arial" traits:0 weight:5 size:24];
+[attributes setObject:font forKey:NSFontAttributeName];
+NSMutableAttributedString *string;
+string = [[NSMutableAttributedString alloc] initWithString:@"The quick brown fox"
+                                                attributes:attributes];
+[[self textView] insertText:string];
+</code></pre>
+
+<p>```</p>
+
+<p><img src="http://i.imgur.com/J4EWm.png" alt="Combining attributes" /></p>
+
+<h3><code>NSMutableAttributedString</code> tracks changes to its string</h3>
+
+<p>If you want to change the underlying <code>NSMutableAttributedString</code> without disturbing its attributes, you can use its <code>mutableString</code> method to obtain an <code>NSMutableString</code> that you can manipulate behind its back, while the <code>NSMutableAttributedString</code> tracks the changes.  In fact the object you get back from <code>mutableString</code> is not actually an instance of <code>NSMutableString</code> but an instance of <code>NSMutableStringProxyForMutableAttributedString</code> instead.  This proxy object is responsible for the tracking behavior internally.</p>
+
+<h3>What about custom attributes, then?</h3>
+
+<p>Let's get started building the custom attribute.  The drawing is done in the context of a layout manager - a subclass of <code>NSLayoutManager</code> Since our intent is to use our custom attribute in the context of an <code>NSTextView</code> we should look at the architecture of that class first.  <code>NSTextView</code> has a single text container in which is lays out text.  The <code>NSTextContainer</code> is a rectangular region in which to layout text.  Each <code>NSTextView</code> has a default text container, but it is possible to replace the text container using the <code>replaceTextContainer</code> method.  The text container uses a layout manager to layout and draw the text.  There is readonly access to the text container's layout manager on <code>NSTextView</code>.  In order to give <code>NSTextView</code> a new layout manager, we have to set it on a new <code>NSTextContainer</code> object.</p>
+
+<p>So let's start with a custom text view that we'll call <code>CCFTextView</code>.  You can find the source code in the "view" folder.  This text view basically does on thing - replace its <code>NSLayoutManager</code></p>
+
+<p>``` objc
+static CCFTextView <em>commonInit(CCFTextView </em>self) {</p>
+
+<pre><code>//  set up our initial text size
+NSFont *font = [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:0 weight:5 size:24.0];
+NSDictionary *attributes = @{NSFontAttributeName : font};
+[self setTypingAttributes:attributes];
+
+//  replace our layout manager with custom layout manager
+CCFCustomLayoutManager *layoutManager = [[CCFCustomLayoutManager alloc] init];
+NSTextContainer *textContainer = [[NSTextContainer alloc] init];
+
+[self replaceTextContainer:textContainer];
+[textContainer replaceLayoutManager:layoutManager];
+return self;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The <code>commonInit</code> method is called with either <code>initWithCoder:</code> or <code>initWithFrame:</code> so that no matter how the <code>CCFTextView</code> gets initialized, we replace its text container's layout manager with our own subclass.  Let's look at the <code>NSLayoutManager</code> subclass - <code>CCFCustomLayoutManager</code> in the "helpers+managers" directory.  In the header file "CCFCustomLayouManager.h" we define a few constants.  <code>CCFSpecialHighlighterAttributeName</code> is the name of our custom attribute and <code>CCFHighlightColorKey</code> and <code>CCFLineColorKey</code> are keys to the dictionary value of our attribute.</p>
+
+<p>In the implementation of our layout manager, we override a single method <code>drawGlyphsForGlyphRange:atPoint:</code>.  Here we'll digress about glyphs vs. characters.</p>
+
+<h3>Glyphs versus characters</h3>
+
+<p>The <strong>character</strong> can is the smallest unit of a written language that has meaning.  In Roman and other alphabets, it maps to a particular sound in the spoken counterpart of the written language.  However in the case of other languages, like Chinese, it can represent an entire word.</p>
+
+<p>A <strong>glyph</strong> on the other hand is a graphically-concrete form of a character.</p>
+
+<p><img src="http://i.imgur.com/3z2M5.png" alt="Glyphs-vs-characters" /></p>
+
+<p>The distinction is important, because while we're manipulating characters in our code, the text system is working behind the scenes laying out glyphs, not characters.  In this case, we need to do both.  That's why out <code>NSLayoutManager</code> subclass overrides <code>drawGlyphsForGlyphRange:atPoint</code>.  So let's look a little more closely at what we do in this method, which we'll build up from pseudo-code</p>
+
+<p>``` objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>/*
+    iterate over our glyph ranges
+    map the glyph range back to the character range that it represents
+    check if our attribute is set on the character range
+    if attribute is set
+        get the rect of where we should draw the glyph
+        do our drawing
+*/
+</code></pre>
+
+<p>}
+```</p>
+
+<p>First, since we need to refer to the character sequence when we do the mapping, we need a source for that mapping.  Fortunately, <code>NSLayoutManager</code> keeps a reference to its <code>NSTextStorage</code> object.  This object is a subclass of <code>NSMutableAttributedString</code>.  We will get this reference and copy <code>glyphsToShow</code> to a local variable so that we can iterate over its span.</p>
+
+<p>``` objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    /*
+    map the glyph range back to the character range that it represents
+    check if our attribute is set on the character range
+    if attribute is set
+        get the rect of where we should draw the glyph
+        do our drawing
+    */
+}
+</code></pre>
+
+<p>}</p>
+
+<p>Now, we take care of the glyph-to-character mapping:</p>
+
+<p>``` objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    NSRange charRange = [self characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+    NSRange attributeCharRange, attributeGlyphRange;
+    id attribute = [textStorage attribute:CCFSpecialHighlightAttributeName
+                                  atIndex:charRange.location longestEffectiveRange:&amp;attributeCharRange
+                                  inRange:charRange];
+    attributeGlyphRange = [self glyphRangeForCharacterRange:attributeCharRange actualCharacterRange:NULL];
+    attributeGlyphRange = NSIntersectionRange(attributeGlyphRange, glyphRange);
+    /*
+    check if our attribute is set on the character range
+    if attribute is set
+        get the rect of where we should draw the glyph
+        do our drawing
+    */
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Then to check if the attribute is set on this <code>charRange</code>, we just test for non-nil:</p>
+
+<p>``` objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    NSRange charRange = [self characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+    NSRange attributeCharRange, attributeGlyphRange;
+    id attribute = [textStorage attribute:CCFSpecialHighlightAttributeName
+                                  atIndex:charRange.location longestEffectiveRange:&amp;attributeCharRange
+                                  inRange:charRange];
+    attributeGlyphRange = [self glyphRangeForCharacterRange:attributeCharRange actualCharacterRange:NULL];
+    attributeGlyphRange = NSIntersectionRange(attributeGlyphRange, glyphRange);
+
+    if( attribute != nil ) {
+        /*
+            get the rect of where we should draw the glyph
+            do our drawing
+        */
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Finally, the drawing is the easiest part.  We just need to bracket our drawing code with calls to save then restore the <code>NSGraphicsContext</code> before drawing.  To get the rectangle in which our glyph is drawn, we ask for the <code>boundingRectForGlyphRange:inTextContainer:</code>.  Lastly, we have our completed implementation:</p>
+
+<p>``` objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    NSRange charRange = [self characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+    NSRange attributeCharRange, attributeGlyphRange;
+    id attribute = [textStorage attribute:CCFSpecialHighlightAttributeName
+                                  atIndex:charRange.location longestEffectiveRange:&amp;attributeCharRange
+                                  inRange:charRange];
+    attributeGlyphRange = [self glyphRangeForCharacterRange:attributeCharRange actualCharacterRange:NULL];
+    attributeGlyphRange = NSIntersectionRange(attributeGlyphRange, glyphRange);
+    if( attribute != nil ) {
+        [NSGraphicsContext saveGraphicsState];
+
+        NSColor *bgColor = [attribute objectForKey:CCFHighlightColorKey];
+        NSColor *lineColor = [attribute objectForKey:CCFLineColorKey];
+
+        NSTextContainer *textContainer = self.textContainers[0];
+        NSRect boundingRect = [self boundingRectForGlyphRange:attributeGlyphRange inTextContainer:textContainer];
+
+        [bgColor setFill];
+        NSRectFill(boundingRect);
+
+        NSRect bottom = NSMakeRect(NSMinX(boundingRect), NSMaxY(boundingRect)-1.0, NSWidth(boundingRect), 1.0f);
+        [lineColor setFill];
+        NSRectFill(bottom);
+
+        NSRect topRect = NSMakeRect(NSMinX(boundingRect), NSMinY(boundingRect), NSWidth(boundingRect), 1.0);
+        NSRectFill(topRect);
+
+        [super drawGlyphsForGlyphRange:attributeGlyphRange atPoint:origin];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    else {
+        [super drawGlyphsForGlyphRange:glyphsToShow atPoint:origin];
+    }
+    glyphRange.length = NSMaxRange(glyphRange) - NSMaxRange(attributeGlyphRange);
+    glyphRange.location = NSMaxRange(attributeGlyphRange);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>Setting attributes</h3>
+
+<p>Let's turn our attention to <code>CCFMainWindowController</code> where our attributes are being managed.  When the user presses the highlight button, we want to tell the text view to apply our attribute to the selection - which is what we do in <code>setCustomAttribute:</code>:</p>
+
+<p>``` objc
+- (IBAction)setCustomAttribute:(id)sender {</p>
+
+<pre><code>//  add our custom attribute to the selected range
+NSRange selectedRange = [[self textView] selectedRange];
+NSTextStorage *textStorage = self.textView.textStorage;
+[textStorage addAttribute:CCFSpecialHighlightAttributeName value:[self attributeColors] range:selectedRange];
+</code></pre>
+
+<p>}</p>
+
+<h1>pragma mark - Private</h1>
+
+<p>//  return dictionary of highlight and line colors for our custom attribute's value
+- (NSDictionary *)attributeColors {</p>
+
+<pre><code>return @{  CCFHighlightColorKey : self.highlightColorWell.color, CCFLineColorKey : self.lineColorWell.color };
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>The rest of the code in <code>CCFMainWindowController</code> is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.</p>
+
+<p>Athough here's much more to the text system in Cocoa you should have a good starting point for custom attributes.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Target conditionals]]></title>

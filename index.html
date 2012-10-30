@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like this one - Preprocessor macro &hellip;">
+  <meta name="description" content="How to draw a custom attribute in NSLayoutManager The Cocoa Text System is incredibly flexible; but not nearly as well-documented as it should be &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,371 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to Use Custom NSAttributedString Attributes</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-29T19:36:00-05:00" pubdate data-updated="true">Oct 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>How to draw a custom attribute in <code>NSLayoutManager</code></h2>
+
+<p>The Cocoa Text System is incredibly flexible; but not nearly as well-documented as it should be given its power.  The classes and methods themselves are completely documented as is the &#8220;big picture&#8221; - but there&#8217;s a lot of intermediate documentation that&#8217;s missing.</p>
+
+<p>In this tutorial, we&#8217;ll build an app that draws a custom attribute in an <code>NSTextView</code> like this:</p>
+
+<p><img src="http://i.imgur.com/mErdK.png" alt="CustomAttributeTestApp" /></p>
+
+<p><code>NSAttributedString</code> is great for drawing standard attributes such as font, font size, foreground and background colors; but it gets more complicated when you need to some something that requires actual drawing.  This tutorial will show you how to do simple drawing of a custom attribute.</p>
+
+<h3>Getting Started</h3>
+
+<p>Download the <a href="https://github.com/cocoa-factory/CCFCustomAttributeTutorial/zipball/master">example project</a> from Github.  You need Xcode 4.5 for this project; so if you don&#8217;t have it - go update Xcode first.</p>
+
+<h3><code>NSAttributedString</code> for decorated text</h3>
+
+<p><code>NSAttributedString</code> and its mutable counterpart <code>NSMutableAttributedString</code> are used to draw decorated text.  Using these classes, you can create strings with attributes that describe how the string should look when drawn.  For example, you can add font and color attributes like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">sampleString</span> <span class="o">=</span> <span class="s">@&quot;This is a sample string&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSAttributedString</span> <span class="o">*</span><span class="n">attributedString</span><span class="p">;</span>
+</span><span class='line'><span class="n">attributedString</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString:</span><span class="n">sampleString</span>
+</span><span class='line'>                                                   <span class="nl">attributes:</span><span class="err">@</span><span class="p">{</span><span class="nl">NSFontSizeAttribute:</span><span class="err">@</span><span class="mi">24</span><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This creates a string whose font size attribute is 24.0 pt.  And if we want to display the <code>attributedString</code> in an <code>NSTextView</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSTextView</span> <span class="o">*</span><span class="n">textView</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">textView</span> <span class="nl">setAttributedString:</span><span class="n">attributedString</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With the mutable variant <code>NSMutableAttributedString</code> you can add and remove attributes dynamically:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableAttributedString</span> <span class="o">*</span><span class="n">string</span><span class="p">;</span>
+</span><span class='line'><span class="n">string</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString:</span><span class="s">@&quot;The quick brown fox&quot;</span>
+</span><span class='line'>              <span class="nl">attributes:</span><span class="err">@</span><span class="p">{</span><span class="n">NSBackgroundColorAttributeName</span> <span class="o">:</span> <span class="p">[</span><span class="n">NSColor</span> <span class="n">yellowColor</span><span class="p">]}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which will render like this:</p>
+
+<p><img src="http://i.imgur.com/qMnbA.png" alt="background-color" /></p>
+
+<p>Of course, you can also combine attributes:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableDictionary</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">attributes</span> <span class="nl">setObject:</span><span class="p">[</span><span class="n">NSColor</span> <span class="n">yellowColor</span><span class="p">]</span> <span class="nl">forKey:</span><span class="n">NSBackgroundColorAttributeName</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSFont</span> <span class="o">*</span><span class="n">font</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFontManager</span> <span class="n">sharedFontManager</span><span class="p">]</span> <span class="nl">fontWithFamily:</span><span class="s">@&quot;Arial&quot;</span> <span class="nl">traits:</span><span class="mi">0</span> <span class="nl">weight:</span><span class="mi">5</span> <span class="nl">size:</span><span class="mi">24</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">attributes</span> <span class="nl">setObject:</span><span class="n">font</span> <span class="nl">forKey:</span><span class="n">NSFontAttributeName</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSMutableAttributedString</span> <span class="o">*</span><span class="n">string</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">string</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString:</span><span class="s">@&quot;The quick brown fox&quot;</span>
+</span><span class='line'>                                                    <span class="nl">attributes:</span><span class="n">attributes</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">textView</span><span class="p">]</span> <span class="nl">insertText:</span><span class="n">string</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://i.imgur.com/J4EWm.png" alt="Combining attributes" /></p>
+
+<h3><code>NSMutableAttributedString</code> tracks changes to its string</h3>
+
+<p>If you want to change the underlying <code>NSMutableAttributedString</code> without disturbing its attributes, you can use its <code>mutableString</code> method to obtain an <code>NSMutableString</code> that you can manipulate behind its back, while the <code>NSMutableAttributedString</code> tracks the changes.  In fact the object you get back from <code>mutableString</code> is not actually an instance of <code>NSMutableString</code> but an instance of <code>NSMutableStringProxyForMutableAttributedString</code> instead.  This proxy object is responsible for the tracking behavior internally.</p>
+
+<h3>What about custom attributes, then?</h3>
+
+<p>Let&#8217;s get started building the custom attribute.  The drawing is done in the context of a layout manager - a subclass of <code>NSLayoutManager</code> Since our intent is to use our custom attribute in the context of an <code>NSTextView</code> we should look at the architecture of that class first.  <code>NSTextView</code> has a single text container in which is lays out text.  The <code>NSTextContainer</code> is a rectangular region in which to layout text.  Each <code>NSTextView</code> has a default text container, but it is possible to replace the text container using the <code>replaceTextContainer</code> method.  The text container uses a layout manager to layout and draw the text.  There is readonly access to the text container&#8217;s layout manager on <code>NSTextView</code>.  In order to give <code>NSTextView</code> a new layout manager, we have to set it on a new <code>NSTextContainer</code> object.</p>
+
+<p>So let&#8217;s start with a custom text view that we&#8217;ll call <code>CCFTextView</code>.  You can find the source code in the &#8220;view&#8221; folder.  This text view basically does on thing - replace its <code>NSLayoutManager</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">CCFTextView</span> <span class="o">*</span><span class="nf">commonInit</span><span class="p">(</span><span class="n">CCFTextView</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//  set up our initial text size</span>
+</span><span class='line'>    <span class="n">NSFont</span> <span class="o">*</span><span class="n">font</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFontManager</span> <span class="n">sharedFontManager</span><span class="p">]</span> <span class="nl">fontWithFamily:</span><span class="s">@&quot;Helvetica&quot;</span> <span class="nl">traits:</span><span class="mi">0</span> <span class="nl">weight:</span><span class="mi">5</span> <span class="nl">size:</span><span class="mf">24.0</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">attributes</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="n">NSFontAttributeName</span> <span class="o">:</span> <span class="n">font</span><span class="p">};</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setTypingAttributes:</span><span class="n">attributes</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//  replace our layout manager with custom layout manager</span>
+</span><span class='line'>    <span class="n">CCFCustomLayoutManager</span> <span class="o">*</span><span class="n">layoutManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFCustomLayoutManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSTextContainer</span> <span class="o">*</span><span class="n">textContainer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSTextContainer</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">replaceTextContainer:</span><span class="n">textContainer</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">textContainer</span> <span class="nl">replaceLayoutManager:</span><span class="n">layoutManager</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>commonInit</code> method is called with either <code>initWithCoder:</code> or <code>initWithFrame:</code> so that no matter how the <code>CCFTextView</code> gets initialized, we replace its text container&#8217;s layout manager with our own subclass.  Let&#8217;s look at the <code>NSLayoutManager</code> subclass - <code>CCFCustomLayoutManager</code> in the &#8220;helpers+managers&#8221; directory.  In the header file &#8220;CCFCustomLayouManager.h&#8221; we define a few constants.  <code>CCFSpecialHighlighterAttributeName</code> is the name of our custom attribute and <code>CCFHighlightColorKey</code> and <code>CCFLineColorKey</code> are keys to the dictionary value of our attribute.</p>
+
+<p>In the implementation of our layout manager, we override a single method <code>drawGlyphsForGlyphRange:atPoint:</code>.  Here we&#8217;ll digress about glyphs vs. characters.</p>
+
+<h3>Glyphs versus characters</h3>
+
+<p>The <strong>character</strong> can is the smallest unit of a written language that has meaning.  In Roman and other alphabets, it maps to a particular sound in the spoken counterpart of the written language.  However in the case of other languages, like Chinese, it can represent an entire word.</p>
+
+<p>A <strong>glyph</strong> on the other hand is a graphically-concrete form of a character.</p>
+
+<p><img src="http://i.imgur.com/3z2M5.png" alt="Glyphs-vs-characters" /></p>
+
+<p>The distinction is important, because while we&#8217;re manipulating characters in our code, the text system is working behind the scenes laying out glyphs, not characters.  In this case, we need to do both.  That&#8217;s why out <code>NSLayoutManager</code> subclass overrides <code>drawGlyphsForGlyphRange:atPoint</code>.  So let&#8217;s look a little more closely at what we do in this method, which we&#8217;ll build up from pseudo-code</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     iterate over our glyph ranges</span>
+</span><span class='line'><span class="cm">     map the glyph range back to the character range that it represents</span>
+</span><span class='line'><span class="cm">     check if our attribute is set on the character range</span>
+</span><span class='line'><span class="cm">     if attribute is set</span>
+</span><span class='line'><span class="cm">         get the rect of where we should draw the glyph</span>
+</span><span class='line'><span class="cm">         do our drawing</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First, since we need to refer to the character sequence when we do the mapping, we need a source for that mapping.  Fortunately, <code>NSLayoutManager</code> keeps a reference to its <code>NSTextStorage</code> object.  This object is a subclass of <code>NSMutableAttributedString</code>.  We will get this reference and copy <code>glyphsToShow</code> to a local variable so that we can iterate over its span.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">NSTextStorage</span> <span class="o">*</span><span class="n">textStorage</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textStorage</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSRange</span> <span class="n">glyphRange</span> <span class="o">=</span> <span class="n">glyphsToShow</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">glyphRange</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     map the glyph range back to the character range that it represents</span>
+</span><span class='line'><span class="cm">     check if our attribute is set on the character range</span>
+</span><span class='line'><span class="cm">     if attribute is set</span>
+</span><span class='line'><span class="cm">         get the rect of where we should draw the glyph</span>
+</span><span class='line'><span class="cm">         do our drawing</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Now</span><span class="p">,</span> <span class="n">we</span> <span class="n">take</span> <span class="n">care</span> <span class="n">of</span> <span class="n">the</span> <span class="n">glyph</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">character</span> <span class="nl">mapping:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    NSRange charRange = [self characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+    NSRange attributeCharRange, attributeGlyphRange;
+    id attribute = [textStorage attribute:CCFSpecialHighlightAttributeName
+                                  atIndex:charRange.location longestEffectiveRange:&amp;attributeCharRange
+                                  inRange:charRange];
+    attributeGlyphRange = [self glyphRangeForCharacterRange:attributeCharRange actualCharacterRange:NULL];
+    attributeGlyphRange = NSIntersectionRange(attributeGlyphRange, glyphRange);
+    /*
+    check if our attribute is set on the character range
+    if attribute is set
+        get the rect of where we should draw the glyph
+        do our drawing
+    */
+}
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">Then</span> <span class="n">to</span> <span class="n">check</span> <span class="k">if</span> <span class="n">the</span> <span class="n">attribute</span> <span class="n">is</span> <span class="n">set</span> <span class="n">on</span> <span class="n">this</span> <span class="err">`</span><span class="n">charRange</span><span class="err">`</span><span class="p">,</span> <span class="n">we</span> <span class="n">just</span> <span class="n">test</span> <span class="k">for</span> <span class="n">non</span><span class="o">-</span><span class="nb">nil</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    NSRange charRange = [self characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+    NSRange attributeCharRange, attributeGlyphRange;
+    id attribute = [textStorage attribute:CCFSpecialHighlightAttributeName
+                                  atIndex:charRange.location longestEffectiveRange:&amp;attributeCharRange
+                                  inRange:charRange];
+    attributeGlyphRange = [self glyphRangeForCharacterRange:attributeCharRange actualCharacterRange:NULL];
+    attributeGlyphRange = NSIntersectionRange(attributeGlyphRange, glyphRange);
+
+    if( attribute != nil ) {
+        /*
+            get the rect of where we should draw the glyph
+            do our drawing
+        */
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">Finally</span><span class="p">,</span> <span class="n">the</span> <span class="n">drawing</span> <span class="n">is</span> <span class="n">the</span> <span class="n">easiest</span> <span class="n">part</span><span class="p">.</span>  <span class="n">We</span> <span class="n">just</span> <span class="n">need</span> <span class="n">to</span> <span class="n">bracket</span> <span class="n">our</span> <span class="n">drawing</span> <span class="n">code</span> <span class="n">with</span> <span class="n">calls</span> <span class="n">to</span> <span class="n">save</span> <span class="n">then</span> <span class="n">restore</span> <span class="n">the</span> <span class="err">`</span><span class="n">NSGraphicsContext</span><span class="err">`</span> <span class="n">before</span> <span class="n">drawing</span><span class="p">.</span>  <span class="n">To</span> <span class="n">get</span> <span class="n">the</span> <span class="n">rectangle</span> <span class="k">in</span> <span class="n">which</span> <span class="n">our</span> <span class="n">glyph</span> <span class="n">is</span> <span class="n">drawn</span><span class="p">,</span> <span class="n">we</span> <span class="n">ask</span> <span class="k">for</span> <span class="n">the</span> <span class="err">`</span><span class="nl">boundingRectForGlyphRange:inTextContainer:</span><span class="err">`</span><span class="p">.</span>  <span class="n">Lastly</span><span class="p">,</span> <span class="n">we</span> <span class="n">have</span> <span class="n">our</span> <span class="n">completed</span> <span class="nl">implementation:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> objc
+- (void)drawGlyphsForGlyphRange:(NSRange)glyphsToShow atPoint:(NSPoint)origin {</p>
+
+<pre><code>NSTextStorage *textStorage = self.textStorage;
+NSRange glyphRange = glyphsToShow;
+while (glyphRange.length &gt; 0) {
+    NSRange charRange = [self characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+    NSRange attributeCharRange, attributeGlyphRange;
+    id attribute = [textStorage attribute:CCFSpecialHighlightAttributeName
+                                  atIndex:charRange.location longestEffectiveRange:&amp;attributeCharRange
+                                  inRange:charRange];
+    attributeGlyphRange = [self glyphRangeForCharacterRange:attributeCharRange actualCharacterRange:NULL];
+    attributeGlyphRange = NSIntersectionRange(attributeGlyphRange, glyphRange);
+    if( attribute != nil ) {
+        [NSGraphicsContext saveGraphicsState];
+
+        NSColor *bgColor = [attribute objectForKey:CCFHighlightColorKey];
+        NSColor *lineColor = [attribute objectForKey:CCFLineColorKey];
+
+        NSTextContainer *textContainer = self.textContainers[0];
+        NSRect boundingRect = [self boundingRectForGlyphRange:attributeGlyphRange inTextContainer:textContainer];
+
+        [bgColor setFill];
+        NSRectFill(boundingRect);
+
+        NSRect bottom = NSMakeRect(NSMinX(boundingRect), NSMaxY(boundingRect)-1.0, NSWidth(boundingRect), 1.0f);
+        [lineColor setFill];
+        NSRectFill(bottom);
+
+        NSRect topRect = NSMakeRect(NSMinX(boundingRect), NSMinY(boundingRect), NSWidth(boundingRect), 1.0);
+        NSRectFill(topRect);
+
+        [super drawGlyphsForGlyphRange:attributeGlyphRange atPoint:origin];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    else {
+        [super drawGlyphsForGlyphRange:glyphsToShow atPoint:origin];
+    }
+    glyphRange.length = NSMaxRange(glyphRange) - NSMaxRange(attributeGlyphRange);
+    glyphRange.location = NSMaxRange(attributeGlyphRange);
+}
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">### Setting attributes ###</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Let</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">turn</span> <span class="n">our</span> <span class="n">attention</span> <span class="n">to</span> <span class="err">`</span><span class="n">CCFMainWindowController</span><span class="err">`</span> <span class="n">where</span> <span class="n">our</span> <span class="n">attributes</span> <span class="n">are</span> <span class="n">being</span> <span class="n">managed</span><span class="p">.</span>  <span class="n">When</span> <span class="n">the</span> <span class="n">user</span> <span class="n">presses</span> <span class="n">the</span> <span class="n">highlight</span> <span class="n">button</span><span class="p">,</span> <span class="n">we</span> <span class="n">want</span> <span class="n">to</span> <span class="n">tell</span> <span class="n">the</span> <span class="n">text</span> <span class="n">view</span> <span class="n">to</span> <span class="n">apply</span> <span class="n">our</span> <span class="n">attribute</span> <span class="n">to</span> <span class="n">the</span> <span class="n">selection</span> <span class="o">-</span> <span class="n">which</span> <span class="n">is</span> <span class="n">what</span> <span class="n">we</span> <span class="k">do</span> <span class="k">in</span> <span class="err">`</span><span class="nl">setCustomAttribute:</span><span class="err">`</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> objc
+- (IBAction)setCustomAttribute:(id)sender {</p>
+
+<pre><code>//  add our custom attribute to the selected range
+NSRange selectedRange = [[self textView] selectedRange];
+NSTextStorage *textStorage = self.textView.textStorage;
+[textStorage addAttribute:CCFSpecialHighlightAttributeName value:[self attributeColors] range:selectedRange];
+</code></pre>
+
+<p>}</p>
+
+<h1>pragma mark - Private</h1>
+
+<p>//  return dictionary of highlight and line colors for our custom attribute&#8217;s value
+- (NSDictionary *)attributeColors {</p>
+
+<pre><code>return @{  CCFHighlightColorKey : self.highlightColorWell.color, CCFLineColorKey : self.lineColorWell.color };
+</code></pre>
+
+<p>}</p>
+
+<p>&#8220;`</p>
+
+<p>The rest of the code in <code>CCFMainWindowController</code> is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.</p>
+
+<p>Athough here&#8217;s much more to the text system in Cocoa you should have a good starting point for custom attributes.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -840,6 +1205,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/10/04/target-conditionals/">Target conditionals</a>
       </li>
     
@@ -853,10 +1222,6 @@
     
       <li class="post">
         <a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController thread safety</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a run loop anyway?  NSRunLoop 101</a>
       </li>
     
   </ul>

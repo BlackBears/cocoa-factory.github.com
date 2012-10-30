@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: cocoa, | Cocoa Factory]]></title>
-  <link href="http://cocoa-factory.github.com/blog/categories/cocoa-/atom.xml" rel="self"/>
+  <title><![CDATA[Category: text, | Cocoa Factory]]></title>
+  <link href="http://cocoa-factory.github.com/blog/categories/text-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
   <updated>2012-10-29T20:02:19-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
@@ -300,75 +300,6 @@ NSTextStorage *textStorage = self.textView.textStorage;
 <p>The rest of the code in <code>CCFMainWindowController</code> is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.</p>
 
 <p>Athough here's much more to the text system in Cocoa you should have a good starting point for custom attributes.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[What's a run loop anyway?  NSRunLoop 101]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway/"/>
-    <updated>2012-09-06T18:10:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/06/whats-a-run-loop-anyway</id>
-    <content type="html"><![CDATA[<p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I'd share what I learned about run loops.</p>
-
-<h2>Facts about run loops</h2>
-
-<h3>Run loops manage input source events</h3>
-
-<p>A run loop - <code>NSRunLoop</code> in Cocoa - is a class of objects that manages input sources, like user events (mouse, keyboard, etc.), <code>NSPort</code> events, and those that emanate from <code>NSConnection</code> objects.  You might think that the latter is the superclass of <code>NSURLConnection</code> objects; but you'd be wrong.  <code>NSURLConnection</code> is a subclass of <code>NSObject</code> - even though run loops manage events from <code>NSURLConnection</code> also.  So, you get the picture?  <code>NSRunLoop</code> manages events.</p>
-
-<h3>Every thread gets a run loop</h3>
-
-<p>If you create a thread, you get an <code>NSRunLoop</code> with it.</p>
-
-<h3>(Most) run loops don't run by themselves</h3>
-
-<p>You must explictly run any run loop other than the main thread run loop.</p>
-
-<h3>Run loops that have no input sources don't run.</h3>
-
-<p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>"If no input sources or timers are attached to the run loop, this method exits immediately..."</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
-
-<p>``` objc
-NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-[runLoop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];</p>
-
-<p>// now when we start the runLoop, we have an event source
-[runLoop run];
-```</p>
-
-<p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
-
-<p>``` objc
-BOOL shouldRun = YES;   // this is in a "global" context
-NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-while( shouldRun &amp;&amp; [runLoop runMode:NSDefaultRunLoopMode beforeData:[NSDate distantFuture]] );</p>
-
-<p>// set shouldRun to NO somewhere else to terminate the run loop
-```</p>
-
-<h3>Run loops have modes and you can create your own</h3>
-
-<p>Run loops have modes that specify groups of input sources that are monitored for the run loop running in that mode.  Usually you will just use the <code>NSDefaultRunLoopMode</code>; but the others are:</p>
-
-<p><code>NSConnectionReplyMode</code> used with <code>NSConnection</code> objects</p>
-
-<p><code>NSModalPanelRunLoopMode</code> used with events associated with modal panels in OS X</p>
-
-<p><code>NSEventTrackingRunLoopMode</code> used with UI tracking events</p>
-
-<p><code>NSRunLoopCommonModes</code> is a configurable group of common modes.  In Foundation is includes all of the modes except <code>NSConnectionReplyMode</code> by default.</p>
-
-<p>If you want to create your own mode, just use a different string:</p>
-
-<p><code>objc
-NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-[runLoop addPort:[NSPort port] forMode:@"com.cocoafactory.MySpecialMode"];
-</code>
-Apple recommends reverse DNS notation to avoid stepping on someone else's run loop.</p>
-
-<h3>You rarely need to work directly with run loops</h3>
-
-<p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
 ]]></content>
   </entry>
   

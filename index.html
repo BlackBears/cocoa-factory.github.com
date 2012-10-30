@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="How to draw a custom attribute in NSLayoutManager The Cocoa Text System is incredibly flexible; but not nearly as well-documented as it should be &hellip;">
+  <meta name="description" content="Style guide A consistent coding and project layout style is one of the keys to writing readable and maintainable software. As has been pointed out &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,226 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-30T05:00:00-05:00" pubdate data-updated="true">Oct 30<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Style guide</h2>
+
+<p>A consistent coding and project layout style is one of the keys to writing readable and maintainable software.  As has been pointed out before, even the solo developer works in a team along with his future self.  And your future self will thank you for writing readable code.</p>
+
+<p>Here&#8217;s our style guide.  Many of the choices are arbitrary. The placement of braces, for example, follows a common - but by no means universal - convention.  But, arbitrary or not here&#8217;s how we organize our code.</p>
+
+<h3>Project organization</h3>
+
+<p>There are two layers of project-level organization that we deal with - <strong>IDE-level organization</strong> and <strong>file-system level organization</strong>.  Although Xcode is capable of organizing the project to any degree of granularity you want, relying <em>solely</em> on Xcode to organize the project leads to a catastrophic mess in the filesysem  with all of the classes, header files, and resources living in a jumbled mess.</p>
+
+<p>Therefore, we begin a project with a basic degree of organization in the file system that is reflected in Xcode and provides a skeletal organization for the project as it develops.</p>
+
+<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'file system organization'" >  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.</p>
+
+<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'Xcode organization'" ></p>
+
+<h3>Naming conventions</h3>
+
+<p>We adhere nearly completely to the Apple conventions on naming <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingBasics.html#//apple_ref/doc/uid/20001281-BBCHBFAH">generally</a> and formethods](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingMethods.html#//apple_ref/doc/uid/20001282-BCIGIJJF), <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingFunctions.html#//apple_ref/doc/uid/20001283-BAJGGCAD">functions</a>, and <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE">properties</a></p>
+
+<p>Our company prefix is <code>CCF</code> for Cocoa Factory.  All public class names begin with the <code>CCF</code> prefix.  For non-public subclasses of class clusters, we use <code>_CCF</code> for the class prefix.</p>
+
+<h3>Typography</h3>
+
+<p>We use Menlo 11 pt typeface for coding in Xcode.  The syntax highlighting theme is <a href="https://github.com/mhallendal/spacedust-theme">Spacedust</a>.</p>
+
+<p><img class="left" src="http://i.imgur.com/D77Mf.png" title="'IDE syntax highlighting'" ></p>
+
+<p>All other typographical considerations follow Apple&#8217;s guidelines.  In other words, we use camel case without underscores or dashes to separate words.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">canProvideData</span>       <span class="c1">// CORRECT</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">can_provide_data</span>  <span class="c1">// INCORRECT</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">PNGIsValid</span>            <span class="c1">// CORRECT (well-known abbreviations can be capitalized)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Organization of the implementation file</h3>
+
+<h4>Indentation</h4>
+
+<p>Indentation is 4 spaces per level.</p>
+
+<h4>Top-down</h4>
+
+<p>We begin with a standard header block:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *   @file NAME_OF_FILE</span>
+</span><span class='line'><span class="cm"> *   @author WHO_WROTE_THE_FILE (www.cocoafactory.com)</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> *   @date DATE_AND_TIME in this format: 2012-10-29 05:56:53</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> *   @note Copyright 2012 Cocoa Factory, LLC.  All rights reserved</span>
+</span><span class='line'><span class="cm"> */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, any files that should be imported.  The files should be listed in the following order:</p>
+
+<ol>
+<li>The <strong>class header</strong> file</li>
+<li>Any <strong>framework</strong> headers that are required</li>
+<li><strong>Model</strong> headers</li>
+<li><strong>Controller</strong> headers</li>
+<li><strong>Helper/Manager</strong> headers</li>
+<li><strong>View</strong> headers</li>
+</ol>
+
+
+<p>After the <code>#import</code> statements, skip one line then declare any <code>#define</code> statements, followed by any static variable then static function declarations.  If the class declares a class extension, then it should appear next just before the <code>@implementation</code> block.</p>
+
+<h4>Pragma marks</h4>
+
+<p>We use <code>#pragma mark</code> to separate source code into sections.  The types of tags used will vary; but the following are standard:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark - Object lifecycle</span>
+</span><span class='line'><span class="cp">#pragma mark - View lifecylce        </span><span class="c1">//  for view controller classes</span>
+</span><span class='line'><span class="cp">#pragma mark - KVO                   </span><span class="c1">//  key-value observing</span>
+</span><span class='line'><span class="cp">#pragma mark - Interface actions </span><span class="c1">//  all IBActions go here</span>
+</span><span class='line'><span class="cp">#pragma mark - Public                </span><span class="c1">//  all public methods go here</span>
+</span><span class='line'><span class="cp">#pragma mark - Private               </span><span class="c1">//  all private methods go here</span>
+</span><span class='line'><span class="cp">#pragma mark - NSTableViewDelegate   </span><span class="c1">//  each protocol that the class adopts gets its own #pragma mark block</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Private methods</h4>
+
+<p>Do not use an underscore to indicate a private method.  We name private methods using the same conventions as public methods.  <em>(NOTE: We are in the process of changing older code to meet this guideline.  For years, we ignored Apple&#8217;s waning; but worries about collision finally compelled us to change.)</em></p>
+
+<h3>Braces</h3>
+
+<p>We follow the Kerninghan and Ritchie (K &amp; R) style of brace placement with the <code>else</code> statement getting its own line:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="n">flag</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//  do something</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// do something else</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Parenthesis</h3>
+
+<p>The opening parenthesis touches its operator and is followed by a space.  The closing parenthesis is preceded by a space:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//  CORRECT</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="n">flag</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// do something</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//   INCORRECT</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// do something</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Instance variables</h3>
+
+<p>Instance variables that are explicitly declared should have a preceding underscore character.</p>
+
+<p>All instance variables are declared in the implementation file <em><strong>unless</strong></em> they are used by a subclass.  In the latter case, all of the instance variables should be declared in the class interface file, thereby keeping all of the ivars together.</p>
+
+<h3>Protocols</h3>
+
+<p>Protocols are always declared in their own header file.</p>
+
+<h3>Method signatures</h3>
+
+<p>The method signature should be left-justified with one space after the scope (the + or -).  There should be a space after each segment of the method and a space between the object type and the pointer * for method arguments.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>     <span class="c1">// CORRECT</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>           <span class="c1">// INCORRECT - no space after the scope</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>     <span class="c1">// INCORRECT - space after the colon</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>           <span class="c1">// INCORRECT - no space between type and pointer *</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1271,6 +1491,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
       </li>
     
@@ -1284,10 +1508,6 @@
     
       <li class="post">
         <a href="/blog/2012/09/19/not-window-dressing/">Not window dressing</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController thread safety</a>
       </li>
     
   </ul>

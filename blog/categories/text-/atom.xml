@@ -4,7 +4,7 @@
   <title><![CDATA[Category: text, | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/text-/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-29T20:04:46-05:00</updated>
+  <updated>2012-10-29T20:08:00-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -117,7 +117,7 @@ return self;
 <p>}
 ```</p>
 
-<p>The <code>commonInit</code> method is called with either <code>initWithCoder:</code> or <code>initWithFrame:</code> so that no matter how the <code>CCFTextView</code> gets initialized, we replace its text container's layout manager with our own subclass.  Let's look at the <code>NSLayoutManager</code> subclass - <code>CCFCustomLayoutManager</code> in the "helpers+managers" directory.  In the header file "CCFCustomLayouManager.h" we define a few constants.  <code>CCFSpecialHighlighterAttributeName</code> is the name of our custom attribute and <code>CCFHighlightColorKey</code> and <code>CCFLineColorKey</code> are keys to the dictionary value of our attribute.</p>
+<p>The <code>commonInit</code> function is called from either <code>initWithCoder:</code> or <code>initWithFrame:</code> so that no matter how the <code>CCFTextView</code> gets initialized, we replace its text container's layout manager with our own subclass.  Let's look at the <code>NSLayoutManager</code> subclass - <code>CCFCustomLayoutManager</code> in the "helpers+managers" directory.  In the header file "CCFCustomLayouManager.h" we define a few constants.  <code>CCFSpecialHighlighterAttributeName</code> is the name of our custom attribute and <code>CCFHighlightColorKey</code> and <code>CCFLineColorKey</code> are keys to the dictionary value of our attribute.</p>
 
 <p>In the implementation of our layout manager, we override a single method <code>drawGlyphsForGlyphRange:atPoint:</code>.  Here we'll digress about glyphs vs. characters.</p>
 

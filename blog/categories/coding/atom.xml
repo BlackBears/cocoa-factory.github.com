@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-10-30T05:12:10-05:00</updated>
+  <updated>2012-10-30T05:13:00-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -36,7 +36,7 @@
 
 <h3>Naming conventions</h3>
 
-<p>We adhere nearly completely to the Apple conventions on naming <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingBasics.html#//apple_ref/doc/uid/20001281-BBCHBFAH">generally</a> and formethods](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingMethods.html#//apple_ref/doc/uid/20001282-BCIGIJJF), <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingFunctions.html#//apple_ref/doc/uid/20001283-BAJGGCAD">functions</a>, and <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE">properties</a></p>
+<p>We adhere nearly completely to the Apple conventions on naming <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingBasics.html#//apple_ref/doc/uid/20001281-BBCHBFAH">generally</a> and for <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingMethods.html#//apple_ref/doc/uid/20001282-BCIGIJJF">methods</a>, <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingFunctions.html#//apple_ref/doc/uid/20001283-BAJGGCAD">functions</a>, and <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE">properties</a></p>
 
 <p>Our company prefix is <code>CCF</code> for Cocoa Factory.  All public class names begin with the <code>CCF</code> prefix.  For non-public subclasses of class clusters, we use <code>_CCF</code> for the class prefix.</p>
 

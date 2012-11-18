@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: open source | Cocoa Factory]]></title>
+  <link href="http://cocoa-factory.github.com/blog/categories/open-source/atom.xml" rel="self"/>
+  <link href="http://cocoa-factory.github.com/"/>
+  <updated>2012-11-13T14:29:13-06:00</updated>
+  <id>http://cocoa-factory.github.com/</id>
+  <author>
+    <name><![CDATA[Alan Duncan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing CCFBrowserTextField]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield/"/>
+    <updated>2012-09-21T06:10:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/09/21/introducing-ccfbrowsertextfield</id>
+    <content type="html"><![CDATA[<p>We just released <code>CCFBrowserTextField</code> for public consumption.  Take a look at <a href="https://github.com/cocoa-factory/CCFBrowserTextField">our github repository</a> to get started using it.  Here's what this <code>NSTextField</code> subclass looks like:</p>
+
+<p><img class="right" src="http://i46.tinypic.com/2nlz5ah.jpg"></p>
+
+<p>That's it.  A text field with an embedded document-like icon.  The intent is to provide a way of browsing to a path that should be contained in the text field without an external button.  It was inspired both a desire for a more compact, connected UI and by seeing someone else who had done something similar.  In the amazing <a href="https://github.com/omnigroup/OmniGroup">Omni Frameworks</a> in OmniAppKit framework, you'll find a number of interesting widgets.  They created a text field with a calendar button that popups up a calendar picker.  We liked the idea and learned a lot about how text fields work, then adapted it to meet our needs.  By the way, Omni writes great software besides putting their frameworks out for public use.  I use at least one of their pieces of software every day.</p>
+
+<h3>Using <code>CCFBrowserTextField</code></h3>
+
+<p>If you want to use <code>CCFBrowserTextField</code> just go to the <a href="https://github.com/cocoa-factory/CCFBrowserTextField">github repository</a> and download it.  When you want to use it, just insert an <code>NSTextField</code> object into your interface and set its class type to <code>CCFBrowserTextField</code>.  For the button to be active, you just need to provide it with an action block:</p>
+
+<p>``` objc
+- (void)awakeFromNib {</p>
+
+<pre><code>[[self browserTextField] setActionBlock:^{
+    // do something here like launch NSOpenPanel etc.
+}];
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Here, <code>[self browserTextField]</code> is a property with an IBOutlet to your custom text field.</p>
+
+<h3>Creating a custom <code>NSTextField</code></h3>
+
+<p>This part is a bit like the "Making of ..." that comes with DVD's.  If you want to get under the hood and learn a little about developing for Mac OS, here's your chance.  (We've been developing so much for iOS that some of the older parts of Mac, like <code>NSCell</code> are a little foreign to us.)</p>
+
+<p>Let's start from the inside out.</p>
+
+<h4>Drawing into an image</h4>
+
+<p>Where possible we favor drawing into an <code>NSView</code> or in this case <code>NSImage</code> rather than loading images from the bundle.  This makes adapting to resolution changes like the Retina transition easier for us.  We use <a href="http://www.paintcodeapp.com/">PaintCode</a> to generate the drawing code from vector drawings on-screen.  It's a great piece of software.</p>
+
+<p>Let's take a look at the process of drawing into an image.  I'm going to focus on just that aspect rather than the Core Graphics details.  In the <code>CCFBrowserTextFieldButtonImage</code> implementation we have one public method <code>init</code>:</p>
+
+<p>``` objc
+- (id)init {</p>
+
+<pre><code>self = [super init];
+if( !self ) return nil;
+
+self.size = NSMakeSize(18, 18);
+
+_drawIcon(self);
+
+return self;
+</code></pre>
+
+<p>}
+<code>``
+The important thing to remember here is to set the size of the image before attempting to draw into it</code>self.size = ...<code>.  Then we call</code>_drawIcon:` on ourself.</p>
+
+<p>Drawing into the <code>NSImage</code> is a three step process.  First we lock focus on ourself.  This prepares the image for drawing.  More specifically, it sets the current graphics context to the area of the offscreen window that is used to cache the <code>NSImage</code> contents.  All of the drawing until we call <code>unlockFocus</code> is composited to the offscreen window.  In step 2, we draw the image.  I'm not going to go through each shape in this post - but you can get a feel for how the image is built up.  Finally, we unlock focus which resotores the focus to the previous owner.  That's it for drawing the image.  But the image has to go somewhere, right?  Next up, <code>CCFBrowserTextFieldButton</code></p>
+
+<h3>An embeddable button</h3>
+
+<p>Next up in our inside-out tour is <code>CCFBrowserTextFieldButton</code>.  Starting with the class interface, we see block type definition:</p>
+
+<p><code>objc
+typedef void(^CCFBrowserButtonBlock)(void);
+</code>
+This is the typedef for the block used as an action for the button.  More on this in a minute.  Next up the class method(s):</p>
+
+<p><code>objc
++ (NSSize)browserImageSize;
+</code>
+Class users will use this method to get information about the size of the image in the button.  Some of the upstream users will need to know how large our image is to provide for cursor changes and text formatting in the fields.</p>
+
+<p>Finally we have a couple methods to set the frame and/or the action handler.  On to the implementation, let's look at the <code>initWithFrame:</code> method:</p>
+
+<p>```objc
+- (id)initWithFrame:(NSRect)frame
+{</p>
+
+<pre><code>self = [super initWithFrame:frame];
+if( !self ) return nil;
+
+[self setButtonType:NSMomentaryPushInButton];
+[self setBordered:NO];
+[self setImage:browserImage];
+[self setImagePosition:NSImageOnly];
+[self setAutoresizingMask:NSViewMinXMargin | NSViewMinYMargin | NSViewMaxYMargin];
+
+return self;
+</code></pre>
+
+<p>}
+```
+Here we're just defining the basic properties of the button.  We want the button to be an ordinary momentary push in button, without borders, with our specified image, and positioning the image as an image only button.  So where does the image come from?  We declare some static variables in the implementation:</p>
+
+<p><code>objc
+static NSImage *browserImage;
+static NSSize browserImageSize;
+</code></p>
+
+<p>and we set them up in the <code>initialize</code> method:</p>
+
+<p>``` objc
++ (void)initialize {</p>
+
+<pre><code>browserImage = [[CCFBrowserTextFieldButtonImage alloc] init];
+browserImageSize = browserImage.size;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And by the way, we're using ARC throughout.  So should you.  We were reference counting  gurus before ARC; but ARC is too good to ignore.</p>
+
+<p>Finally, we have a pair of methods that set the <code>frame</code> and the <code>_actionBlock</code>  Because <code>NSButton</code> doesn't have a blocks-based action handler, we extended it by setting its <code>target</code> to <code>self</code> and the <code>action</code> to a method that just calls the action block.  On to the cell.</p>
+
+<h3>A digression on why controls have cells</h3>
+
+<p>Newcomers to Mac OS X are often perplexed by the existence of <code>NSCell</code>.  It's like <code>NSView</code>, but not really.  It's associated with <code>NSControl</code>, but why?</p>
+
+<p>Basiclaly <code>NSCell</code> is just a lightweight view.  Take the example of <code>NSTableView</code>, in the old days, its cells were always made up of <code>NSCell</code> because the size of its instance was less than a view; and using a lighter weight object made tremendous difference in memory savings.  So, most controls are backed by an <code>NSCell</code> that handles much of the lower-level work of the control.</p>
+
+<h3>So, our cell</h3>
+
+<p>To take care of some drawing bits, we subclass <code>NSTextFieldCell</code>.  Here's how it works:  By overriding <code>-titleRectForBounds:</code> we have the opportunity to modify the region in which our text can be drawn.  Ordinarily the cell takes the insert area of the field to draw the text minus a little inset.  In our case, we want to give plenty of room for the button.  So we do this:</p>
+
+<p>``` objc
+- (NSRect)titleRectForBounds:(NSRect)bounds;
+{</p>
+
+<pre><code>NSRect buttonRect = [[self class] rectForBrowserFrame:bounds];
+float horizontalEdgeGap = 0.0f;
+
+bounds.size.width -= NSWidth(buttonRect) + horizontalEdgeGap;
+return bounds;
+</code></pre>
+
+<p>}
+```
+We get the frame of the button in our bounds, then move the width accordingly.</p>
+
+<h3>And, last but not least, <code>CCFBrowserTextField</code></h3>
+
+<p>The outermost component is the field itself.  There are a few things we need to take care of here.  For example we have to add the button itself:</p>
+
+<p>```objc
+- (id)_initTextFieldCompletion {</p>
+
+<pre><code>if( !_browserButton ) {
+    NSSize browserImageSize = [CCFBrowserTextFieldButton browserImageSize];
+    NSRect buttonFrame = NSMakeRect(0.0f, 0.0f, browserImageSize.width, browserImageSize.height);
+    _browserButton = [[CCFBrowserTextFieldButton alloc] initWithFrame:buttonFrame];
+    buttonFrame = [CCFBrowserTextFieldCell rectForBrowserFrame:self.bounds];
+
+    [self _setCellClass];
+
+    [self addSubview:_browserButton];
+    self.autoresizesSubviews = YES;
+    [_browserButton setFrame:buttonFrame actionHandler:^{
+        NSLog(@"pushed");
+    }];
+}
+return self;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>We instantiate the <code>_browserButton</code> lazily here, first getting the size of its image, then setting its frame accordingly.  We set the class of the cell our field uses directly.  More on that in a moment.  Then we add the button and set a silly default handler.  If you want the button to do something meaningful, you'll have to set the field's action handler.</p>
+
+<p>Now we have to tell our custom field to use <strong>our</strong> cell and not the default cell for the superclass.  This is what we're doing here:</p>
+
+<p>``` objc
+- (void)_setCellClass {</p>
+
+<pre><code>Class customClass = [CCFBrowserTextFieldCell class];
+
+// since we are switching the isa pointer, we need to guarantee that the class layout in memory is the same
+NSAssert(class_getInstanceSize(customClass) == class_getInstanceSize(class_getSuperclass(customClass)), @"Incompatible class assignment");
+
+// switch classes if we are not already switched
+NSCell *cell = [self cell];
+if( ![cell isKindOfClass:[CCFBrowserTextFieldCell class]] ) {
+    object_setClass(cell, customClass);
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>This private method makes use of our access to the Objective-C runtime.  In the assertion, we make sure that the instance size of our custom cell is the same as <code>NSTextFieldCell</code>.  This is just a protection against us screwing something up badly when we switch classes.  Next we do the switch using <code>object_setClass()</code>.</p>
+
+<p>Enough of the swizzly stuff.  Let's look add some of the subtleties that we could have easily forgotten, like the cursor.  Over text fields, we are accustomed to seeing the I beam cursor.  But over a button, it looks silly.  So we override <code>resetCursorRect</code>.  The documentation succinctly says what it does:  "Overridden by subclasses to define their default cursor rectangles."  So, we just add the two rects with the correct cursors to the two parts of our field using <code>addCursorRect:cursor:</code>.</p>
+
+<p>That's about it for the internals of <code>CCFBrowserTextField</code>; hopefully you can put it to use in your projects.</p>
+]]></content>
+  </entry>
+  
+</feed>

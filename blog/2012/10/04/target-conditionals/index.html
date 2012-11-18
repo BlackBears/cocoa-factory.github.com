@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Target conditionals - Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
+
+  
+  <meta name="description" content="If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like this one - Preprocessor macro &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals/">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about">About</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Target Conditionals</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:04:00-05:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like <a href="http://stackoverflow.com/questions/12132933/preprocessor-macro-for-os-x-targets">this one - Preprocessor macro for OS X targets</a>; so here&#8217;s an attempt to sort it out:</p>
+
+<h2>How do you conditionally compile for Mac and iOS platforms?</h2>
+
+<p>This one is a little confusing because <code>TARGET_MAC_OS</code> doesn&#8217;t really do what you think.</p>
+
+<table>
+<thead>
+<tr>
+<th>  Conditional                  </th>
+<th> Mac OS </th>
+<th> iOS device </th>
+<th> iOS sim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>  <code>TARGET_OS_MAC</code>              </td>
+<td>   X    </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE</code>           </td>
+<td>        </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>        </td>
+<td>    X       </td>
+<td>         </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>        </td>
+<td>            </td>
+<td>    X    </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>(Credits to Greg Parker, <a href="http://www.sealiesoftware.com/blog/archive/2010/8/16/TargetConditionalsh.html"><em>Hamster Emporium Target Conditionals</em></a> for the table)</p>
+
+<p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if TARGET_OS_IPHONE</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %d&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'><span class="c1">// this compiles on Mac OS</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %ld&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How I support multiple iOS or Mac versions?</h2>
+
+<p>Usually this means that the developer wants to incorporate features in a new OS version while maintaing backwards compatibility.  The solution has a few steps:</p>
+
+<ul>
+<li>Set the base SDK on the target build setting to the newest vesion that you need.</li>
+<li>Set the deployment target to the oldest version that you support</li>
+</ul>
+
+
+<p>Having set the target build settings, we have to do some work in the code.  Let&#8217;s say we want to incorporate iOS 5 features in an app that should support earlier versions, say iOS 4.3.  Then we&#8217;ll set the base SDK to iOS 5+ and the deployment target to iOS 4.3.  In the code, we do something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'><span class="cp">// compile this when the target base SDK is iOS 5.0 or greater.  </span>
+</span><span class='line'><span class="cp">// We use this as a compile-time test to prevent errors if we </span>
+</span><span class='line'><span class="cp">// try to recompile the project with a lower base SDK setting</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So far, we will be able to compile for platforms between the OS ranges specified by our lower boundary of the deployment target and our upper boundary of the base SDK.  But what happens at runtime?  We&#8217;ll crash on any features above our deployment target; so we need a runtime check for class availability.  As of the iOS 4.2 SDK, you should use the <code>NSObject</code> <code>class</code> method to check for the availability of weakly linked classes at runtime.  This takes advantage of the <code>NS_CLASS_AVAILABLE</code> macro; so in our example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">CIImage</span> <span class="n">class</span><span class="p">]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// CIImage is available in iOS 5.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first check is a compile-time check to ensure that we can compile on lower SDK&#8217;s and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.  Of course, we can also test for method availability instead:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">someNewMethod</span><span class="p">)]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// we can use fancy new method on UIImage</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>What is <code>__IPHONE_OS_VERSION_MIN_REQUIRED?</code></h2>
+
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:04:00-05:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/mac/'>mac</a>, <a class='category' href='/blog/categories/os-/'>os,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals/" data-via="NSBum" data-counturl="http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/21/introducing-ccfbrowsertextfield/" title="Previous Post: Introducing CCFBrowserTextField">&laquo; Introducing CCFBrowserTextField</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/" title="Next Post: How to use custom NSAttributedString attributes">How to use custom NSAttributedString attributes &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+	<h1>Our open source components</h1>
+	<p>Not only do we make great software, we support the developer community by open-sourcing some of what we do.  We plan to more of this, so stay tuned.</p>
+	<ul>
+		<li><a href="https://github.com/cocoa-factory/CCFNumberPickerView">CCFNumberPickerView</a> A iOS component for choosing number from a continuous scale.</li>
+		<li><a href="https://github.com/cocoa-factory/CCFBrowserTextField">CCFBrowserTextField</a>A Mac OS component incorporating a miniature button in an NSTextField</li>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/target-conditionals/">Target conditionals</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/21/introducing-ccfbrowsertextfield/">Introducing CCFBrowserTextField</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/19/not-window-dressing/">Not window dressing</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("NSBum", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/NSBum" class="twitter-follow-button" data-show-count="false">Follow @NSBum</a>
+  
+</section>
+
+<section>
+    <h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/134245/nsbum">
+<img src="http://stackoverflow.com/users/flair/134245.png" width="208" height="58" alt="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+
+</section>
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

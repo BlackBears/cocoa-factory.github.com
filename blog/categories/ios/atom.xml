@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ios | Cocoa Factory]]></title>
+  <link href="http://cocoa-factory.github.com/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://cocoa-factory.github.com/"/>
+  <updated>2012-11-13T14:29:13-06:00</updated>
+  <id>http://cocoa-factory.github.com/</id>
+  <author>
+    <name><![CDATA[Alan Duncan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Target conditionals]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals/"/>
+    <updated>2012-10-04T14:04:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/10/04/target-conditionals</id>
+    <content type="html"><![CDATA[<p>If you hang out on Stack Overflow long enough, you're bound to see a few questions about target conditionals like <a href="http://stackoverflow.com/questions/12132933/preprocessor-macro-for-os-x-targets">this one - Preprocessor macro for OS X targets</a>; so here's an attempt to sort it out:</p>
+
+<h2>How do you conditionally compile for Mac and iOS platforms?</h2>
+
+<p>This one is a little confusing because <code>TARGET_MAC_OS</code> doesn't really do what you think.</p>
+
+<table>
+<thead>
+<tr>
+<th>  Conditional                  </th>
+<th> Mac OS </th>
+<th> iOS device </th>
+<th> iOS sim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>  <code>TARGET_OS_MAC</code>              </td>
+<td>   X    </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE</code>           </td>
+<td>        </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>        </td>
+<td>    X       </td>
+<td>         </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>        </td>
+<td>            </td>
+<td>    X    </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>(Credits to Greg Parker, <a href="http://www.sealiesoftware.com/blog/archive/2010/8/16/TargetConditionalsh.html"><em>Hamster Emporium Target Conditionals</em></a> for the table)</p>
+
+<p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
+
+<p>``` objc</p>
+
+<h1>if TARGET_OS_IPHONE</h1>
+
+<p>NSString *dataString = [NSString stringWithFormat:"data = %d",count];</p>
+
+<h1>else</h1>
+
+<p>// this compiles on Mac OS
+NSString *dataString = [NSString stringWithFormat:"data = %ld",count];</p>
+
+<h1>endif</h1>
+
+<p>```</p>
+
+<h2>How I support multiple iOS or Mac versions?</h2>
+
+<p>Usually this means that the developer wants to incorporate features in a new OS version while maintaing backwards compatibility.  The solution has a few steps:</p>
+
+<ul>
+<li>Set the base SDK on the target build setting to the newest vesion that you need.</li>
+<li>Set the deployment target to the oldest version that you support</li>
+</ul>
+
+
+<p>Having set the target build settings, we have to do some work in the code.  Let's say we want to incorporate iOS 5 features in an app that should support earlier versions, say iOS 4.3.  Then we'll set the base SDK to iOS 5+ and the deployment target to iOS 4.3.  In the code, we do something like this:</p>
+
+<p>``` objc</p>
+
+<h1>if __IPHONE_OS_VERSION_MAX_ALLOWED >= 50000</h1>
+
+<p>// compile this when the target base SDK is iOS 5.0 or greater.<br/>
+// We use this as a compile-time test to prevent errors if we
+// try to recompile the project with a lower base SDK setting</p>
+
+<h1>endif</h1>
+
+<p><code>``
+So far, we will be able to compile for platforms between the OS ranges specified by our lower boundary of the deployment target and our upper boundary of the base SDK.  But what happens at runtime?  We'll crash on any features above our deployment target; so we need a runtime check for class availability.  As of the iOS 4.2 SDK, you should use the</code>NSObject<code></code>class<code>method to check for the availability of weakly linked classes at runtime.  This takes advantage of the</code>NS_CLASS_AVAILABLE` macro; so in our example:</p>
+
+<p>``` objc</p>
+
+<h1>if __IPHONE_OS_VERSION_MAX_ALLOWED >= 50000</h1>
+
+<p>if( [CIImage class]  ) {</p>
+
+<pre><code>// CIImage is available in iOS 5.0
+</code></pre>
+
+<p>}</p>
+
+<h1>endif</h1>
+
+<p>```</p>
+
+<p>The first check is a compile-time check to ensure that we can compile on lower SDK's and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.  Of course, we can also test for method availability instead:</p>
+
+<p>``` objc</p>
+
+<h1>if __IPHONE_OS_VERSION_MAX_ALLOWED >= 50000</h1>
+
+<p>if( [UIImage respondsToSelector:@selector(someNewMethod)]  ) {</p>
+
+<pre><code>// we can use fancy new method on UIImage
+</code></pre>
+
+<p>}</p>
+
+<h1>endif</h1>
+
+<p>```</p>
+
+<h2>What is <code>__IPHONE_OS_VERSION_MIN_REQUIRED?</code></h2>
+
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Not window dressing]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing/"/>
+    <updated>2012-09-19T10:00:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/09/19/not-window-dressing</id>
+    <content type="html"><![CDATA[<p>After 3 years of full-time development on iOS and Mac (and many years of dabbling), I've had the chance to write and read a lot of code.  The exponential growth of these platforms has been amazing; but it has brought a number of challenges.  One of the challenges has been how to bring developers new to Objective-C and Cocoa to the community in a way that helps us all write better code.  Code that's readable and code that us mortals can maintain long after it was written.</p>
+
+<h2>Broken windows</h2>
+
+<p>The broken windows theory is a construct in the social sciences that deals with the establishment of norms around vandalism and other criminal behavior.  The idea is that communities that fail to care for their physical appearance are subject to more decline as the outward appearances signal an area of low value.</p>
+
+<p>James Wilson and George Kelling, in the article "Broken Windows" (The Atlantic Monthly, March 1982) described this example:</p>
+
+<blockquote><blockquote><p><em>"Consider a building with a few broken windows. If the windows are not repaired, the tendency is for vandals to break a few more windows. Eventually, they may even break into the building, and if it's unoccupied, perhaps become squatters or light fires inside. Or consider a sidewalk. Some litter accumulates. Soon, more litter accumulates. Eventually, people even start leaving bags of trash from take-out restaurants there or breaking into cars."</em></p></blockquote></blockquote>
+
+<p>Does code suffer from the same social phenomena?  Who knows - but what developers do is a craft.  And it is a craft that contributes to a body of work, whether formalized in a discrete project or whether implicitly in the way we post code on Stack Overflow.  Ultimately, code finds itself in a body of literature that sets the standards for the community.  As craftspeople, we have a responsibility to the community to set standards that encourage clear thinking.</p>
+
+<h2>Foolish thoughts</h2>
+
+<p>The famous British author George Orwell wrote an essay entitled "Politics and the English Language" in 1946.  In this brief work, he describes several problems with the use of his native language and how it obscures meaning.  But the most powerful hypothesis that he puts forward is that the sloppy use of language leads to flawed reasoning:</p>
+
+<blockquote><blockquote><p><em>"Now, it is clear that the decline of a language must ultimately have political and economic causes: it is not due simply to the bad influence of this or that individual writer. But an effect can become a cause, reinforcing the original cause and producing the same effect in an intensified form, and so on indefinitely. A man may take to drink because he feels himself to be a failure, and then fail all the more completely because he drinks. It is rather the same thing that is happening to the English language. It becomes ugly and inaccurate because our thoughts are foolish, but the slovenliness of our language makes it easier for us to have foolish thoughts."</em> (George Orwell, "Politics and the English Language", Horizon, April 1946)</p></blockquote></blockquote>
+
+<p>Code follows this same pattern.  The manner in which we write code both reflects the way we think about a problem <strong>and</strong> in turn, it causes us to to frame our thoughts about the problem in the context of the solution we've crafted.  Cause and effect exert a bidirectional influence on each other.  It's clear that poor use of our language, the formal language of Objective-C, may cause us to think about the problems we're solving in faulty ways.</p>
+
+<p>At Cocoa Factory, we love to code and we love to code well.  So, we're taking the next few weeks to describe our approach to readable, maintainable, functional, and beautiful code.</p>
+]]></content>
+  </entry>
+  
+</feed>

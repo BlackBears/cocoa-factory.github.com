@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: coding | Cocoa Factory]]></title>
+  <link href="http://cocoa-factory.github.com/blog/categories/coding/atom.xml" rel="self"/>
+  <link href="http://cocoa-factory.github.com/"/>
+  <updated>2012-11-13T14:29:13-06:00</updated>
+  <id>http://cocoa-factory.github.com/</id>
+  <author>
+    <name><![CDATA[Alan Duncan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Cocoa Factory Style Guide]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/10/30/style-guide/"/>
+    <updated>2012-10-30T05:00:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/10/30/style-guide</id>
+    <content type="html"><![CDATA[<h2>Style guide</h2>
+
+<p>A consistent coding and project layout style is one of the keys to writing readable and maintainable software.  As has been pointed out before, even the solo developer works in a team along with his future self.  And your future self will thank you for writing readable code.</p>
+
+<p>Here's our style guide.  Many of the choices are arbitrary. The placement of braces, for example, follows a common - but by no means universal - convention.  But, arbitrary or not here's how we organize our code.</p>
+
+<h3>Project organization</h3>
+
+<p>There are two layers of project-level organization that we deal with - <strong>IDE-level organization</strong> and <strong>file-system level organization</strong>.  Although Xcode is capable of organizing the project to any degree of granularity you want, relying <em>solely</em> on Xcode to organize the project leads to a catastrophic mess in the filesysem  with all of the classes, header files, and resources living in a jumbled mess.</p>
+
+<p>Therefore, we begin a project with a basic degree of organization in the file system that is reflected in Xcode and provides a skeletal organization for the project as it develops.</p>
+
+<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'file system organization'" >  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.  We adopted this practice after reading a post by Adrian Kosmacezewski entitled <a href="http://akosma.com/2009/07/28/code-organization-in-xcode-projects/">Code Organization in Xcode Projects</a>.  The approach he describes is for Xcode 3; but it works fine with modern versions of Xcode.  The work of setting up the initial organization needs to be done up-front before you write any code.  Otherwise, moving files into place in the file system becomes tedious.</p>
+
+<p><img class="left" src="http://i.imgur.com/EZMkz.png" title="'Xcode organization'" ></p>
+
+<h3>Naming conventions</h3>
+
+<p>We adhere nearly completely to the Apple conventions on naming <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingBasics.html#//apple_ref/doc/uid/20001281-BBCHBFAH">generally</a> and for <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingMethods.html#//apple_ref/doc/uid/20001282-BCIGIJJF">methods</a>, <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingFunctions.html#//apple_ref/doc/uid/20001283-BAJGGCAD">functions</a>, and <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE">properties</a></p>
+
+<p>Our company prefix is <code>CCF</code> for Cocoa Factory.  All public class names begin with the <code>CCF</code> prefix.  For non-public subclasses of class clusters, we use <code>_CCF</code> for the class prefix.</p>
+
+<h3>Typography</h3>
+
+<p>We use Menlo 11 pt typeface for coding in Xcode.  The syntax highlighting theme is <a href="https://github.com/mhallendal/spacedust-theme">Spacedust</a>.</p>
+
+<p>All other typographical considerations follow Apple's guidelines.  In other words, we use camel case without underscores or dashes to separate words.</p>
+
+<p>``` objc
+BOOL canProvideData     //  CORRECT
+BOOL can_provide_data   //  INCORRECT</p>
+
+<p>BOOL PNGIsValid         //  CORRECT (well-known abbreviations can be capitalized)
+```</p>
+
+<h3>Organization of the implementation file</h3>
+
+<h4>Indentation</h4>
+
+<p>Indentation is 4 spaces per level.</p>
+
+<h4>Top-down</h4>
+
+<p>We begin with a standard header block:</p>
+
+<p><code>objc
+/**
+ *   @file NAME_OF_FILE
+ *   @author WHO_WROTE_THE_FILE (www.cocoafactory.com)
+ *
+ *   @date DATE_AND_TIME in this format: 2012-10-29 05:56:53
+ *
+ *   @note Copyright 2012 Cocoa Factory, LLC.  All rights reserved
+ */
+</code></p>
+
+<p>Next, any files that should be imported.  The files should be listed in the following order:</p>
+
+<ol>
+<li>The <strong>class header</strong> file</li>
+<li>Any <strong>framework</strong> headers that are required</li>
+<li><strong>Model</strong> headers</li>
+<li><strong>Controller</strong> headers</li>
+<li><strong>Helper/Manager</strong> headers</li>
+<li><strong>View</strong> headers</li>
+</ol>
+
+
+<p>After the <code>#import</code> statements, skip one line then declare any <code>#define</code> statements, followed by any static variable then static function declarations.  If the class declares a class extension, then it should appear next just before the <code>@implementation</code> block.</p>
+
+<h4>Pragma marks</h4>
+
+<p>We use <code>#pragma mark</code> to separate source code into sections.  The types of tags used will vary; but the following are standard:</p>
+
+<p>``` objc</p>
+
+<h1>pragma mark - Object lifecycle</h1>
+
+<h1>pragma mark - View lifecycle       //  for view controller classes</h1>
+
+<h1>pragma mark - KVO                  //  key-value observing</h1>
+
+<h1>pragma mark - Interface actions    //  all IBActions go here</h1>
+
+<h1>pragma mark - Public               //  all public methods go here</h1>
+
+<h1>pragma mark - Private              //  all private methods go here</h1>
+
+<h1>pragma mark - NSTableViewDelegate  //  each protocol that the class adopts gets its own #pragma mark block</h1>
+
+<p>```</p>
+
+<h4>Private methods</h4>
+
+<p>Do not use an underscore to indicate a private method.  We name private methods using the same conventions as public methods.  <em>(NOTE: We are in the process of changing older code to meet this guideline.  For years, we ignored Apple's waning; but worries about collision finally compelled us to change.)</em></p>
+
+<h3>Braces</h3>
+
+<p>We follow the Kerninghan and Ritchie (K &amp; R) style of brace placement with the <code>else</code> statement getting its own line:</p>
+
+<p>``` objc
+- (void)foo {</p>
+
+<pre><code>if( flag ) {
+    //  do something
+}
+else {
+    // do something else
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h3>Parenthesis</h3>
+
+<p>The opening parenthesis touches its operator and is followed by a space.  The closing parenthesis is preceded by a space:</p>
+
+<p>``` objc
+//  CORRECT
+if( flag ) {</p>
+
+<pre><code>// do something
+</code></pre>
+
+<p>}</p>
+
+<p>//  INCORRECT
+if (flag) {</p>
+
+<pre><code>//  do something
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>Instance variables</h3>
+
+<p>Instance variables that are explicitly declared should have a preceding underscore character.</p>
+
+<p>All instance variables are declared in the implementation file <em><strong>unless</strong></em> they are used by a subclass.  In the latter case, all of the instance variables should be declared in the class interface file, thereby keeping all of the ivars together.</p>
+
+<h3>Protocols</h3>
+
+<p>Protocols are always declared in their own header file.</p>
+
+<h3>Method signatures</h3>
+
+<p>The method signature should be left-justified with one space after the scope (the + or -).  There should be a space after each segment of the method and a space between the object type and the pointer * for method arguments.</p>
+
+<p>``` objc
+- (void)setFoo:(NSString *)aFoo;    //  CORRECT</p>
+
+<p>-(void)setFoo:(NSString <em>)aFoo;     //  INCORRECT - no space after the scope
+- (void)setFoo: (NSString </em>)aFoo;   //  INCORRECT - space after the colon
+- (void)setFoo:(NSString*)aFoo;     //  INCORRECT - no space between type and pointer *
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

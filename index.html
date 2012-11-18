@@ -1,0 +1,1576 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
+
+  
+  <meta name="description" content="Style guide A consistent coding and project layout style is one of the keys to writing readable and maintainable software. As has been pointed out &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about">About</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-30T05:00:00-05:00" pubdate data-updated="true">Oct 30<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Style guide</h2>
+
+<p>A consistent coding and project layout style is one of the keys to writing readable and maintainable software.  As has been pointed out before, even the solo developer works in a team along with his future self.  And your future self will thank you for writing readable code.</p>
+
+<p>Here&#8217;s our style guide.  Many of the choices are arbitrary. The placement of braces, for example, follows a common - but by no means universal - convention.  But, arbitrary or not here&#8217;s how we organize our code.</p>
+
+<h3>Project organization</h3>
+
+<p>There are two layers of project-level organization that we deal with - <strong>IDE-level organization</strong> and <strong>file-system level organization</strong>.  Although Xcode is capable of organizing the project to any degree of granularity you want, relying <em>solely</em> on Xcode to organize the project leads to a catastrophic mess in the filesysem  with all of the classes, header files, and resources living in a jumbled mess.</p>
+
+<p>Therefore, we begin a project with a basic degree of organization in the file system that is reflected in Xcode and provides a skeletal organization for the project as it develops.</p>
+
+<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'file system organization'" >  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.  We adopted this practice after reading a post by Adrian Kosmacezewski entitled <a href="http://akosma.com/2009/07/28/code-organization-in-xcode-projects/">Code Organization in Xcode Projects</a>.  The approach he describes is for Xcode 3; but it works fine with modern versions of Xcode.  The work of setting up the initial organization needs to be done up-front before you write any code.  Otherwise, moving files into place in the file system becomes tedious.</p>
+
+<p><img class="left" src="http://i.imgur.com/EZMkz.png" title="'Xcode organization'" ></p>
+
+<h3>Naming conventions</h3>
+
+<p>We adhere nearly completely to the Apple conventions on naming <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingBasics.html#//apple_ref/doc/uid/20001281-BBCHBFAH">generally</a> and for <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingMethods.html#//apple_ref/doc/uid/20001282-BCIGIJJF">methods</a>, <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingFunctions.html#//apple_ref/doc/uid/20001283-BAJGGCAD">functions</a>, and <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE">properties</a></p>
+
+<p>Our company prefix is <code>CCF</code> for Cocoa Factory.  All public class names begin with the <code>CCF</code> prefix.  For non-public subclasses of class clusters, we use <code>_CCF</code> for the class prefix.</p>
+
+<h3>Typography</h3>
+
+<p>We use Menlo 11 pt typeface for coding in Xcode.  The syntax highlighting theme is <a href="https://github.com/mhallendal/spacedust-theme">Spacedust</a>.</p>
+
+<p>All other typographical considerations follow Apple&#8217;s guidelines.  In other words, we use camel case without underscores or dashes to separate words.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">canProvideData</span>     <span class="c1">//   CORRECT</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">can_provide_data</span>   <span class="c1">//    INCORRECT</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">PNGIsValid</span>         <span class="c1">//    CORRECT (well-known abbreviations can be capitalized)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Organization of the implementation file</h3>
+
+<h4>Indentation</h4>
+
+<p>Indentation is 4 spaces per level.</p>
+
+<h4>Top-down</h4>
+
+<p>We begin with a standard header block:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *   @file NAME_OF_FILE</span>
+</span><span class='line'><span class="cm"> *   @author WHO_WROTE_THE_FILE (www.cocoafactory.com)</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> *   @date DATE_AND_TIME in this format: 2012-10-29 05:56:53</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> *   @note Copyright 2012 Cocoa Factory, LLC.  All rights reserved</span>
+</span><span class='line'><span class="cm"> */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, any files that should be imported.  The files should be listed in the following order:</p>
+
+<ol>
+<li>The <strong>class header</strong> file</li>
+<li>Any <strong>framework</strong> headers that are required</li>
+<li><strong>Model</strong> headers</li>
+<li><strong>Controller</strong> headers</li>
+<li><strong>Helper/Manager</strong> headers</li>
+<li><strong>View</strong> headers</li>
+</ol>
+
+
+<p>After the <code>#import</code> statements, skip one line then declare any <code>#define</code> statements, followed by any static variable then static function declarations.  If the class declares a class extension, then it should appear next just before the <code>@implementation</code> block.</p>
+
+<h4>Pragma marks</h4>
+
+<p>We use <code>#pragma mark</code> to separate source code into sections.  The types of tags used will vary; but the following are standard:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark - Object lifecycle</span>
+</span><span class='line'><span class="cp">#pragma mark - View lifecycle       </span><span class="c1">//  for view controller classes</span>
+</span><span class='line'><span class="cp">#pragma mark - KVO                  </span><span class="c1">//  key-value observing</span>
+</span><span class='line'><span class="cp">#pragma mark - Interface actions    </span><span class="c1">//  all IBActions go here</span>
+</span><span class='line'><span class="cp">#pragma mark - Public               </span><span class="c1">//  all public methods go here</span>
+</span><span class='line'><span class="cp">#pragma mark - Private              </span><span class="c1">//  all private methods go here</span>
+</span><span class='line'><span class="cp">#pragma mark - NSTableViewDelegate  </span><span class="c1">//  each protocol that the class adopts gets its own #pragma mark block</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Private methods</h4>
+
+<p>Do not use an underscore to indicate a private method.  We name private methods using the same conventions as public methods.  <em>(NOTE: We are in the process of changing older code to meet this guideline.  For years, we ignored Apple&#8217;s waning; but worries about collision finally compelled us to change.)</em></p>
+
+<h3>Braces</h3>
+
+<p>We follow the Kerninghan and Ritchie (K &amp; R) style of brace placement with the <code>else</code> statement getting its own line:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="n">flag</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//  do something</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// do something else</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Parenthesis</h3>
+
+<p>The opening parenthesis touches its operator and is followed by a space.  The closing parenthesis is preceded by a space:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//  CORRECT</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="n">flag</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// do something</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//  INCORRECT</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//  do something</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Instance variables</h3>
+
+<p>Instance variables that are explicitly declared should have a preceding underscore character.</p>
+
+<p>All instance variables are declared in the implementation file <em><strong>unless</strong></em> they are used by a subclass.  In the latter case, all of the instance variables should be declared in the class interface file, thereby keeping all of the ivars together.</p>
+
+<h3>Protocols</h3>
+
+<p>Protocols are always declared in their own header file.</p>
+
+<h3>Method signatures</h3>
+
+<p>The method signature should be left-justified with one space after the scope (the + or -).  There should be a space after each segment of the method and a space between the object type and the pointer * for method arguments.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>    <span class="c1">//  CORRECT</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>     <span class="c1">//  INCORRECT - no space after the scope</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>   <span class="c1">//  INCORRECT - space after the colon</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFoo:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">aFoo</span><span class="p">;</span>     <span class="c1">//  INCORRECT - no space between type and pointer *</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to Use Custom NSAttributedString Attributes</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-29T19:36:00-05:00" pubdate data-updated="true">Oct 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>How to draw a custom attribute in <code>NSLayoutManager</code></h2>
+
+<p>The Cocoa Text System is incredibly flexible; but not nearly as well-documented as it should be given its power.  The classes and methods themselves are completely documented as is the &#8220;big picture&#8221; - but there&#8217;s a lot of intermediate documentation that&#8217;s missing.</p>
+
+<p>In this tutorial, we&#8217;ll build an app that draws a custom attribute in an <code>NSTextView</code> like this:</p>
+
+<p><img src="http://i.imgur.com/mErdK.png" alt="CustomAttributeTestApp" /></p>
+
+<p><code>NSAttributedString</code> is great for drawing standard attributes such as font, font size, foreground and background colors; but it gets more complicated when you need to some something that requires actual drawing.  This tutorial will show you how to do simple drawing of a custom attribute.</p>
+
+<h3>Getting Started</h3>
+
+<p>Download the <a href="https://github.com/cocoa-factory/CCFCustomAttributeTutorial/zipball/master">example project</a> from Github.  You need Xcode 4.5 for this project; so if you don&#8217;t have it - go update Xcode first.</p>
+
+<h3><code>NSAttributedString</code> for decorated text</h3>
+
+<p><code>NSAttributedString</code> and its mutable counterpart <code>NSMutableAttributedString</code> are used to draw decorated text.  Using these classes, you can create strings with attributes that describe how the string should look when drawn.  For example, you can add font and color attributes like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">sampleString</span> <span class="o">=</span> <span class="s">@&quot;This is a sample string&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSAttributedString</span> <span class="o">*</span><span class="n">attributedString</span><span class="p">;</span>
+</span><span class='line'><span class="n">attributedString</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString:</span><span class="n">sampleString</span>
+</span><span class='line'>                                                   <span class="nl">attributes:</span><span class="err">@</span><span class="p">{</span><span class="nl">NSFontSizeAttribute:</span><span class="err">@</span><span class="mi">24</span><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This creates a string whose font size attribute is 24.0 pt.  And if we want to display the <code>attributedString</code> in an <code>NSTextView</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSTextView</span> <span class="o">*</span><span class="n">textView</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">textView</span> <span class="nl">setAttributedString:</span><span class="n">attributedString</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With the mutable variant <code>NSMutableAttributedString</code> you can add and remove attributes dynamically:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableAttributedString</span> <span class="o">*</span><span class="n">string</span><span class="p">;</span>
+</span><span class='line'><span class="n">string</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString:</span><span class="s">@&quot;The quick brown fox&quot;</span>
+</span><span class='line'>              <span class="nl">attributes:</span><span class="err">@</span><span class="p">{</span><span class="n">NSBackgroundColorAttributeName</span> <span class="o">:</span> <span class="p">[</span><span class="n">NSColor</span> <span class="n">yellowColor</span><span class="p">]}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which will render like this:</p>
+
+<p><img src="http://i.imgur.com/qMnbA.png" alt="background-color" /></p>
+
+<p>Of course, you can also combine attributes:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableDictionary</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">attributes</span> <span class="nl">setObject:</span><span class="p">[</span><span class="n">NSColor</span> <span class="n">yellowColor</span><span class="p">]</span> <span class="nl">forKey:</span><span class="n">NSBackgroundColorAttributeName</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSFont</span> <span class="o">*</span><span class="n">font</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFontManager</span> <span class="n">sharedFontManager</span><span class="p">]</span> <span class="nl">fontWithFamily:</span><span class="s">@&quot;Arial&quot;</span> <span class="nl">traits:</span><span class="mi">0</span> <span class="nl">weight:</span><span class="mi">5</span> <span class="nl">size:</span><span class="mi">24</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">attributes</span> <span class="nl">setObject:</span><span class="n">font</span> <span class="nl">forKey:</span><span class="n">NSFontAttributeName</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSMutableAttributedString</span> <span class="o">*</span><span class="n">string</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">string</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString:</span><span class="s">@&quot;The quick brown fox&quot;</span>
+</span><span class='line'>                                                    <span class="nl">attributes:</span><span class="n">attributes</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">textView</span><span class="p">]</span> <span class="nl">insertText:</span><span class="n">string</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://i.imgur.com/J4EWm.png" alt="Combining attributes" /></p>
+
+<h3><code>NSMutableAttributedString</code> tracks changes to its string</h3>
+
+<p>If you want to change the underlying <code>NSMutableAttributedString</code> without disturbing its attributes, you can use its <code>mutableString</code> method to obtain an <code>NSMutableString</code> that you can manipulate behind its back, while the <code>NSMutableAttributedString</code> tracks the changes.  In fact the object you get back from <code>mutableString</code> is not actually an instance of <code>NSMutableString</code> but an instance of <code>NSMutableStringProxyForMutableAttributedString</code> instead.  This proxy object is responsible for the tracking behavior internally.</p>
+
+<h3>What about custom attributes, then?</h3>
+
+<p>Let&#8217;s get started building the custom attribute.  The drawing is done in the context of a layout manager - a subclass of <code>NSLayoutManager</code> Since our intent is to use our custom attribute in the context of an <code>NSTextView</code> we should look at the architecture of that class first.  <code>NSTextView</code> has a single text container in which is lays out text.  The <code>NSTextContainer</code> is a rectangular region in which to layout text.  Each <code>NSTextView</code> has a default text container, but it is possible to replace the text container using the <code>replaceTextContainer</code> method.  The text container uses a layout manager to layout and draw the text.  There is readonly access to the text container&#8217;s layout manager on <code>NSTextView</code>.  In order to give <code>NSTextView</code> a new layout manager, we have to set it on a new <code>NSTextContainer</code> object.</p>
+
+<p>So let&#8217;s start with a custom text view that we&#8217;ll call <code>CCFTextView</code>.  You can find the source code in the &#8220;view&#8221; folder.  This text view basically does on thing - replace its <code>NSLayoutManager</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">CCFTextView</span> <span class="o">*</span><span class="nf">commonInit</span><span class="p">(</span><span class="n">CCFTextView</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//  set up our initial text size</span>
+</span><span class='line'>    <span class="n">NSFont</span> <span class="o">*</span><span class="n">font</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFontManager</span> <span class="n">sharedFontManager</span><span class="p">]</span> <span class="nl">fontWithFamily:</span><span class="s">@&quot;Helvetica&quot;</span> <span class="nl">traits:</span><span class="mi">0</span> <span class="nl">weight:</span><span class="mi">5</span> <span class="nl">size:</span><span class="mf">24.0</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">attributes</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="n">NSFontAttributeName</span> <span class="o">:</span> <span class="n">font</span><span class="p">};</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setTypingAttributes:</span><span class="n">attributes</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//  replace our layout manager with custom layout manager</span>
+</span><span class='line'>    <span class="n">CCFCustomLayoutManager</span> <span class="o">*</span><span class="n">layoutManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFCustomLayoutManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSTextContainer</span> <span class="o">*</span><span class="n">textContainer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSTextContainer</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">replaceTextContainer:</span><span class="n">textContainer</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">textContainer</span> <span class="nl">replaceLayoutManager:</span><span class="n">layoutManager</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>commonInit</code> function is called from either <code>initWithCoder:</code> or <code>initWithFrame:</code> so that no matter how the <code>CCFTextView</code> gets initialized, we replace its text container&#8217;s layout manager with our own subclass.  Let&#8217;s look at the <code>NSLayoutManager</code> subclass - <code>CCFCustomLayoutManager</code> in the &#8220;helpers+managers&#8221; directory.  In the header file &#8220;CCFCustomLayouManager.h&#8221; we define a few constants.  <code>CCFSpecialHighlighterAttributeName</code> is the name of our custom attribute and <code>CCFHighlightColorKey</code> and <code>CCFLineColorKey</code> are keys to the dictionary value of our attribute.</p>
+
+<p>In the implementation of our layout manager, we override a single method <code>drawGlyphsForGlyphRange:atPoint:</code>.  Here we&#8217;ll digress about glyphs vs. characters.</p>
+
+<h3>Glyphs versus characters</h3>
+
+<p>The <strong>character</strong> can is the smallest unit of a written language that has meaning.  In Roman and other alphabets, it maps to a particular sound in the spoken counterpart of the written language.  However in the case of other languages, like Chinese, it can represent an entire word.</p>
+
+<p>A <strong>glyph</strong> on the other hand is a graphically-concrete form of a character.</p>
+
+<p><img src="http://i.imgur.com/3z2M5.png" alt="Glyphs-vs-characters" /></p>
+
+<p>The distinction is important, because while we&#8217;re manipulating characters in our code, the text system is working behind the scenes laying out glyphs, not characters.  In this case, we need to do both.  That&#8217;s why out <code>NSLayoutManager</code> subclass overrides <code>drawGlyphsForGlyphRange:atPoint</code>.  So let&#8217;s look a little more closely at what we do in this method, which we&#8217;ll build up from pseudo-code</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     iterate over our glyph ranges</span>
+</span><span class='line'><span class="cm">     map the glyph range back to the character range that it represents</span>
+</span><span class='line'><span class="cm">     check if our attribute is set on the character range</span>
+</span><span class='line'><span class="cm">     if attribute is set</span>
+</span><span class='line'><span class="cm">         get the rect of where we should draw the glyph</span>
+</span><span class='line'><span class="cm">         do our drawing</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First, since we need to refer to the character sequence when we do the mapping, we need a source for that mapping.  Fortunately, <code>NSLayoutManager</code> keeps a reference to its <code>NSTextStorage</code> object.  This object is a subclass of <code>NSMutableAttributedString</code>.  We will get this reference and copy <code>glyphsToShow</code> to a local variable so that we can iterate over its span.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">NSTextStorage</span> <span class="o">*</span><span class="n">textStorage</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textStorage</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSRange</span> <span class="n">glyphRange</span> <span class="o">=</span> <span class="n">glyphsToShow</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">glyphRange</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     map the glyph range back to the character range that it represents</span>
+</span><span class='line'><span class="cm">     check if our attribute is set on the character range</span>
+</span><span class='line'><span class="cm">     if attribute is set</span>
+</span><span class='line'><span class="cm">         get the rect of where we should draw the glyph</span>
+</span><span class='line'><span class="cm">         do our drawing</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, we take care of the glyph-to-character mapping:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">NSTextStorage</span> <span class="o">*</span><span class="n">textStorage</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textStorage</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSRange</span> <span class="n">glyphRange</span> <span class="o">=</span> <span class="n">glyphsToShow</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">glyphRange</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">NSRange</span> <span class="n">charRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">characterRangeForGlyphRange:</span><span class="n">glyphRange</span> <span class="nl">actualGlyphRange:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSRange</span> <span class="n">attributeCharRange</span><span class="p">,</span> <span class="n">attributeGlyphRange</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">id</span> <span class="n">attribute</span> <span class="o">=</span> <span class="p">[</span><span class="n">textStorage</span> <span class="nl">attribute:</span><span class="n">CCFSpecialHighlightAttributeName</span>
+</span><span class='line'>                                      <span class="nl">atIndex:</span><span class="n">charRange</span><span class="p">.</span><span class="n">location</span> <span class="nl">longestEffectiveRange:</span><span class="o">&amp;</span><span class="n">attributeCharRange</span>
+</span><span class='line'>                                      <span class="nl">inRange:</span><span class="n">charRange</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">attributeGlyphRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">glyphRangeForCharacterRange:</span><span class="n">attributeCharRange</span> <span class="nl">actualCharacterRange:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">attributeGlyphRange</span> <span class="o">=</span> <span class="n">NSIntersectionRange</span><span class="p">(</span><span class="n">attributeGlyphRange</span><span class="p">,</span> <span class="n">glyphRange</span><span class="p">);</span>
+</span><span class='line'>      <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     check if our attribute is set on the character range</span>
+</span><span class='line'><span class="cm">     if attribute is set</span>
+</span><span class='line'><span class="cm">         get the rect of where we should draw the glyph</span>
+</span><span class='line'><span class="cm">         do our drawing</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then to check if the attribute is set on this <code>charRange</code>, we just test for non-nil:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">NSTextStorage</span> <span class="o">*</span><span class="n">textStorage</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textStorage</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSRange</span> <span class="n">glyphRange</span> <span class="o">=</span> <span class="n">glyphsToShow</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">glyphRange</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">NSRange</span> <span class="n">charRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">characterRangeForGlyphRange:</span><span class="n">glyphRange</span> <span class="nl">actualGlyphRange:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSRange</span> <span class="n">attributeCharRange</span><span class="p">,</span> <span class="n">attributeGlyphRange</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">id</span> <span class="n">attribute</span> <span class="o">=</span> <span class="p">[</span><span class="n">textStorage</span> <span class="nl">attribute:</span><span class="n">CCFSpecialHighlightAttributeName</span>
+</span><span class='line'>                                      <span class="nl">atIndex:</span><span class="n">charRange</span><span class="p">.</span><span class="n">location</span> <span class="nl">longestEffectiveRange:</span><span class="o">&amp;</span><span class="n">attributeCharRange</span>
+</span><span class='line'>                                      <span class="nl">inRange:</span><span class="n">charRange</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">attributeGlyphRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">glyphRangeForCharacterRange:</span><span class="n">attributeCharRange</span> <span class="nl">actualCharacterRange:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">attributeGlyphRange</span> <span class="o">=</span> <span class="n">NSIntersectionRange</span><span class="p">(</span><span class="n">attributeGlyphRange</span><span class="p">,</span> <span class="n">glyphRange</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span> <span class="n">attribute</span> <span class="o">!=</span> <span class="nb">nil</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="cm">/*</span>
+</span><span class='line'><span class="cm">             get the rect of where we should draw the glyph</span>
+</span><span class='line'><span class="cm">             do our drawing</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, the drawing is the easiest part.  We just need to bracket our drawing code with calls to save then restore the <code>NSGraphicsContext</code> before drawing.  To get the rectangle in which our glyph is drawn, we ask for the <code>boundingRectForGlyphRange:inTextContainer:</code>.  Lastly, we have our completed implementation:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawGlyphsForGlyphRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">glyphsToShow</span> <span class="nf">atPoint:</span><span class="p">(</span><span class="n">NSPoint</span><span class="p">)</span><span class="nv">origin</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSTextStorage</span> <span class="o">*</span><span class="n">textStorage</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textStorage</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSRange</span> <span class="n">glyphRange</span> <span class="o">=</span> <span class="n">glyphsToShow</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">glyphRange</span><span class="p">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSRange</span> <span class="n">charRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">characterRangeForGlyphRange:</span><span class="n">glyphRange</span> <span class="nl">actualGlyphRange:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSRange</span> <span class="n">attributeCharRange</span><span class="p">,</span> <span class="n">attributeGlyphRange</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">id</span> <span class="n">attribute</span> <span class="o">=</span> <span class="p">[</span><span class="n">textStorage</span> <span class="nl">attribute:</span><span class="n">CCFSpecialHighlightAttributeName</span>
+</span><span class='line'>                                      <span class="nl">atIndex:</span><span class="n">charRange</span><span class="p">.</span><span class="n">location</span> <span class="nl">longestEffectiveRange:</span><span class="o">&amp;</span><span class="n">attributeCharRange</span>
+</span><span class='line'>                                      <span class="nl">inRange:</span><span class="n">charRange</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">attributeGlyphRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">glyphRangeForCharacterRange:</span><span class="n">attributeCharRange</span> <span class="nl">actualCharacterRange:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">attributeGlyphRange</span> <span class="o">=</span> <span class="n">NSIntersectionRange</span><span class="p">(</span><span class="n">attributeGlyphRange</span><span class="p">,</span> <span class="n">glyphRange</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span> <span class="n">attribute</span> <span class="o">!=</span> <span class="nb">nil</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">NSGraphicsContext</span> <span class="n">saveGraphicsState</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSColor</span> <span class="o">*</span><span class="n">bgColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">attribute</span> <span class="nl">objectForKey:</span><span class="n">CCFHighlightColorKey</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">NSColor</span> <span class="o">*</span><span class="n">lineColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">attribute</span> <span class="nl">objectForKey:</span><span class="n">CCFLineColorKey</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSTextContainer</span> <span class="o">*</span><span class="n">textContainer</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textContainers</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">NSRect</span> <span class="n">boundingRect</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">boundingRectForGlyphRange:</span><span class="n">attributeGlyphRange</span> <span class="nl">inTextContainer:</span><span class="n">textContainer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[</span><span class="n">bgColor</span> <span class="n">setFill</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">NSRectFill</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSRect</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">NSMakeRect</span><span class="p">(</span><span class="n">NSMinX</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">),</span> <span class="n">NSMaxY</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">NSWidth</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">),</span> <span class="mf">1.0f</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">lineColor</span> <span class="n">setFill</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">NSRectFill</span><span class="p">(</span><span class="n">bottom</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSRect</span> <span class="n">topRect</span> <span class="o">=</span> <span class="n">NSMakeRect</span><span class="p">(</span><span class="n">NSMinX</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">),</span> <span class="n">NSMinY</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">),</span> <span class="n">NSWidth</span><span class="p">(</span><span class="n">boundingRect</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">NSRectFill</span><span class="p">(</span><span class="n">topRect</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[</span><span class="n">super</span> <span class="nl">drawGlyphsForGlyphRange:</span><span class="n">attributeGlyphRange</span> <span class="nl">atPoint:</span><span class="n">origin</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">NSGraphicsContext</span> <span class="n">restoreGraphicsState</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">super</span> <span class="nl">drawGlyphsForGlyphRange:</span><span class="n">glyphsToShow</span> <span class="nl">atPoint:</span><span class="n">origin</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">glyphRange</span><span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">NSMaxRange</span><span class="p">(</span><span class="n">glyphRange</span><span class="p">)</span> <span class="o">-</span> <span class="n">NSMaxRange</span><span class="p">(</span><span class="n">attributeGlyphRange</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">glyphRange</span><span class="p">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">NSMaxRange</span><span class="p">(</span><span class="n">attributeGlyphRange</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Setting attributes</h3>
+
+<p>Let&#8217;s turn our attention to <code>CCFMainWindowController</code> where our attributes are being managed.  When the user presses the highlight button, we want to tell the text view to apply our attribute to the selection - which is what we do in <code>setCustomAttribute:</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">setCustomAttribute:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//  add our custom attribute to the selected range</span>
+</span><span class='line'>    <span class="n">NSRange</span> <span class="n">selectedRange</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">textView</span><span class="p">]</span> <span class="n">selectedRange</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSTextStorage</span> <span class="o">*</span><span class="n">textStorage</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">textStorage</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">textStorage</span> <span class="nl">addAttribute:</span><span class="n">CCFSpecialHighlightAttributeName</span> <span class="nl">value:</span><span class="p">[</span><span class="n">self</span> <span class="n">attributeColors</span><span class="p">]</span> <span class="nl">range:</span><span class="n">selectedRange</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Private</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//  return dictionary of highlight and line colors for our custom attribute&#39;s value</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">attributeColors</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span>  <span class="n">CCFHighlightColorKey</span> <span class="o">:</span> <span class="n">self</span><span class="p">.</span><span class="n">highlightColorWell</span><span class="p">.</span><span class="n">color</span><span class="p">,</span> <span class="n">CCFLineColorKey</span> <span class="o">:</span> <span class="n">self</span><span class="p">.</span><span class="n">lineColorWell</span><span class="p">.</span><span class="n">color</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The rest of the code in <code>CCFMainWindowController</code> is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.</p>
+
+<p>Athough here&#8217;s much more to the text system in Cocoa you should have a good starting point for custom attributes.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/04/target-conditionals/">Target Conditionals</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:04:00-05:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like <a href="http://stackoverflow.com/questions/12132933/preprocessor-macro-for-os-x-targets">this one - Preprocessor macro for OS X targets</a>; so here&#8217;s an attempt to sort it out:</p>
+
+<h2>How do you conditionally compile for Mac and iOS platforms?</h2>
+
+<p>This one is a little confusing because <code>TARGET_MAC_OS</code> doesn&#8217;t really do what you think.</p>
+
+<table>
+<thead>
+<tr>
+<th>  Conditional                  </th>
+<th> Mac OS </th>
+<th> iOS device </th>
+<th> iOS sim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>  <code>TARGET_OS_MAC</code>              </td>
+<td>   X    </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE</code>           </td>
+<td>        </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>        </td>
+<td>    X       </td>
+<td>         </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>        </td>
+<td>            </td>
+<td>    X    </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>(Credits to Greg Parker, <a href="http://www.sealiesoftware.com/blog/archive/2010/8/16/TargetConditionalsh.html"><em>Hamster Emporium Target Conditionals</em></a> for the table)</p>
+
+<p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if TARGET_OS_IPHONE</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %d&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'><span class="c1">// this compiles on Mac OS</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %ld&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How I support multiple iOS or Mac versions?</h2>
+
+<p>Usually this means that the developer wants to incorporate features in a new OS version while maintaing backwards compatibility.  The solution has a few steps:</p>
+
+<ul>
+<li>Set the base SDK on the target build setting to the newest vesion that you need.</li>
+<li>Set the deployment target to the oldest version that you support</li>
+</ul>
+
+
+<p>Having set the target build settings, we have to do some work in the code.  Let&#8217;s say we want to incorporate iOS 5 features in an app that should support earlier versions, say iOS 4.3.  Then we&#8217;ll set the base SDK to iOS 5+ and the deployment target to iOS 4.3.  In the code, we do something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'><span class="cp">// compile this when the target base SDK is iOS 5.0 or greater.  </span>
+</span><span class='line'><span class="cp">// We use this as a compile-time test to prevent errors if we </span>
+</span><span class='line'><span class="cp">// try to recompile the project with a lower base SDK setting</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So far, we will be able to compile for platforms between the OS ranges specified by our lower boundary of the deployment target and our upper boundary of the base SDK.  But what happens at runtime?  We&#8217;ll crash on any features above our deployment target; so we need a runtime check for class availability.  As of the iOS 4.2 SDK, you should use the <code>NSObject</code> <code>class</code> method to check for the availability of weakly linked classes at runtime.  This takes advantage of the <code>NS_CLASS_AVAILABLE</code> macro; so in our example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">CIImage</span> <span class="n">class</span><span class="p">]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// CIImage is available in iOS 5.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first check is a compile-time check to ensure that we can compile on lower SDK&#8217;s and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.  Of course, we can also test for method availability instead:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">someNewMethod</span><span class="p">)]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// we can use fancy new method on UIImage</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>What is <code>__IPHONE_OS_VERSION_MIN_REQUIRED?</code></h2>
+
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/21/introducing-ccfbrowsertextfield/">Introducing CCFBrowserTextField</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-21T06:10:00-05:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We just released <code>CCFBrowserTextField</code> for public consumption.  Take a look at <a href="https://github.com/cocoa-factory/CCFBrowserTextField">our github repository</a> to get started using it.  Here&#8217;s what this <code>NSTextField</code> subclass looks like:</p>
+
+<p><img class="right" src="http://i46.tinypic.com/2nlz5ah.jpg"></p>
+
+<p>That&#8217;s it.  A text field with an embedded document-like icon.  The intent is to provide a way of browsing to a path that should be contained in the text field without an external button.  It was inspired both a desire for a more compact, connected UI and by seeing someone else who had done something similar.  In the amazing <a href="https://github.com/omnigroup/OmniGroup">Omni Frameworks</a> in OmniAppKit framework, you&#8217;ll find a number of interesting widgets.  They created a text field with a calendar button that popups up a calendar picker.  We liked the idea and learned a lot about how text fields work, then adapted it to meet our needs.  By the way, Omni writes great software besides putting their frameworks out for public use.  I use at least one of their pieces of software every day.</p>
+
+<h3>Using <code>CCFBrowserTextField</code></h3>
+
+<p>If you want to use <code>CCFBrowserTextField</code> just go to the <a href="https://github.com/cocoa-factory/CCFBrowserTextField">github repository</a> and download it.  When you want to use it, just insert an <code>NSTextField</code> object into your interface and set its class type to <code>CCFBrowserTextField</code>.  For the button to be active, you just need to provide it with an action block:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">browserTextField</span><span class="p">]</span> <span class="nl">setActionBlock:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// do something here like launch NSOpenPanel etc.</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, <code>[self browserTextField]</code> is a property with an IBOutlet to your custom text field.</p>
+
+<h3>Creating a custom <code>NSTextField</code></h3>
+
+<p>This part is a bit like the &#8220;Making of &#8230;&#8221; that comes with DVD&#8217;s.  If you want to get under the hood and learn a little about developing for Mac OS, here&#8217;s your chance.  (We&#8217;ve been developing so much for iOS that some of the older parts of Mac, like <code>NSCell</code> are a little foreign to us.)</p>
+
+<p>Let&#8217;s start from the inside out.</p>
+
+<h4>Drawing into an image</h4>
+
+<p>Where possible we favor drawing into an <code>NSView</code> or in this case <code>NSImage</code> rather than loading images from the bundle.  This makes adapting to resolution changes like the Retina transition easier for us.  We use <a href="http://www.paintcodeapp.com/">PaintCode</a> to generate the drawing code from vector drawings on-screen.  It&#8217;s a great piece of software.</p>
+
+<p>Let&#8217;s take a look at the process of drawing into an image.  I&#8217;m going to focus on just that aspect rather than the Core Graphics details.  In the <code>CCFBrowserTextFieldButtonImage</code> implementation we have one public method <code>init</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">self</span> <span class="p">)</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">NSMakeSize</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_drawIcon</span><span class="p">(</span><span class="n">self</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The important thing to remember here is to set the size of the image before attempting to draw into it <code>self.size = ...</code>.  Then we call <code>_drawIcon:</code> on ourself.</p>
+
+<p>Drawing into the <code>NSImage</code> is a three step process.  First we lock focus on ourself.  This prepares the image for drawing.  More specifically, it sets the current graphics context to the area of the offscreen window that is used to cache the <code>NSImage</code> contents.  All of the drawing until we call <code>unlockFocus</code> is composited to the offscreen window.  In step 2, we draw the image.  I&#8217;m not going to go through each shape in this post - but you can get a feel for how the image is built up.  Finally, we unlock focus which resotores the focus to the previous owner.  That&#8217;s it for drawing the image.  But the image has to go somewhere, right?  Next up, <code>CCFBrowserTextFieldButton</code></p>
+
+<h3>An embeddable button</h3>
+
+<p>Next up in our inside-out tour is <code>CCFBrowserTextFieldButton</code>.  Starting with the class interface, we see block type definition:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">CCFBrowserButtonBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the typedef for the block used as an action for the button.  More on this in a minute.  Next up the class method(s):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSSize</span><span class="p">)</span><span class="nf">browserImageSize</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Class users will use this method to get information about the size of the image in the button.  Some of the upstream users will need to know how large our image is to provide for cursor changes and text formatting in the fields.</p>
+
+<p>Finally we have a couple methods to set the frame and/or the action handler.  On to the implementation, let&#8217;s look at the <code>initWithFrame:</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">NSRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithFrame:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">self</span> <span class="p">)</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setButtonType:</span><span class="n">NSMomentaryPushInButton</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setBordered:</span><span class="n">NO</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setImage:</span><span class="n">browserImage</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setImagePosition:</span><span class="n">NSImageOnly</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setAutoresizingMask:</span><span class="n">NSViewMinXMargin</span> <span class="o">|</span> <span class="n">NSViewMinYMargin</span> <span class="o">|</span> <span class="n">NSViewMaxYMargin</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we&#8217;re just defining the basic properties of the button.  We want the button to be an ordinary momentary push in button, without borders, with our specified image, and positioning the image as an image only button.  So where does the image come from?  We declare some static variables in the implementation:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">NSImage</span> <span class="o">*</span><span class="n">browserImage</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="n">NSSize</span> <span class="n">browserImageSize</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and we set them up in the <code>initialize</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initialize</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">browserImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFBrowserTextFieldButtonImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">browserImageSize</span> <span class="o">=</span> <span class="n">browserImage</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And by the way, we&#8217;re using ARC throughout.  So should you.  We were reference counting  gurus before ARC; but ARC is too good to ignore.</p>
+
+<p>Finally, we have a pair of methods that set the <code>frame</code> and the <code>_actionBlock</code>  Because <code>NSButton</code> doesn&#8217;t have a blocks-based action handler, we extended it by setting its <code>target</code> to <code>self</code> and the <code>action</code> to a method that just calls the action block.  On to the cell.</p>
+
+<h3>A digression on why controls have cells</h3>
+
+<p>Newcomers to Mac OS X are often perplexed by the existence of <code>NSCell</code>.  It&#8217;s like <code>NSView</code>, but not really.  It&#8217;s associated with <code>NSControl</code>, but why?</p>
+
+<p>Basiclaly <code>NSCell</code> is just a lightweight view.  Take the example of <code>NSTableView</code>, in the old days, its cells were always made up of <code>NSCell</code> because the size of its instance was less than a view; and using a lighter weight object made tremendous difference in memory savings.  So, most controls are backed by an <code>NSCell</code> that handles much of the lower-level work of the control.</p>
+
+<h3>So, our cell</h3>
+
+<p>To take care of some drawing bits, we subclass <code>NSTextFieldCell</code>.  Here&#8217;s how it works:  By overriding <code>-titleRectForBounds:</code> we have the opportunity to modify the region in which our text can be drawn.  Ordinarily the cell takes the insert area of the field to draw the text minus a little inset.  In our case, we want to give plenty of room for the button.  So we do this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSRect</span><span class="p">)</span><span class="nf">titleRectForBounds:</span><span class="p">(</span><span class="n">NSRect</span><span class="p">)</span><span class="nv">bounds</span><span class="p">;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSRect</span> <span class="n">buttonRect</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">class</span><span class="p">]</span> <span class="nl">rectForBrowserFrame:</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">horizontalEdgeGap</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-=</span> <span class="n">NSWidth</span><span class="p">(</span><span class="n">buttonRect</span><span class="p">)</span> <span class="o">+</span> <span class="n">horizontalEdgeGap</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We get the frame of the button in our bounds, then move the width accordingly.</p>
+
+<h3>And, last but not least, <code>CCFBrowserTextField</code></h3>
+
+<p>The outermost component is the field itself.  There are a few things we need to take care of here.  For example we have to add the button itself:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">_initTextFieldCompletion</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">_browserButton</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSSize</span> <span class="n">browserImageSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">CCFBrowserTextFieldButton</span> <span class="n">browserImageSize</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSRect</span> <span class="n">buttonFrame</span> <span class="o">=</span> <span class="n">NSMakeRect</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="n">browserImageSize</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">browserImageSize</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_browserButton</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFBrowserTextFieldButton</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">buttonFrame</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">buttonFrame</span> <span class="o">=</span> <span class="p">[</span><span class="n">CCFBrowserTextFieldCell</span> <span class="nl">rectForBrowserFrame:</span><span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">_setCellClass</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">addSubview:</span><span class="n">_browserButton</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">autoresizesSubviews</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">_browserButton</span> <span class="nl">setFrame:</span><span class="n">buttonFrame</span> <span class="nl">actionHandler:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;pushed&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We instantiate the <code>_browserButton</code> lazily here, first getting the size of its image, then setting its frame accordingly.  We set the class of the cell our field uses directly.  More on that in a moment.  Then we add the button and set a silly default handler.  If you want the button to do something meaningful, you&#8217;ll have to set the field&#8217;s action handler.</p>
+
+<p>Now we have to tell our custom field to use <strong>our</strong> cell and not the default cell for the superclass.  This is what we&#8217;re doing here:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">_setCellClass</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">customClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">CCFBrowserTextFieldCell</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// since we are switching the isa pointer, we need to guarantee that the class layout in memory is the same</span>
+</span><span class='line'>    <span class="n">NSAssert</span><span class="p">(</span><span class="n">class_getInstanceSize</span><span class="p">(</span><span class="n">customClass</span><span class="p">)</span> <span class="o">==</span> <span class="n">class_getInstanceSize</span><span class="p">(</span><span class="n">class_getSuperclass</span><span class="p">(</span><span class="n">customClass</span><span class="p">)),</span> <span class="s">@&quot;Incompatible class assignment&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// switch classes if we are not already switched</span>
+</span><span class='line'>    <span class="n">NSCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">cell</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="p">[</span><span class="n">cell</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">CCFBrowserTextFieldCell</span> <span class="n">class</span><span class="p">]]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">object_setClass</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">customClass</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This private method makes use of our access to the Objective-C runtime.  In the assertion, we make sure that the instance size of our custom cell is the same as <code>NSTextFieldCell</code>.  This is just a protection against us screwing something up badly when we switch classes.  Next we do the switch using <code>object_setClass()</code>.</p>
+
+<p>Enough of the swizzly stuff.  Let&#8217;s look add some of the subtleties that we could have easily forgotten, like the cursor.  Over text fields, we are accustomed to seeing the I beam cursor.  But over a button, it looks silly.  So we override <code>resetCursorRect</code>.  The documentation succinctly says what it does:  &#8220;Overridden by subclasses to define their default cursor rectangles.&#8221;  So, we just add the two rects with the correct cursors to the two parts of our field using <code>addCursorRect:cursor:</code>.</p>
+
+<p>That&#8217;s about it for the internals of <code>CCFBrowserTextField</code>; hopefully you can put it to use in your projects.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/19/not-window-dressing/">Not Window Dressing</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-19T10:00:00-05:00" pubdate data-updated="true">Sep 19<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>After 3 years of full-time development on iOS and Mac (and many years of dabbling), I&#8217;ve had the chance to write and read a lot of code.  The exponential growth of these platforms has been amazing; but it has brought a number of challenges.  One of the challenges has been how to bring developers new to Objective-C and Cocoa to the community in a way that helps us all write better code.  Code that&#8217;s readable and code that us mortals can maintain long after it was written.</p>
+
+<h2>Broken windows</h2>
+
+<p>The broken windows theory is a construct in the social sciences that deals with the establishment of norms around vandalism and other criminal behavior.  The idea is that communities that fail to care for their physical appearance are subject to more decline as the outward appearances signal an area of low value.</p>
+
+<p>James Wilson and George Kelling, in the article &#8220;Broken Windows&#8221; (The Atlantic Monthly, March 1982) described this example:</p>
+
+<blockquote><blockquote><p><em>&#8220;Consider a building with a few broken windows. If the windows are not repaired, the tendency is for vandals to break a few more windows. Eventually, they may even break into the building, and if it&#8217;s unoccupied, perhaps become squatters or light fires inside. Or consider a sidewalk. Some litter accumulates. Soon, more litter accumulates. Eventually, people even start leaving bags of trash from take-out restaurants there or breaking into cars.&#8221;</em></p></blockquote></blockquote>
+
+<p>Does code suffer from the same social phenomena?  Who knows - but what developers do is a craft.  And it is a craft that contributes to a body of work, whether formalized in a discrete project or whether implicitly in the way we post code on Stack Overflow.  Ultimately, code finds itself in a body of literature that sets the standards for the community.  As craftspeople, we have a responsibility to the community to set standards that encourage clear thinking.</p>
+
+<h2>Foolish thoughts</h2>
+
+<p>The famous British author George Orwell wrote an essay entitled &#8220;Politics and the English Language&#8221; in 1946.  In this brief work, he describes several problems with the use of his native language and how it obscures meaning.  But the most powerful hypothesis that he puts forward is that the sloppy use of language leads to flawed reasoning:</p>
+
+<blockquote><blockquote><p><em>&#8220;Now, it is clear that the decline of a language must ultimately have political and economic causes: it is not due simply to the bad influence of this or that individual writer. But an effect can become a cause, reinforcing the original cause and producing the same effect in an intensified form, and so on indefinitely. A man may take to drink because he feels himself to be a failure, and then fail all the more completely because he drinks. It is rather the same thing that is happening to the English language. It becomes ugly and inaccurate because our thoughts are foolish, but the slovenliness of our language makes it easier for us to have foolish thoughts.&#8221;</em> (George Orwell, &#8220;Politics and the English Language&#8221;, Horizon, April 1946)</p></blockquote></blockquote>
+
+<p>Code follows this same pattern.  The manner in which we write code both reflects the way we think about a problem <strong>and</strong> in turn, it causes us to to frame our thoughts about the problem in the context of the solution we&#8217;ve crafted.  Cause and effect exert a bidirectional influence on each other.  It&#8217;s clear that poor use of our language, the formal language of Objective-C, may cause us to think about the problems we&#8217;re solving in faulty ways.</p>
+
+<p>At Cocoa Factory, we love to code and we love to code well.  So, we&#8217;re taking the next few weeks to describe our approach to readable, maintainable, functional, and beautiful code.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController Thread Safety</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-12T03:18:00-05:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><code>NSArrayController</code> is a work-horse of Cocoa bindings.  We recently ran into a problem with thread-safety which is not mentioned <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSArrayController_Class/Reference/Reference.html">in the documentation</a>.</p>
+
+<p>Consider this piece of code that downloads some resources and populates an <code>NSArrayController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadUsers</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CCFUserListDownloader</span> <span class="o">*</span><span class="n">downloader</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFUserListDownloader</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSessionID:</span><span class="n">self</span><span class="p">.</span><span class="n">sessionID</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">downloader</span> <span class="nl">downloadWithCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">CCFAPIStatus</span> <span class="n">status</span><span class="p">,</span><span class="n">NSArray</span> <span class="o">*</span><span class="n">remoteObjects</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">remoteObjects</span> <span class="nl">enumerateObjectsUsingBlock:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">CCFRemoteUser</span> <span class="o">*</span><span class="n">user</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFRemoteUser</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithDictionary:</span><span class="n">obj</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span> <span class="n">user</span> <span class="p">)</span>
+</span><span class='line'>                <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">removeObjectAtArrangedObjectIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, its completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, don&#8217;t add objects to instances of <code>NSArrayController</code> on a background queue.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a Run Loop Anyway? NSRunLoop 101</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-06T18:10:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I&#8217;d share what I learned about run loops.</p>
+
+<h2>Facts about run loops</h2>
+
+<h3>Run loops manage input source events</h3>
+
+<p>A run loop - <code>NSRunLoop</code> in Cocoa - is a class of objects that manages input sources, like user events (mouse, keyboard, etc.), <code>NSPort</code> events, and those that emanate from <code>NSConnection</code> objects.  You might think that the latter is the superclass of <code>NSURLConnection</code> objects; but you&#8217;d be wrong.  <code>NSURLConnection</code> is a subclass of <code>NSObject</code> - even though run loops manage events from <code>NSURLConnection</code> also.  So, you get the picture?  <code>NSRunLoop</code> manages events.</p>
+
+<h3>Every thread gets a run loop</h3>
+
+<p>If you create a thread, you get an <code>NSRunLoop</code> with it.</p>
+
+<h3>(Most) run loops don&#8217;t run by themselves</h3>
+
+<p>You must explictly run any run loop other than the main thread run loop.</p>
+
+<h3>Run loops that have no input sources don&#8217;t run.</h3>
+
+<p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>&#8220;If no input sources or timers are attached to the run loop, this method exits immediately&#8230;&#8221;</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// now when we start the runLoop, we have an event source</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="n">run</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">shouldRun</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>    <span class="c1">// this is in a &quot;global&quot; context</span>
+</span><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="k">while</span><span class="p">(</span> <span class="n">shouldRun</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">runLoop</span> <span class="nl">runMode:</span><span class="n">NSDefaultRunLoopMode</span> <span class="nl">beforeData:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">distantFuture</span><span class="p">]]</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// set shouldRun to NO somewhere else to terminate the run loop</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Run loops have modes and you can create your own</h3>
+
+<p>Run loops have modes that specify groups of input sources that are monitored for the run loop running in that mode.  Usually you will just use the <code>NSDefaultRunLoopMode</code>; but the others are:</p>
+
+<p><code>NSConnectionReplyMode</code> used with <code>NSConnection</code> objects</p>
+
+<p><code>NSModalPanelRunLoopMode</code> used with events associated with modal panels in OS X</p>
+
+<p><code>NSEventTrackingRunLoopMode</code> used with UI tracking events</p>
+
+<p><code>NSRunLoopCommonModes</code> is a configurable group of common modes.  In Foundation is includes all of the modes except <code>NSConnectionReplyMode</code> by default.</p>
+
+<p>If you want to create your own mode, just use a different string:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="s">@&quot;com.cocoafactory.MySpecialMode&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Apple recommends reverse DNS notation to avoid stepping on someone else&#8217;s run loop.</p>
+
+<h3>You rarely need to work directly with run loops</h3>
+
+<p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/06/moving-to-octopress/">We&#8217;re Moving (Blogs)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-06T15:57:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Goodbye Wordpress, hello Octopress</h2>
+
+<p>We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github.  For several years, we maintained a presence on a dedicated site mostly setup with Wordpress.  Why the switch?</p>
+
+<p>It came down to several factors:</p>
+
+<ul>
+<li><p>Lightweight vs. heavyweight solutions</p>
+
+<p>  Wordpress is a great blogging platform; but there&#8217;s a lot of &#8220;stuff&#8221; to manage.  Further, it&#8217;s a dynamic content system - meaning, your content has to be generated from a database each time the page is rendered.  Octopress, instead, serves static pages.  There&#8217;s something appealingly simple about static content.</p></li>
+<li><p>Workflow</p>
+
+<p>  We develop software first, and blog second.  Writing about our work is important; but it has to fit into our workflow.  Since we are always working in <code>git</code> using Octopress feels very comfortable.</p></li>
+<li><p>Kick-start</p>
+
+<p>  Working through the challenges of getting Octopress installed (and they were significant) was paradoxically a motivator to get down to writing more.  I mean - having spent all this time getting Octopress installed, I&#8217;m not about to let the effort be wasted!</p></li>
+<li><p>Comments</p>
+
+<p>  I got tired of seeing queues of comments 99.9% of which was spam.  I&#8217;m sure Wordpress has better ways of dealing with comment spam - but I decided it was just easier to turn comments off on the new weblog.  The thing is, the real discussion isn&#8217;t happening on the weblog; it&#8217;s happening on Twitter and everywhere else.  You really should read Matt Gemmell&#8217;s <a href="http://mattgemmell.com/2011/11/29/comments-off/">comments on comments</a> about the phenomenon.</p></li>
+</ul>
+
+
+<h2>Installing Octopress</h2>
+
+<p>Octopress installation was a little cumbersome owing mainly to difficulty with versioning of <code>rvm</code>.  After reading about the difficulties of installing on OS X 10.8, I decided to install it on Ubuntu 12.04 which I run as a virtual machine alongside Mountain Lion.  Again, it was mainly about making sure that the versioning of <code>rvm</code> was correct.  There are detailed instructions online, but I would add a couple of pointers:</p>
+
+<p>We used <a href="http://www.lennu.net/2012/05/11/octopress-installation-in-ubuntu-12-dot-04-with-rsync/">a tutorial</a> on lennu.net to get started.  Just make sure you get <code>rvm 1.9.2</code> installed.  If you install the latest stable version, you&#8217;ll come to grief later in the installation.</p>
+
+<p>Apart from that, all of the instructions are at Github and on the lennu.net tutorial.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+	<h1>Our open source components</h1>
+	<p>Not only do we make great software, we support the developer community by open-sourcing some of what we do.  We plan to more of this, so stay tuned.</p>
+	<ul>
+		<li><a href="https://github.com/cocoa-factory/CCFNumberPickerView">CCFNumberPickerView</a> A iOS component for choosing number from a continuous scale.</li>
+		<li><a href="https://github.com/cocoa-factory/CCFBrowserTextField">CCFBrowserTextField</a>A Mac OS component incorporating a miniature button in an NSTextField</li>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/target-conditionals/">Target conditionals</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/21/introducing-ccfbrowsertextfield/">Introducing CCFBrowserTextField</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/19/not-window-dressing/">Not window dressing</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("NSBum", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/NSBum" class="twitter-follow-button" data-show-count="false">Follow @NSBum</a>
+  
+</section>
+
+<section>
+    <h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/134245/nsbum">
+<img src="http://stackoverflow.com/users/flair/134245.png" width="208" height="58" alt="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+
+</section>
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

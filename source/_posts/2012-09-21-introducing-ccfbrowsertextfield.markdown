@@ -7,7 +7,7 @@ categories: [cocoa, mac os, goodies, open source]
 ---
 We just released `CCFBrowserTextField` for public consumption.  Take a look at [our github repository](https://github.com/cocoa-factory/CCFBrowserTextField) to get started using it.  Here's what this `NSTextField` subclass looks like:
 
-{% img right http://tinypic.com/r/2nlz5ah/6 %}
+{% img right http://i46.tinypic.com/2nlz5ah.jpg %}
 
 That's it.  A text field with an embedded document-like icon.  The intent is to provide a way of browsing to a path that should be contained in the text field without an external button.  It was inspired both a desire for a more compact, connected UI and by seeing someone else who had done something similar.  In the amazing [Omni Frameworks](https://github.com/omnigroup/OmniGroup) in OmniAppKit framework, you'll find a number of interesting widgets.  They created a text field with a calendar button that popups up a calendar picker.  We liked the idea and learned a lot about how text fields work, then adapted it to meet our needs.  By the way, Omni writes great software besides putting their frameworks out for public use.  I use at least one of their pieces of software every day.
 

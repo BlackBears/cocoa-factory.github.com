@@ -45,6 +45,12 @@
         <lastmod>2012-11-23T05:05:35-06:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/
+        </loc>
+        <lastmod>2012-11-23T08:13:09-06:00</lastmod>
+    </url>
+    <url>
         <loc>http://cocoa-factory.github.com/products/</loc>
         <lastmod>2012-11-19T10:41:26-06:00</lastmod>
     </url>
@@ -70,10 +76,10 @@
     </url>
     <url>
         <loc>http://cocoa-factory.github.com/blog/archives/</loc>
-        <lastmod>2012-11-23T05:05:35-06:00</lastmod>
+        <lastmod>2012-11-23T08:13:09-06:00</lastmod>
     </url>
     <url>
         <loc>http://cocoa-factory.github.com/</loc>
-        <lastmod>2012-11-23T05:05:35-06:00</lastmod>
+        <lastmod>2012-11-23T08:13:09-06:00</lastmod>
     </url>
 </urlset>

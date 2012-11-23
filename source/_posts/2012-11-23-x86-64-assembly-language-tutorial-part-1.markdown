@@ -3,7 +3,7 @@ layout: post
 title: "x86_64 Assembly Language Tutorial: Part 1"
 date: 2012-11-23 04:21
 comments: false
-categories: x86_64, assembly language, tutorial, macos
+categories: x86_64 assembler tutorial macos
 ---
 The majority of the time, Cocoa developers work at a such a high level of abstraction that we almost forget that all of those abstractions ultimately interact with silicon at the level of machine language.  Few of us will ever need to write such performance-critical code that we need to hand-write assembly language code; but a rudimentary understanding of it will help developers understand how the compiler behaves and how our objects that live in the upper levels of abstraction actually work.  If for no other reason, a passing familiarity with x86\_64 assembly language will comfort the developer a little when the debugger stops on some line of assembly code.  With that, let's dive in.
 

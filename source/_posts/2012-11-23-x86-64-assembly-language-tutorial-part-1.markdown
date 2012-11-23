@@ -238,4 +238,4 @@ Restore the stack pointer and the base pointer. And return.
 
 With that, our first installment on x86\_64 comes to a close.  We hope this was a helpful first introduction to x86\_64 assembly language and that you will find it useful in understanding and debugging your applications.
 
-
+Question? Comments?  Tweet Alan @NSBum.

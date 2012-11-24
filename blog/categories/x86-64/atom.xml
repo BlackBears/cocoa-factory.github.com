@@ -4,7 +4,7 @@
   <title><![CDATA[Category: x86_64 | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/x86-64/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-23T08:13:33-06:00</updated>
+  <updated>2012-11-24T03:21:37-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,280 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[x86_64 Assembly Language Tutorial: Part 3]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/"/>
+    <updated>2012-11-23T08:48:00-06:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3</id>
+    <content type="html"><![CDATA[<p>In our <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">first tutorial</a> in this series, we presented a simple program in C and analyzed its x86_64 disassembly.  We extended the discussion in <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">Part II</a> to show register usage according to the x86_64 ABI.</p>
+
+<p>Now, we're going to start to tiptoe gently into the world of Objective-C objects and use that as a platform for peeking into what ARC does to our code behind our backs.  Let's get started with a very simple Objective-C program:</p>
+
+<p><div><script src='https://gist.github.com/4135901.js?file='></script>
+<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
+
+@interface Foo : NSObject {
+    NSInteger _bar;
+}
+
+- (id)initWithBar:(NSInteger)aBar;
+- (void)printBar;
+
+@end
+
+@implementation Foo
+
+- (id)initWithBar:(NSInteger)aBar {
+    self = [super init];
+    if( !self ) return nil;
+    
+    _bar = aBar;
+    return self;
+}
+
+- (void)printBar {
+    printf(&quot;%ld&quot;,_bar);
+}
+
+@end
+
+int main(int argc, const char * argv[])
+{
+
+    @autoreleasepool {
+        Foo *foo = [[Foo alloc] initWithBar:15];
+        [foo printBar];
+    }
+    return 0;
+}</code></pre></noscript></div>
+</p>
+
+<p>Build and run this little application in Xcode and use the Assistant editor to review its disassembly just like we showed in <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">Part II</a>:</p>
+
+<p><div><script src='https://gist.github.com/4135938.js?file='></script>
+<noscript><pre><code>0x100000de0:  pushq  %rbp
+0x100000de1:  movq   %rsp, %rbp
+0x100000de4:  pushq  %r15
+0x100000de6:  pushq  %r14
+0x100000de8:  pushq  %rbx
+0x100000de9:  pushq  %rax
+0x100000dea:  callq  0x100000e52               ; symbol stub for: objc_autoreleasePoolPush
+0x100000def:  movq   %rax, %r14
+0x100000df2:  movq   903(%rip), %rdi           ; (void *)0x0000000100001190: Foo
+0x100000df9:  leaq   880(%rip), %rsi           ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
+0x100000e00:  callq  *874(%rip)                ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
+0x100000e06:  movq   843(%rip), %rsi           ; &quot;initWithBar:&quot;
+0x100000e0d:  movq   508(%rip), %r15           ; (void *)0x00007fff871c3240: objc_msgSend
+0x100000e14:  movq   %rax, %rdi
+0x100000e17:  movl   $15, %edx
+0x100000e1c:  callq  *%r15
+0x100000e1f:  movq   %rax, %rbx
+0x100000e22:  movq   823(%rip), %rsi           ; &quot;printBar&quot;
+0x100000e29:  movq   %rbx, %rdi
+0x100000e2c:  callq  *%r15
+0x100000e2f:  movq   %rbx, %rdi
+0x100000e32:  callq  0x100000e5e               ; symbol stub for: objc_release
+0x100000e37:  movq   %r14, %rdi
+0x100000e3a:  callq  0x100000e4c               ; symbol stub for: objc_autoreleasePoolPop
+0x100000e3f:  xorl   %eax, %eax
+0x100000e41:  addq   $8, %rsp
+0x100000e45:  popq   %rbx
+0x100000e46:  popq   %r14
+0x100000e48:  popq   %r15
+0x100000e4a:  popq   %rbp
+0x100000e4b:  ret</code></pre></noscript></div>
+</p>
+
+<h3>Step-by-step</h3>
+
+<p>Just looking over the disassembly, we see there are many more calls to functions in the Objective-C runtime; this will keep us busy in the step-by-step analysis.</p>
+
+<h4>Step 1 - Preamble</h4>
+
+<p><code>c-objdump
+0x100000de0:  pushq  %rbp
+0x100000de1:  movq   %rsp, %rbp
+0x100000de4:  pushq  %r15
+0x100000de6:  pushq  %r14
+0x100000de8:  pushq  %rbx
+0x100000de9:  pushq  %rax
+</code></p>
+
+<p>As with our previous forays into the world of assembly language, the function call to <code>main</code> starts with the typical preamble where we push the base pointer, move the current stack pointer to the base pointer then push several registers that we're going to use later.</p>
+
+<h4>Step 2 - Begin autorelease pool</h4>
+
+<p><code>c-objdump
+0x100000dea:  callq  0x100000e52               ; symbol stub for: objc_autoreleasePoolPush
+0x100000def:  movq   %rax, %r14
+</code></p>
+
+<p>Here we call the <code>objc_autoreleasePoolPush</code> function in the Object-C runtime and save its return value - presumably a reference to the autorelease pool to the register <code>%r14</code>.</p>
+
+<h4>Step 3 - Allocating a <code>Foo</code></h4>
+
+<p><code>c-objdump
+0x100000df2:  movq   903(%rip), %rdi           ; (void *)0x0000000100001190: Foo
+0x100000df9:  leaq   880(%rip), %rsi           ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, "alloc" }
+0x100000e00:  callq  *874(%rip)                ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, "alloc" }
+</code></p>
+
+<p>From the comments, it looks like we're going to allocate a new <code>Foo</code>.  The instruction pointer offsets are specified, but they don't really tell us that much.  If we want to learn more, we can switch Xcode's Assistant view to Assembly.  Let's looks at this very carefully.</p>
+
+<p>The first instruction corresponds to the following in the assembly code:</p>
+
+<p><code>c-objdump
+movq    L_OBJC_CLASSLIST_REFERENCES_$_(%rip), %rcx
+movq    %rcx, %rdi
+</code></p>
+
+<p>The value from the executable that we are loading into <code>%rdi</code> is <code>rip</code> + <code>L_OBJC_CLASSLIST_REFERENCES_$_</code>.  Let's look at what's at that location:</p>
+
+<p>``` c-objdump
+L_OBJC_CLASSLIST_REFERENCES<em>$</em>:</p>
+
+<pre><code>.quad   _OBJC_CLASS_$_Foo
+
+.section    __TEXT,__objc_methname,cstring_literals
+</code></pre>
+
+<p>```</p>
+
+<p><code>.quad</code> is an assembler directive that emits an 8-byte integer, in this case the symbol <code>_OBJC_CLASS_$_Foo</code>.  Rather than go further down the rabbit hole at this stage, let's just say that this is a reference to the class <code>Foo</code> which we are loading into <code>%rdi</code>.</p>
+
+<p>Then we have the instruction <code>0x100000df9:  leaq   880(%rip), %rsi</code> in the disassembly.  Turning again to the <strong>assembly</strong> code again:</p>
+
+<p><code>c-objdump
+leaq    l_objc_msgSend_fixup_alloc(%rip), %rsi
+</code></p>
+
+<p>We're going to digress for a second examine this symbol <code>objc_msgSend_fixup_alloc</code> because it tells us something about the Objective-C runtime.  Most Objective-C methods get dispatched using a hash table in  <code>objc_msgSend</code>.  But some of the most commonly used method are dispatched using a virtual table as a runtime optimization.  In fact, if we look at the comment <code>{ /usr/lib/libobjc.A.dylib 'objc_msgSend_vtable1', "alloc" }</code> we can see evidence of the obtimization.  The function <code>objc_msgSend_vtable1</code> is the vtable-referenced version of <code>objc_msgSend</code> for <code>alloc</code>.  For completeness, others include:</p>
+
+<table>
+<thead>
+<tr>
+<th>Optimized objc_msgSend  </th>
+<th> Referenced method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>objc_msgSend_vTable0</code>  </td>
+<td> <code>allocWithZone:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable1</code>  </td>
+<td> <code>alloc</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable2</code>  </td>
+<td> <code>class</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable3</code>  </td>
+<td> <code>self</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable4</code>  </td>
+<td> <code>isKindOfClass:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable5</code>  </td>
+<td> <code>respondsToSelector:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable6</code>  </td>
+<td> <code>isFlipped</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable7</code>  </td>
+<td> <code>length</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable8</code>  </td>
+<td> <code>objectForKey:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable9</code>  </td>
+<td> <code>count</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable10</code> </td>
+<td> <code>objectAtIndex:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable11</code> </td>
+<td> <code>isEqualToString:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable12</code> </td>
+<td> <code>isEqual:</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Back to our function call setup; we've loaded a reference to the class <code>Foo</code> into <code>%rdi</code> which according to the <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI</a> is the first argument to a function.  And we've loaded <code>objc_msgSend_vTable1</code> into <code>%rsi</code> which is the second argument to a function.  All that's left is to call a function.  Turning to the <strong>assembly</strong> code again, we see that the calling instruction is <code>callq  *l_objc_msgSend_fixup_alloc(%rip)</code> meaning that we are calling the address of the symbol <code>l_objc_msgSend_fixup_alloc</code> + the address of the instruction pointer.  Following the symbol <code>l_objc_msgSend_fixup_alloc</code> further in the assembly, there is a <code>.quad</code> value of <code>_objc_msgSend_fixup</code> there.  So, we're calling <code>objc_msgSend_fixup</code> with the parameters of <code>Foo</code> and <code>alloc</code>, thereby allocating a <code>Foo</code>.  Whew.</p>
+
+<h4>Step 4 - Initializing a <code>Foo</code></h4>
+
+<p>Having allocated a <code>Foo</code> we'll probably have to initialize it.  Here's the assembly code that does it:</p>
+
+<p><code>c-objdump
+0x100000e06:  movq   843(%rip), %rsi           ; "initWithBar:"
+0x100000e0d:  movq   508(%rip), %r15           ; (void *)0x00007fff871c3240: objc_msgSend
+0x100000e14:  movq   %rax, %rdi
+0x100000e17:  movl   $15, %edx
+0x100000e1c:  callq  *%r15
+</code></p>
+
+<p>We move a reference to <code>initWithBar</code> into <code>%rsi</code> which is always our 2nd argument register.  Then we move <code>objc_msgSend</code> to <code>%r15</code> which we later call.  The instruction <code>movq   %rax, %rdi</code> moves the object returned by <code>alloc</code> to <code>%rdi</code> which is our 1st function argument register.  So we have arguments 1 and 2 taken care of.  What about the value of <code>bar</code>?  The instruction <code>movl   $15, %edx</code> loads the decimal value 15 into <code>%edx</code>.  Remember that <code>%edx</code> is the lower 32 bits of <code>%rdx</code> which is the 3rd function argument register in the ABI.  No we have all three arguments to <code>objc_msgSend</code> taken care of; and we call it.</p>
+
+<h4>Step 5 - Calling <code>printBar</code></h4>
+
+<p>Starting to get the hang of this?  Let's look at how we call a method on our <code>Foo</code> instance.</p>
+
+<p><code>c-objdump
+0x100000e1f:  movq   %rax, %rbx
+0x100000e22:  movq   823(%rip), %rsi           ; "printBar"
+0x100000e29:  movq   %rbx, %rdi
+0x100000e2c:  callq  *%r15
+</code></p>
+
+<p>The instruction pair <code>0x100000e1f:  movq   %rax, %rbx</code> and <code>0x100000e29:  movq   %rbx, %rdi</code> move the <code>Foo</code> instance returned by the <code>initWithBar:</code> method to <code>%rdi</code>.  So the instance, then, is our first function argument.  Then we load a reference to <code>printBar</code> into <code>%rsi</code> as our second function argument.  Finally, we call <code>objc_msgSend</code> again.  (It's stub location was already loaded in <code>%r15</code>.)</p>
+
+<h4>Step 6 - Cleaning up our <code>Foo</code></h4>
+
+<p><code>c-objdump
+0x100000e2f:  movq   %rbx, %rdi
+0x100000e32:  callq  0x100000e5e               ; symbol stub for: objc_release
+</code></p>
+
+<p>Since we created an instance of <code>Foo</code>, we have to release it.  Recall that ARC inserts retains and releases for us as needed.  Here's an example of that.  From Step 5, recall that <code>%rbx</code> has a reference to our instance.  The instruction <code>movq   %rbx, %rdi</code> sets it up as a first function argument.  Next we call <code>objc_release</code></p>
+
+<h4>Step 7 - Cleaning up from our function</h4>
+
+<p><code>c-objdump
+0x100000e37:  movq   %r14, %rdi
+0x100000e3a:  callq  0x100000e4c               ; symbol stub for: objc_autoreleasePoolPop
+0x100000e3f:  xorl   %eax, %eax
+0x100000e41:  addq   $8, %rsp
+0x100000e45:  popq   %rbx
+0x100000e46:  popq   %r14
+0x100000e48:  popq   %r15
+0x100000e4a:  popq   %rbp
+0x100000e4b:  ret
+</code>
+The rest of our function clean-up is that same as in the prior installment of our tutorial series, popping the autorelease pool, restoring the stack and certain preserved registers.</p>
+
+<h3>Conclusion</h3>
+
+<p>In this tutorial, we dived into Objective-C objects and learned about method dispatch optimizations in the Objective-C runtime while getting still more practice in interpreting x86_64 assembly language on the Mac.</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[x86_64 Assembly Language Tutorial: Part 2]]></title>

@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>x86_64 Assembly Language Tutorial: Part 3 - Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
+
+  
+  <meta name="description" content="In our first tutorial in this series, we presented a simple program in C and analyzed its x86_64 disassembly. We extended the discussion in Part II &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about">About</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/products">Products</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">X86_64 Assembly Language Tutorial: Part 3</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-23T08:48:00-06:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In our <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">first tutorial</a> in this series, we presented a simple program in C and analyzed its x86_64 disassembly.  We extended the discussion in <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">Part II</a> to show register usage according to the x86_64 ABI.</p>
+
+<p>Now, we&#8217;re going to start to tiptoe gently into the world of Objective-C objects and use that as a platform for peeking into what ARC does to our code behind our backs.  Let&#8217;s get started with a very simple Objective-C program:</p>
+
+<div><script src='https://gist.github.com/4135901.js?file='></script>
+<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
+
+@interface Foo : NSObject {
+    NSInteger _bar;
+}
+
+- (id)initWithBar:(NSInteger)aBar;
+- (void)printBar;
+
+@end
+
+@implementation Foo
+
+- (id)initWithBar:(NSInteger)aBar {
+    self = [super init];
+    if( !self ) return nil;
+    
+    _bar = aBar;
+    return self;
+}
+
+- (void)printBar {
+    printf(&quot;%ld&quot;,_bar);
+}
+
+@end
+
+int main(int argc, const char * argv[])
+{
+
+    @autoreleasepool {
+        Foo *foo = [[Foo alloc] initWithBar:15];
+        [foo printBar];
+    }
+    return 0;
+}</code></pre></noscript></div>
+
+
+<p>Build and run this little application in Xcode and use the Assistant editor to review its disassembly just like we showed in <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">Part II</a>:</p>
+
+<div><script src='https://gist.github.com/4135938.js?file='></script>
+<noscript><pre><code>0x100000de0:  pushq  %rbp
+0x100000de1:  movq   %rsp, %rbp
+0x100000de4:  pushq  %r15
+0x100000de6:  pushq  %r14
+0x100000de8:  pushq  %rbx
+0x100000de9:  pushq  %rax
+0x100000dea:  callq  0x100000e52               ; symbol stub for: objc_autoreleasePoolPush
+0x100000def:  movq   %rax, %r14
+0x100000df2:  movq   903(%rip), %rdi           ; (void *)0x0000000100001190: Foo
+0x100000df9:  leaq   880(%rip), %rsi           ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
+0x100000e00:  callq  *874(%rip)                ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
+0x100000e06:  movq   843(%rip), %rsi           ; &quot;initWithBar:&quot;
+0x100000e0d:  movq   508(%rip), %r15           ; (void *)0x00007fff871c3240: objc_msgSend
+0x100000e14:  movq   %rax, %rdi
+0x100000e17:  movl   $15, %edx
+0x100000e1c:  callq  *%r15
+0x100000e1f:  movq   %rax, %rbx
+0x100000e22:  movq   823(%rip), %rsi           ; &quot;printBar&quot;
+0x100000e29:  movq   %rbx, %rdi
+0x100000e2c:  callq  *%r15
+0x100000e2f:  movq   %rbx, %rdi
+0x100000e32:  callq  0x100000e5e               ; symbol stub for: objc_release
+0x100000e37:  movq   %r14, %rdi
+0x100000e3a:  callq  0x100000e4c               ; symbol stub for: objc_autoreleasePoolPop
+0x100000e3f:  xorl   %eax, %eax
+0x100000e41:  addq   $8, %rsp
+0x100000e45:  popq   %rbx
+0x100000e46:  popq   %r14
+0x100000e48:  popq   %r15
+0x100000e4a:  popq   %rbp
+0x100000e4b:  ret</code></pre></noscript></div>
+
+
+<h3>Step-by-step</h3>
+
+<p>Just looking over the disassembly, we see there are many more calls to functions in the Objective-C runtime; this will keep us busy in the step-by-step analysis.</p>
+
+<h4>Step 1 - Preamble</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000de0</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="mh">0x100000de1</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rsp</span><span class="p">,</span> <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="mh">0x100000de4</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">r15</span>
+</span><span class='line'><span class="mh">0x100000de6</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">r14</span>
+</span><span class='line'><span class="mh">0x100000de8</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rbx</span>
+</span><span class='line'><span class="mh">0x100000de9</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rax</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As with our previous forays into the world of assembly language, the function call to <code>main</code> starts with the typical preamble where we push the base pointer, move the current stack pointer to the base pointer then push several registers that we&#8217;re going to use later.</p>
+
+<h4>Step 2 - Begin autorelease pool</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000dea</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000e52</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">objc_autoreleasePoolPush</span>
+</span><span class='line'><span class="mh">0x100000def</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rax</span><span class="p">,</span> <span class="o">%</span><span class="n">r14</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we call the <code>objc_autoreleasePoolPush</code> function in the Object-C runtime and save its return value - presumably a reference to the autorelease pool to the register <code>%r14</code>.</p>
+
+<h4>Step 3 - Allocating a <code>Foo</code></h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000df2</span><span class="o">:</span>  <span class="n">movq</span>   <span class="mi">903</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rdi</span>           <span class="p">;</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x0000000100001190</span><span class="o">:</span> <span class="n">Foo</span>
+</span><span class='line'><span class="mh">0x100000df9</span><span class="o">:</span>  <span class="n">leaq</span>   <span class="mi">880</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rsi</span>           <span class="p">;</span> <span class="p">{</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libobjc</span><span class="p">.</span><span class="n">A</span><span class="p">.</span><span class="n">dylib</span><span class="err">`</span><span class="n">objc_msgSend_vtable1</span><span class="p">,</span> <span class="s">&quot;alloc&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="mh">0x100000e00</span><span class="o">:</span>  <span class="n">callq</span>  <span class="o">*</span><span class="mi">874</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">)</span>                <span class="p">;</span> <span class="p">{</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libobjc</span><span class="p">.</span><span class="n">A</span><span class="p">.</span><span class="n">dylib</span><span class="err">`</span><span class="n">objc_msgSend_vtable1</span><span class="p">,</span> <span class="s">&quot;alloc&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>From the comments, it looks like we&#8217;re going to allocate a new <code>Foo</code>.  The instruction pointer offsets are specified, but they don&#8217;t really tell us that much.  If we want to learn more, we can switch Xcode&#8217;s Assistant view to Assembly.  Let&#8217;s looks at this very carefully.</p>
+
+<p>The first instruction corresponds to the following in the assembly code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">movq</span> <span class="n">L_OBJC_CLASSLIST_REFERENCES_</span><span class="err">$</span><span class="n">_</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rcx</span>
+</span><span class='line'><span class="n">movq</span>   <span class="o">%</span><span class="n">rcx</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The value from the executable that we are loading into <code>%rdi</code> is <code>rip</code> + <code>L_OBJC_CLASSLIST_REFERENCES_$_</code>.  Let&#8217;s look at what&#8217;s at that location:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">L_OBJC_CLASSLIST_REFERENCES_</span><span class="err">$</span><span class="n">_</span><span class="o">:</span>
+</span><span class='line'>  <span class="p">.</span><span class="n">quad</span> <span class="n">_OBJC_CLASS_</span><span class="err">$</span><span class="n">_Foo</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">.</span><span class="n">section</span>  <span class="n">__TEXT</span><span class="p">,</span><span class="n">__objc_methname</span><span class="p">,</span><span class="n">cstring_literals</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>.quad</code> is an assembler directive that emits an 8-byte integer, in this case the symbol <code>_OBJC_CLASS_$_Foo</code>.  Rather than go further down the rabbit hole at this stage, let&#8217;s just say that this is a reference to the class <code>Foo</code> which we are loading into <code>%rdi</code>.</p>
+
+<p>Then we have the instruction <code>0x100000df9:  leaq   880(%rip), %rsi</code> in the disassembly.  Turning again to the <strong>assembly</strong> code again:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">leaq</span> <span class="n">l_objc_msgSend_fixup_alloc</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rsi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&#8217;re going to digress for a second examine this symbol <code>objc_msgSend_fixup_alloc</code> because it tells us something about the Objective-C runtime.  Most Objective-C methods get dispatched using a hash table in  <code>objc_msgSend</code>.  But some of the most commonly used method are dispatched using a virtual table as a runtime optimization.  In fact, if we look at the comment <code>{ /usr/lib/libobjc.A.dylib 'objc_msgSend_vtable1', "alloc" }</code> we can see evidence of the obtimization.  The function <code>objc_msgSend_vtable1</code> is the vtable-referenced version of <code>objc_msgSend</code> for <code>alloc</code>.  For completeness, others include:</p>
+
+<table>
+<thead>
+<tr>
+<th>Optimized objc_msgSend  </th>
+<th> Referenced method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>objc_msgSend_vTable0</code>  </td>
+<td> <code>allocWithZone:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable1</code>  </td>
+<td> <code>alloc</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable2</code>  </td>
+<td> <code>class</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable3</code>  </td>
+<td> <code>self</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable4</code>  </td>
+<td> <code>isKindOfClass:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable5</code>  </td>
+<td> <code>respondsToSelector:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable6</code>  </td>
+<td> <code>isFlipped</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable7</code>  </td>
+<td> <code>length</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable8</code>  </td>
+<td> <code>objectForKey:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable9</code>  </td>
+<td> <code>count</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable10</code> </td>
+<td> <code>objectAtIndex:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable11</code> </td>
+<td> <code>isEqualToString:</code></td>
+</tr>
+<tr>
+<td><code>objc_msgSend_vTable12</code> </td>
+<td> <code>isEqual:</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Back to our function call setup; we&#8217;ve loaded a reference to the class <code>Foo</code> into <code>%rdi</code> which according to the <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI</a> is the first argument to a function.  And we&#8217;ve loaded <code>objc_msgSend_vTable1</code> into <code>%rsi</code> which is the second argument to a function.  All that&#8217;s left is to call a function.  Turning to the <strong>assembly</strong> code again, we see that the calling instruction is <code>callq  *l_objc_msgSend_fixup_alloc(%rip)</code> meaning that we are calling the address of the symbol <code>l_objc_msgSend_fixup_alloc</code> + the address of the instruction pointer.  Following the symbol <code>l_objc_msgSend_fixup_alloc</code> further in the assembly, there is a <code>.quad</code> value of <code>_objc_msgSend_fixup</code> there.  So, we&#8217;re calling <code>objc_msgSend_fixup</code> with the parameters of <code>Foo</code> and <code>alloc</code>, thereby allocating a <code>Foo</code>.  Whew.</p>
+
+<h4>Step 4 - Initializing a <code>Foo</code></h4>
+
+<p>Having allocated a <code>Foo</code> we&#8217;ll probably have to initialize it.  Here&#8217;s the assembly code that does it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000e06</span><span class="o">:</span>  <span class="n">movq</span>   <span class="mi">843</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rsi</span>           <span class="p">;</span> <span class="s">&quot;initWithBar:&quot;</span>
+</span><span class='line'><span class="mh">0x100000e0d</span><span class="o">:</span>  <span class="n">movq</span>   <span class="mi">508</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">r15</span>           <span class="p">;</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x00007fff871c3240</span><span class="o">:</span> <span class="n">objc_msgSend</span>
+</span><span class='line'><span class="mh">0x100000e14</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rax</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
+</span><span class='line'><span class="mh">0x100000e17</span><span class="o">:</span>  <span class="n">movl</span>   <span class="err">$</span><span class="mi">15</span><span class="p">,</span> <span class="o">%</span><span class="n">edx</span>
+</span><span class='line'><span class="mh">0x100000e1c</span><span class="o">:</span>  <span class="n">callq</span>  <span class="o">*%</span><span class="n">r15</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We move a reference to <code>initWithBar</code> into <code>%rsi</code> which is always our 2nd argument register.  Then we move <code>objc_msgSend</code> to <code>%r15</code> which we later call.  The instruction <code>movq   %rax, %rdi</code> moves the object returned by <code>alloc</code> to <code>%rdi</code> which is our 1st function argument register.  So we have arguments 1 and 2 taken care of.  What about the value of <code>bar</code>?  The instruction <code>movl   $15, %edx</code> loads the decimal value 15 into <code>%edx</code>.  Remember that <code>%edx</code> is the lower 32 bits of <code>%rdx</code> which is the 3rd function argument register in the ABI.  No we have all three arguments to <code>objc_msgSend</code> taken care of; and we call it.</p>
+
+<h4>Step 5 - Calling <code>printBar</code></h4>
+
+<p>Starting to get the hang of this?  Let&#8217;s look at how we call a method on our <code>Foo</code> instance.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000e1f</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rax</span><span class="p">,</span> <span class="o">%</span><span class="n">rbx</span>
+</span><span class='line'><span class="mh">0x100000e22</span><span class="o">:</span>  <span class="n">movq</span>   <span class="mi">823</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rsi</span>           <span class="p">;</span> <span class="s">&quot;printBar&quot;</span>
+</span><span class='line'><span class="mh">0x100000e29</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rbx</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
+</span><span class='line'><span class="mh">0x100000e2c</span><span class="o">:</span>  <span class="n">callq</span>  <span class="o">*%</span><span class="n">r15</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The instruction pair <code>0x100000e1f:  movq   %rax, %rbx</code> and <code>0x100000e29:  movq   %rbx, %rdi</code> move the <code>Foo</code> instance returned by the <code>initWithBar:</code> method to <code>%rdi</code>.  So the instance, then, is our first function argument.  Then we load a reference to <code>printBar</code> into <code>%rsi</code> as our second function argument.  Finally, we call <code>objc_msgSend</code> again.  (It&#8217;s stub location was already loaded in <code>%r15</code>.)</p>
+
+<h4>Step 6 - Cleaning up our <code>Foo</code></h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000e2f</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rbx</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
+</span><span class='line'><span class="mh">0x100000e32</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000e5e</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">objc_release</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since we created an instance of <code>Foo</code>, we have to release it.  Recall that ARC inserts retains and releases for us as needed.  Here&#8217;s an example of that.  From Step 5, recall that <code>%rbx</code> has a reference to our instance.  The instruction <code>movq   %rbx, %rdi</code> sets it up as a first function argument.  Next we call <code>objc_release</code></p>
+
+<h4>Step 7 - Cleaning up from our function</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000e37</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">r14</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
+</span><span class='line'><span class="mh">0x100000e3a</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000e4c</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">objc_autoreleasePoolPop</span>
+</span><span class='line'><span class="mh">0x100000e3f</span><span class="o">:</span>  <span class="n">xorl</span>   <span class="o">%</span><span class="n">eax</span><span class="p">,</span> <span class="o">%</span><span class="n">eax</span>
+</span><span class='line'><span class="mh">0x100000e41</span><span class="o">:</span>  <span class="n">addq</span>   <span class="err">$</span><span class="mi">8</span><span class="p">,</span> <span class="o">%</span><span class="n">rsp</span>
+</span><span class='line'><span class="mh">0x100000e45</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">rbx</span>
+</span><span class='line'><span class="mh">0x100000e46</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">r14</span>
+</span><span class='line'><span class="mh">0x100000e48</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">r15</span>
+</span><span class='line'><span class="mh">0x100000e4a</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="mh">0x100000e4b</span><span class="o">:</span>  <span class="n">ret</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The rest of our function clean-up is that same as in the prior installment of our tutorial series, popping the autorelease pool, restoring the stack and certain preserved registers.</p>
+
+<h3>Conclusion</h3>
+
+<p>In this tutorial, we dived into Objective-C objects and learned about method dispatch optimizations in the Objective-C runtime while getting still more practice in interpreting x86_64 assembly language on the Mac.</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-23T08:48:00-06:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/assembler/'>assembler</a>, <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/tutorial/'>tutorial</a>, <a class='category' href='/blog/categories/x86-64/'>x86_64</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/" data-via="NSBum" data-counturl="http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/" title="Previous Post: x86_64 Assembly Language Tutorial: Part 2">&laquo; x86_64 Assembly Language Tutorial: Part 2</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+	<h1>Our open source components</h1>
+	<p>Not only do we make great software, we support the developer community by open-sourcing some of what we do.  We plan to more of this, so stay tuned.</p>
+	<ul>
+		<li><a href="https://github.com/cocoa-factory/CCFNumberPickerView">CCFNumberPickerView</a> A iOS component for choosing number from a continuous scale.</li>
+		<li><a href="https://github.com/cocoa-factory/CCFBrowserTextField">CCFBrowserTextField</a>A Mac OS component incorporating a miniature button in an NSTextField</li>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">x86_64 Assembly Language Tutorial: Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">x86_64 Assembly Language Tutorial: Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">x86_64 Assembly Language Tutorial: Part 1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("NSBum", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/NSBum" class="twitter-follow-button" data-show-count="false">Follow @NSBum</a>
+  
+</section>
+
+<section>
+    <h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/134245/nsbum">
+<img src="http://stackoverflow.com/users/flair/134245.png" width="208" height="58" alt="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+
+</section>
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

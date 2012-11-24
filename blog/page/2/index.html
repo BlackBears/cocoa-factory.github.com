@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: tutorial - Cocoa Factory</title>
+  <title>Cocoa Factory</title>
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="Category: tutorial">
+  <meta name="description" content="Goodbye Wordpress, hello Octopress We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github. For &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cocoa-factory.github.comblog/categories/tutorial/">
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/page/2/">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -66,68 +66,81 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
-    <h1 class="entry-title">Category: Tutorial</h1>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/06/moving-to-octopress/">We&#8217;re Moving (Blogs)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-06T15:57:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+  <div class="entry-content"><h2>Goodbye Wordpress, hello Octopress</h2>
 
-  
-  <h2>2012</h2>
+<p>We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github.  For several years, we maintained a presence on a dedicated site mostly setup with Wordpress.  Why the switch?</p>
 
-<article>
-  
-<h1><a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">x86_64 Assembly Language Tutorial: Part 3</a></h1>
-<time datetime="2012-11-23T08:48:00-06:00" pubdate><span class='month'>Nov</span> <span class='day'>23</span> <span class='year'>2012</span></time>
+<p>It came down to several factors:</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/assembler/'>assembler</a>, <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/tutorial/'>tutorial</a>, <a class='category' href='/blog/categories/x86-64/'>x86_64</a></span>
-</footer>
+<ul>
+<li><p>Lightweight vs. heavyweight solutions</p>
 
+<p>  Wordpress is a great blogging platform; but there&#8217;s a lot of &#8220;stuff&#8221; to manage.  Further, it&#8217;s a dynamic content system - meaning, your content has to be generated from a database each time the page is rendered.  Octopress, instead, serves static pages.  There&#8217;s something appealingly simple about static content.</p></li>
+<li><p>Workflow</p>
 
-</article>
+<p>  We develop software first, and blog second.  Writing about our work is important; but it has to fit into our workflow.  Since we are always working in <code>git</code> using Octopress feels very comfortable.</p></li>
+<li><p>Kick-start</p>
 
+<p>  Working through the challenges of getting Octopress installed (and they were significant) was paradoxically a motivator to get down to writing more.  I mean - having spent all this time getting Octopress installed, I&#8217;m not about to let the effort be wasted!</p></li>
+<li><p>Comments</p>
 
-
-<article>
-  
-<h1><a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">x86_64 Assembly Language Tutorial: Part 2</a></h1>
-<time datetime="2012-11-23T05:34:00-06:00" pubdate><span class='month'>Nov</span> <span class='day'>23</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/assembler/'>assembler</a>, <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/tutorial/'>tutorial</a>, <a class='category' href='/blog/categories/x86-64/'>x86_64</a></span>
-</footer>
+<p>  I got tired of seeing queues of comments 99.9% of which was spam.  I&#8217;m sure Wordpress has better ways of dealing with comment spam - but I decided it was just easier to turn comments off on the new weblog.  The thing is, the real discussion isn&#8217;t happening on the weblog; it&#8217;s happening on Twitter and everywhere else.  You really should read Matt Gemmell&#8217;s <a href="http://mattgemmell.com/2011/11/29/comments-off/">comments on comments</a> about the phenomenon.</p></li>
+</ul>
 
 
-</article>
+<h2>Installing Octopress</h2>
 
+<p>Octopress installation was a little cumbersome owing mainly to difficulty with versioning of <code>rvm</code>.  After reading about the difficulties of installing on OS X 10.8, I decided to install it on Ubuntu 12.04 which I run as a virtual machine alongside Mountain Lion.  Again, it was mainly about making sure that the versioning of <code>rvm</code> was correct.  There are detailed instructions online, but I would add a couple of pointers:</p>
 
+<p>We used <a href="http://www.lennu.net/2012/05/11/octopress-installation-in-ubuntu-12-dot-04-with-rsync/">a tutorial</a> on lennu.net to get started.  Just make sure you get <code>rvm 1.9.2</code> installed.  If you install the latest stable version, you&#8217;ll come to grief later in the installation.</p>
 
-<article>
-  
-<h1><a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">x86_64 Assembly Language Tutorial: Part 1</a></h1>
-<time datetime="2012-11-23T04:21:00-06:00" pubdate><span class='month'>Nov</span> <span class='day'>23</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/assembler/'>assembler</a>, <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/tutorial/'>tutorial</a>, <a class='category' href='/blog/categories/x86-64/'>x86_64</a></span>
-</footer>
-
-
-</article>
-
+<p>Apart from that, all of the instructions are at Github and on the lennu.net tutorial.</p>
 </div>
-
   
-</article>
+  
 
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     <section>
@@ -172,7 +185,7 @@
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -198,7 +211,6 @@
 
   
 </aside>
-
 
     </div>
   </div>

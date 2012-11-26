@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="In our first tutorial in this series, we presented a simple program in C and analyzed its x86_64 disassembly. We extended the discussion in Part II &hellip;">
+  <meta name="description" content="In Part I or our x86_64 assembly language tutorial for Mac OS, we analyzed the disassembly of a simple C program. In Part II, we extended the example &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,275 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4/">X86_64 Assembly Language Tutorial:part 4</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-24T05:41:00-06:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In <a href="">Part I</a> or our x86_64 assembly language tutorial for Mac OS, we analyzed the disassembly of a simple C program.  In <a href="">Part II</a>, we extended the example and learned more about the x86_64 ABI and register usage.  In <a href="">Part III</a>, we delved into the world of objects and showed what happens behind the scenes when objects meet silicon.</p>
+
+<p>This time, we&#8217;ll take a break from the analytical mode to try our hand at writing a simple program in assembly.   We&#8217;re going to use two different assemblers to show the range of syntactical differences.</p>
+
+<h3>Xcode assembly language project</h3>
+
+<p>Although Xcode doesn&#8217;t have an assembly language project template, you can start a new command line tool project for Mac OS and just delete the main.m file.  Then you can add an assembly language file to the project and paste the following code:</p>
+
+<div><script src='https://gist.github.com/4139421.js?file='></script>
+<noscript><pre><code>.private_extern    _main
+.globl  _main
+_main:                                  #   main entry point
+
+    pushq   %rbp
+
+    movq    %rsp, %rbp
+
+    leaq    _helloMessage(%rip), %rdi
+    callq   _puts
+    xorl    %eax, %eax
+    popq    %rbp
+    ret
+
+.section    __TEXT,__cstring,cstring_literals
+
+_helloMessage:  
+    .asciz   &quot;Hello world!&quot;</code></pre></noscript></div>
+
+
+<p>Like we&#8217;ve done with each of the prior tutorials, lets walk through the code, as simple as it is, step-by-step</p>
+
+<h4>Step 1 - Preamble</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="p">.</span><span class="n">private_extern</span>   <span class="n">_main</span>
+</span><span class='line'><span class="p">.</span><span class="n">globl</span>  <span class="n">_main</span>
+</span><span class='line'><span class="nl">_main:</span>                                  <span class="err">#</span>   <span class="n">main</span> <span class="n">entry</span> <span class="n">point</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we&#8217;re just defining symbols for our entry point <code>_main</code>.</p>
+
+<h4>Step 2 - Save frame pointer</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">pushq</span>    <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">movq</span>   <span class="o">%</span><span class="n">rsp</span><span class="p">,</span> <span class="o">%</span><span class="n">rbp</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we just save the frame pointer.</p>
+
+<h4>Step 3 - Print a &#8220;Hello world!&#8221; string</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">leaq</span> <span class="n">_helloMessage</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rdi</span>
+</span><span class='line'><span class="n">callq</span>  <span class="n">_puts</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">.</span><span class="n">section</span>    <span class="n">__TEXT</span><span class="p">,</span><span class="n">__cstring</span><span class="p">,</span><span class="n">cstring_literals</span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">_helloMessage:</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">asciz</span>   <span class="s">&quot;Hello world!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we load a reference to the <code>_helloMessage</code> into <code>%rdi</code> our first function argument register.  And call <code>_puts</code>.  The <code>leaq</code> instruction is the 64-bit version of <code>lea</code> in x86 assembly.  This instruction places the <em>address</em> specified by the second operand into the register specified by the first operand.  It&#8217;s not the contents of the memory location that are loaded, only the effective address that is computed and placed into the register.  (Sounds like a pointer in higher level languages, doesn&#8217;t it?)</p>
+
+<h4>Step 4 - Clean up</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">xorl</span> <span class="o">%</span><span class="n">eax</span><span class="p">,</span> <span class="o">%</span><span class="n">eax</span>
+</span><span class='line'><span class="n">popq</span>   <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="n">ret</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we zero our function return register, pop the frame pointer, and return.  That was easy!</p>
+
+<h3>NASM project</h3>
+
+<p>Next, we&#8217;re going to go through an alternative way of getting the job done with an assembler called nasm - for &#8220;netwide assembler&#8221;.  It uses a very different syntax than we are accustomed to seeing from the analyses we&#8217;ve done so far.  We also are responsible for building the Mach-O object code and linking the program ourselves.  But it&#8217;s a good experience to go through.</p>
+
+<h4>Download the 64-bit version of <code>nasm</code></h4>
+
+<p>For compatibility with our GNU assembler version of the &#8220;Hello world&#8221; program, we want to do it in 64 bit form.  But the version of <code>nasm</code> that ships with Mac as of this writing is an older 32 bit version.  You can check it our on your computer with <code>nasm -v</code> at the Terminal.  On my machine, it is <code>0.98.40</code>.  We need to download the latest version before continuing.  You can find it <a href="http://www.nasm.us/pub/nasm/releasebuilds/2.10.05/macosx/">here</a>.  I just downloaded it, unzipped, and copied to <code>/usr/bin</code> so I wouldn&#8217;t have to deal with mofiying the path.</p>
+
+<h4>Write the program for use in <code>nasm</code></h4>
+
+<p>Here&#8217;s the complete source:</p>
+
+<div><script src='https://gist.github.com/4139297.js?file='></script>
+<noscript><pre><code>;
+;
+;   hello64.asm
+;
+;   A quick demonstration of 64 assembly language on Mac OS
+;
+;   Generate object code:
+;nasm-2.09.10 -f macho64 hello64.asm
+;
+;   Link executable
+;gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o
+;
+
+section .data
+    
+    hello            db &quot;Hello, world!&quot;, 0  
+
+section .text
+    
+    global _main
+    extern _puts
+
+_main:
+    push    r15             ;save %r15 to stack
+    mov     r15,    rsp     ;load the stack pointer into %r15
+    push    rbx             ;push base pointer to the stack
+
+    mov     rbx,    rsp     ;load the stack pointer into the base pointer
+    and     spl,    0xF0    ;align the stack pointer on a boundary
+
+    mov     rdi,    hello   ;move address of string to %rdi (1st function arg register)
+    call    _puts           ;call puts
+
+    mov     rsp,    rbx     ;mov %rbx back into stack pointer after the library call
+
+    pop     rbx             ;restore %rbx (a callee saved register)
+    mov     rsp,    r15     ;restore the stack pointer from %r15
+    pop     r15             ;restore %r15
+    ret</code></pre></noscript></div>
+
+
+<p>The first thing to recognize with <code>nasm</code> syntax is that the operand order is reversed compared with the GNU assembler syntax.  So the instruction <code>mov r15, rsp</code> moves the contents of register <code>rsp</code> to <code>r15</code>.  We also omit the <code>%</code> sign before register names.  And nasm infers the correct version of an instruction depending on the width of the operands; so we use <code>mov</code> instead of <code>movb</code>, <code>movl</code>, or <code>movq</code>.  Apart from those differences, we do things the same way.  Let&#8217;s go through the program step-by-step.</p>
+
+<h4>Step 1: Application sections</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">section</span> <span class="p">.</span><span class="n">data</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">hello</span>            <span class="n">db</span> <span class="s">&quot;Hello, world!&quot;</span><span class="p">,</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">section</span> <span class="p">.</span><span class="n">text</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">global</span> <span class="n">_main</span>
+</span><span class='line'>    <span class="k">extern</span> <span class="n">_puts</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We being with a data section that contain a single symbol <code>hello</code>.  <code>db</code> signifies a data block.  In this case the data block is a NULL-terminated string.  The <code>0</code> after the string is the NULL termination.  After the <code>.data</code> section, we have the <code>.text</code> section which is the code.  He expose <code>_main</code> - our entry point - as a global symbol and mame note that <code>_puts</code> is defined elsewhere and will need to be linked.</p>
+
+<h4>Step 2: Prologue</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="nl">_main:</span>
+</span><span class='line'>    <span class="n">push</span>    <span class="n">r15</span>             <span class="p">;</span><span class="n">save</span> <span class="o">%</span><span class="n">r15</span> <span class="n">to</span> <span class="n">stack</span>
+</span><span class='line'>    <span class="n">mov</span>     <span class="n">r15</span><span class="p">,</span>    <span class="n">rsp</span>     <span class="p">;</span><span class="n">load</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="n">into</span> <span class="o">%</span><span class="n">r15</span>
+</span><span class='line'>    <span class="n">push</span>    <span class="n">rbx</span>             <span class="p">;</span><span class="n">push</span> <span class="n">base</span> <span class="n">pointer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">stack</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>This is similar to the prologues we&#8217;ve seen before - but take a close look here at the reversed order of the operands.  If you don&#8217;t understand what our function prologue is doing at this point, best go back to our earlier tutorials and review.</p>
+
+<h4>Step 3: Call <code>puts</code></h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">mov</span>     <span class="n">rbx</span><span class="p">,</span>    <span class="n">rsp</span>     <span class="p">;</span><span class="n">load</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="n">into</span> <span class="n">the</span> <span class="n">base</span> <span class="n">pointer</span>
+</span><span class='line'><span class="n">and</span>     <span class="n">spl</span><span class="p">,</span>    <span class="mh">0xF0</span>    <span class="p">;</span><span class="n">align</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="n">on</span> <span class="n">a</span> <span class="n">boundary</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mov</span>     <span class="n">rdi</span><span class="p">,</span>    <span class="n">hello</span>   <span class="p">;</span><span class="n">move</span> <span class="n">address</span> <span class="n">of</span> <span class="n">string</span> <span class="n">to</span> <span class="o">%</span><span class="n">rdi</span> <span class="p">(</span><span class="mi">1</span><span class="n">st</span> <span class="n">function</span> <span class="n">arg</span> <span class="k">register</span><span class="p">)</span>
+</span><span class='line'><span class="n">call</span>    <span class="n">_puts</span>           <span class="p">;</span><span class="n">call</span> <span class="n">puts</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first two instructions have the effect of aligning the stack pointer to a 16 byte boundary as required by the x86_64 ABI before the upcoming call.  Then we move the address of the symbol <code>hello</code> to the <code>%rdi</code> register (the first function argument register) and call <code>_puts</code>.</p>
+
+<h4>Step 4: Cleanup</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">mov</span>     <span class="n">rsp</span><span class="p">,</span>    <span class="n">rbx</span>     <span class="p">;</span><span class="n">mov</span> <span class="o">%</span><span class="n">rbx</span> <span class="n">back</span> <span class="n">into</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="n">after</span> <span class="n">the</span> <span class="n">library</span> <span class="n">call</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">pop</span>     <span class="n">rbx</span>             <span class="p">;</span><span class="n">restore</span> <span class="o">%</span><span class="n">rbx</span> <span class="p">(</span><span class="n">a</span> <span class="n">callee</span> <span class="n">saved</span> <span class="k">register</span><span class="p">)</span>
+</span><span class='line'><span class="n">mov</span>     <span class="n">rsp</span><span class="p">,</span>    <span class="n">r15</span>     <span class="p">;</span><span class="n">restore</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="n">from</span> <span class="o">%</span><span class="n">r15</span>
+</span><span class='line'><span class="n">pop</span>     <span class="n">r15</span>             <span class="p">;</span><span class="n">restore</span> <span class="o">%</span><span class="n">r15</span>
+</span><span class='line'><span class="n">ret</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>All that&#8217;s left is to clean up, restoring the registers and the stack before returning.</p>
+
+<p><img class="left" src="http://i.imgur.com/a7rqS.png" title="&#34;Build, link, run&#34;" alt="&#34;Build, link, run&#34;"></p>
+
+<h4>Build</h4>
+
+<p>But the program text file isn&#8217;t useful by itself.  Save it to disk as &#8220;hello64.asm&#8221;.  Now we need to generate the object code.  You will need to adjust the path names but on my machine, it&#8217;s: <code>nasm-2.09.10 -f macho64 hello64.asm</code> to generate the 64-bit Mach-O object code and <code>gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o</code> to link it.</p>
+
+<p>Now to run our little application, from the directory where it resides:  <code>/.hello64</code>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1291,7 +1560,7 @@ int main(int argc, const char * argv[]) {
 
 <p>With that, our first installment on x86_64 comes to a close.  We hope this was a helpful first introduction to x86_64 assembly language and that you will find it useful in understanding and debugging your applications.</p>
 
-<p>Question? Comments?  Tweet Alan @NSBum.</p>
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 </div>
   
   
@@ -2524,115 +2793,6 @@ int main(int argc, const char * argv[]) {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a Run Loop Anyway? NSRunLoop 101</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-06T18:10:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I&#8217;d share what I learned about run loops.</p>
-
-<h2>Facts about run loops</h2>
-
-<h3>Run loops manage input source events</h3>
-
-<p>A run loop - <code>NSRunLoop</code> in Cocoa - is a class of objects that manages input sources, like user events (mouse, keyboard, etc.), <code>NSPort</code> events, and those that emanate from <code>NSConnection</code> objects.  You might think that the latter is the superclass of <code>NSURLConnection</code> objects; but you&#8217;d be wrong.  <code>NSURLConnection</code> is a subclass of <code>NSObject</code> - even though run loops manage events from <code>NSURLConnection</code> also.  So, you get the picture?  <code>NSRunLoop</code> manages events.</p>
-
-<h3>Every thread gets a run loop</h3>
-
-<p>If you create a thread, you get an <code>NSRunLoop</code> with it.</p>
-
-<h3>(Most) run loops don&#8217;t run by themselves</h3>
-
-<p>You must explictly run any run loop other than the main thread run loop.</p>
-
-<h3>Run loops that have no input sources don&#8217;t run.</h3>
-
-<p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>&#8220;If no input sources or timers are attached to the run loop, this method exits immediately&#8230;&#8221;</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// now when we start the runLoop, we have an event source</span>
-</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="n">run</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">shouldRun</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>    <span class="c1">// this is in a &quot;global&quot; context</span>
-</span><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="k">while</span><span class="p">(</span> <span class="n">shouldRun</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">runLoop</span> <span class="nl">runMode:</span><span class="n">NSDefaultRunLoopMode</span> <span class="nl">beforeData:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">distantFuture</span><span class="p">]]</span> <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// set shouldRun to NO somewhere else to terminate the run loop</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Run loops have modes and you can create your own</h3>
-
-<p>Run loops have modes that specify groups of input sources that are monitored for the run loop running in that mode.  Usually you will just use the <code>NSDefaultRunLoopMode</code>; but the others are:</p>
-
-<p><code>NSConnectionReplyMode</code> used with <code>NSConnection</code> objects</p>
-
-<p><code>NSModalPanelRunLoopMode</code> used with events associated with modal panels in OS X</p>
-
-<p><code>NSEventTrackingRunLoopMode</code> used with UI tracking events</p>
-
-<p><code>NSRunLoopCommonModes</code> is a configurable group of common modes.  In Foundation is includes all of the modes except <code>NSConnectionReplyMode</code> by default.</p>
-
-<p>If you want to create your own mode, just use a different string:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="s">@&quot;com.cocoafactory.MySpecialMode&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Apple recommends reverse DNS notation to avoid stepping on someone else&#8217;s run loop.</p>
-
-<h3>You rarely need to work directly with run loops</h3>
-
-<p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2659,6 +2819,10 @@ int main(int argc, const char * argv[]) {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4/">x86_64 Assembly language tutorial:part 4</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">x86_64 Assembly Language Tutorial: Part 3</a>
       </li>
     
@@ -2672,10 +2836,6 @@ int main(int argc, const char * argv[]) {
     
       <li class="post">
         <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
       </li>
     
   </ul>

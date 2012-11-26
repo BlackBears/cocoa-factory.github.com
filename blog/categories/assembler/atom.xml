@@ -4,7 +4,7 @@
   <title><![CDATA[Category: assembler | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/assembler/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-24T03:21:37-06:00</updated>
+  <updated>2012-11-26T11:27:00-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,213 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[x86_64 Assembly language tutorial:part 4]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4/"/>
+    <updated>2012-11-24T05:41:00-06:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4</id>
+    <content type="html"><![CDATA[<p>In <a href="">Part I</a> or our x86_64 assembly language tutorial for Mac OS, we analyzed the disassembly of a simple C program.  In <a href="">Part II</a>, we extended the example and learned more about the x86_64 ABI and register usage.  In <a href="">Part III</a>, we delved into the world of objects and showed what happens behind the scenes when objects meet silicon.</p>
+
+<p>This time, we'll take a break from the analytical mode to try our hand at writing a simple program in assembly.   We're going to use two different assemblers to show the range of syntactical differences.</p>
+
+<h3>Xcode assembly language project</h3>
+
+<p>Although Xcode doesn't have an assembly language project template, you can start a new command line tool project for Mac OS and just delete the main.m file.  Then you can add an assembly language file to the project and paste the following code:</p>
+
+<p><div><script src='https://gist.github.com/4139421.js?file='></script>
+<noscript><pre><code>.private_extern	_main
+.globl	_main
+_main:                                  #   main entry point
+
+    pushq	%rbp
+
+    movq	%rsp, %rbp
+
+    leaq	_helloMessage(%rip), %rdi
+    callq	_puts
+    xorl	%eax, %eax
+    popq	%rbp
+    ret
+
+.section	__TEXT,__cstring,cstring_literals
+
+_helloMessage:  
+    .asciz	 &quot;Hello world!&quot;</code></pre></noscript></div>
+</p>
+
+<p>Like we've done with each of the prior tutorials, lets walk through the code, as simple as it is, step-by-step</p>
+
+<h4>Step 1 - Preamble</h4>
+
+<p><code>c-objdump
+.private_extern _main
+.globl  _main
+_main:                                  #   main entry point
+</code></p>
+
+<p>Here we're just defining symbols for our entry point <code>_main</code>.</p>
+
+<h4>Step 2 - Save frame pointer</h4>
+
+<p>``` c-objdump
+pushq   %rbp</p>
+
+<p>movq    %rsp, %rbp
+```
+Now we just save the frame pointer.</p>
+
+<h4>Step 3 - Print a "Hello world!" string</h4>
+
+<p>``` c-objdump
+leaq    <em>helloMessage(%rip), %rdi
+callq   </em>puts</p>
+
+<p>//</p>
+
+<p>.section    <strong>TEXT,</strong>cstring,cstring_literals</p>
+
+<p>_helloMessage:</p>
+
+<pre><code>.asciz   "Hello world!"
+</code></pre>
+
+<p>```</p>
+
+<p>Here we load a reference to the <code>_helloMessage</code> into <code>%rdi</code> our first function argument register.  And call <code>_puts</code>.  The <code>leaq</code> instruction is the 64-bit version of <code>lea</code> in x86 assembly.  This instruction places the <em>address</em> specified by the second operand into the register specified by the first operand.  It's not the contents of the memory location that are loaded, only the effective address that is computed and placed into the register.  (Sounds like a pointer in higher level languages, doesn't it?)</p>
+
+<h4>Step 4 - Clean up</h4>
+
+<p><code>c-objdump
+xorl    %eax, %eax
+popq    %rbp
+ret
+</code></p>
+
+<p>Here we zero our function return register, pop the frame pointer, and return.  That was easy!</p>
+
+<h3>NASM project</h3>
+
+<p>Next, we're going to go through an alternative way of getting the job done with an assembler called nasm - for "netwide assembler".  It uses a very different syntax than we are accustomed to seeing from the analyses we've done so far.  We also are responsible for building the Mach-O object code and linking the program ourselves.  But it's a good experience to go through.</p>
+
+<h4>Download the 64-bit version of <code>nasm</code></h4>
+
+<p>For compatibility with our GNU assembler version of the "Hello world" program, we want to do it in 64 bit form.  But the version of <code>nasm</code> that ships with Mac as of this writing is an older 32 bit version.  You can check it our on your computer with <code>nasm -v</code> at the Terminal.  On my machine, it is <code>0.98.40</code>.  We need to download the latest version before continuing.  You can find it <a href="http://www.nasm.us/pub/nasm/releasebuilds/2.10.05/macosx/">here</a>.  I just downloaded it, unzipped, and copied to <code>/usr/bin</code> so I wouldn't have to deal with mofiying the path.</p>
+
+<h4>Write the program for use in <code>nasm</code></h4>
+
+<p>Here's the complete source:</p>
+
+<p><div><script src='https://gist.github.com/4139297.js?file='></script>
+<noscript><pre><code>;
+;
+;   hello64.asm
+;
+;   A quick demonstration of 64 assembly language on Mac OS
+;
+;   Generate object code:
+;nasm-2.09.10 -f macho64 hello64.asm
+;
+;   Link executable
+;gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o
+;
+
+section .data
+    
+    hello            db &quot;Hello, world!&quot;, 0  
+
+section .text
+    
+    global _main
+    extern _puts
+
+_main:
+    push    r15             ;save %r15 to stack
+    mov     r15,    rsp     ;load the stack pointer into %r15
+    push    rbx             ;push base pointer to the stack
+
+    mov     rbx,    rsp     ;load the stack pointer into the base pointer
+    and     spl,    0xF0    ;align the stack pointer on a boundary
+
+    mov     rdi,    hello   ;move address of string to %rdi (1st function arg register)
+    call    _puts           ;call puts
+
+    mov     rsp,    rbx     ;mov %rbx back into stack pointer after the library call
+
+    pop     rbx             ;restore %rbx (a callee saved register)
+    mov     rsp,    r15     ;restore the stack pointer from %r15
+    pop     r15             ;restore %r15
+    ret</code></pre></noscript></div>
+</p>
+
+<p>The first thing to recognize with <code>nasm</code> syntax is that the operand order is reversed compared with the GNU assembler syntax.  So the instruction <code>mov r15, rsp</code> moves the contents of register <code>rsp</code> to <code>r15</code>.  We also omit the <code>%</code> sign before register names.  And nasm infers the correct version of an instruction depending on the width of the operands; so we use <code>mov</code> instead of <code>movb</code>, <code>movl</code>, or <code>movq</code>.  Apart from those differences, we do things the same way.  Let's go through the program step-by-step.</p>
+
+<h4>Step 1: Application sections</h4>
+
+<p>``` c-objdump
+section .data</p>
+
+<pre><code>hello            db "Hello, world!", 0  
+</code></pre>
+
+<p>section .text</p>
+
+<pre><code>global _main
+extern _puts
+</code></pre>
+
+<p>```</p>
+
+<p>We being with a data section that contain a single symbol <code>hello</code>.  <code>db</code> signifies a data block.  In this case the data block is a NULL-terminated string.  The <code>0</code> after the string is the NULL termination.  After the <code>.data</code> section, we have the <code>.text</code> section which is the code.  He expose <code>_main</code> - our entry point - as a global symbol and mame note that <code>_puts</code> is defined elsewhere and will need to be linked.</p>
+
+<h4>Step 2: Prologue</h4>
+
+<p>``` c-objdump
+_main:</p>
+
+<pre><code>push    r15             ;save %r15 to stack
+mov     r15,    rsp     ;load the stack pointer into %r15
+push    rbx             ;push base pointer to the stack
+</code></pre>
+
+<p>```</p>
+
+<p>This is similar to the prologues we've seen before - but take a close look here at the reversed order of the operands.  If you don't understand what our function prologue is doing at this point, best go back to our earlier tutorials and review.</p>
+
+<h4>Step 3: Call <code>puts</code></h4>
+
+<p>``` c-objdump
+mov     rbx,    rsp     ;load the stack pointer into the base pointer
+and     spl,    0xF0    ;align the stack pointer on a boundary</p>
+
+<p>mov     rdi,    hello   ;move address of string to %rdi (1st function arg register)
+call    _puts           ;call puts
+```</p>
+
+<p>The first two instructions have the effect of aligning the stack pointer to a 16 byte boundary as required by the x86_64 ABI before the upcoming call.  Then we move the address of the symbol <code>hello</code> to the <code>%rdi</code> register (the first function argument register) and call <code>_puts</code>.</p>
+
+<h4>Step 4: Cleanup</h4>
+
+<p>``` c-objdump
+mov     rsp,    rbx     ;mov %rbx back into stack pointer after the library call</p>
+
+<p>pop     rbx             ;restore %rbx (a callee saved register)
+mov     rsp,    r15     ;restore the stack pointer from %r15
+pop     r15             ;restore %r15
+ret
+```</p>
+
+<p>All that's left is to clean up, restoring the registers and the stack before returning.</p>
+
+<p><img class="left" src="http://i.imgur.com/a7rqS.png" title="&#34;Build, link, run&#34;" alt="&#34;Build, link, run&#34;"></p>
+
+<h4>Build</h4>
+
+<p>But the program text file isn't useful by itself.  Save it to disk as "hello64.asm".  Now we need to generate the object code.  You will need to adjust the path names but on my machine, it's: <code>nasm-2.09.10 -f macho64 hello64.asm</code> to generate the 64-bit Mach-O object code and <code>gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o</code> to link it.</p>
+
+<p>Now to run our little application, from the directory where it resides:  <code>/.hello64</code>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[x86_64 Assembly Language Tutorial: Part 3]]></title>
@@ -1067,7 +1274,7 @@ movl    %eax, -36(%rbp)         ## 4-byte Spill
 
 <p>With that, our first installment on x86_64 comes to a close.  We hope this was a helpful first introduction to x86_64 assembly language and that you will find it useful in understanding and debugging your applications.</p>
 
-<p>Question? Comments?  Tweet Alan @NSBum.</p>
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

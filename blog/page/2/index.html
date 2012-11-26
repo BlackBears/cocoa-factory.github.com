@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="Goodbye Wordpress, hello Octopress We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github. For &hellip;">
+  <meta name="description" content="NSRunLoop is one of the mysterious classes in the frameworks that few seem to understand really well. I recently encountered difficulties with some &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,115 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/06/whats-a-run-loop-anyway/">What&#8217;s a Run Loop Anyway? NSRunLoop 101</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-06T18:10:00-05:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><code>NSRunLoop</code> is one of the mysterious classes in the frameworks that few seem to understand really well.  I recently encountered difficulties with some aynshcronous networking code (more on that in a future post) and thought I&#8217;d share what I learned about run loops.</p>
+
+<h2>Facts about run loops</h2>
+
+<h3>Run loops manage input source events</h3>
+
+<p>A run loop - <code>NSRunLoop</code> in Cocoa - is a class of objects that manages input sources, like user events (mouse, keyboard, etc.), <code>NSPort</code> events, and those that emanate from <code>NSConnection</code> objects.  You might think that the latter is the superclass of <code>NSURLConnection</code> objects; but you&#8217;d be wrong.  <code>NSURLConnection</code> is a subclass of <code>NSObject</code> - even though run loops manage events from <code>NSURLConnection</code> also.  So, you get the picture?  <code>NSRunLoop</code> manages events.</p>
+
+<h3>Every thread gets a run loop</h3>
+
+<p>If you create a thread, you get an <code>NSRunLoop</code> with it.</p>
+
+<h3>(Most) run loops don&#8217;t run by themselves</h3>
+
+<p>You must explictly run any run loop other than the main thread run loop.</p>
+
+<h3>Run loops that have no input sources don&#8217;t run.</h3>
+
+<p>Look closely at the documentation for <code>NSRunLoop</code> <code>run</code> method:  <em>&#8220;If no input sources or timers are attached to the run loop, this method exits immediately&#8230;&#8221;</em>  This means that if you want a run loop to keep turning, you need to find an event source to attach to it.  For example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// now when we start the runLoop, we have an event source</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="n">run</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But simply removing all input sources from a run loop is not guaranteed to stop it.  IF you want to stop a run loop, you must explicitly do so:  `</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">shouldRun</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>    <span class="c1">// this is in a &quot;global&quot; context</span>
+</span><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="k">while</span><span class="p">(</span> <span class="n">shouldRun</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">runLoop</span> <span class="nl">runMode:</span><span class="n">NSDefaultRunLoopMode</span> <span class="nl">beforeData:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">distantFuture</span><span class="p">]]</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// set shouldRun to NO somewhere else to terminate the run loop</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Run loops have modes and you can create your own</h3>
+
+<p>Run loops have modes that specify groups of input sources that are monitored for the run loop running in that mode.  Usually you will just use the <code>NSDefaultRunLoopMode</code>; but the others are:</p>
+
+<p><code>NSConnectionReplyMode</code> used with <code>NSConnection</code> objects</p>
+
+<p><code>NSModalPanelRunLoopMode</code> used with events associated with modal panels in OS X</p>
+
+<p><code>NSEventTrackingRunLoopMode</code> used with UI tracking events</p>
+
+<p><code>NSRunLoopCommonModes</code> is a configurable group of common modes.  In Foundation is includes all of the modes except <code>NSConnectionReplyMode</code> by default.</p>
+
+<p>If you want to create your own mode, just use a different string:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">runLoop</span> <span class="nl">addPort:</span><span class="p">[</span><span class="n">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode:</span><span class="s">@&quot;com.cocoafactory.MySpecialMode&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Apple recommends reverse DNS notation to avoid stepping on someone else&#8217;s run loop.</p>
+
+<h3>You rarely need to work directly with run loops</h3>
+
+<p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -159,6 +268,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4/">x86_64 Assembly language tutorial:part 4</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">x86_64 Assembly Language Tutorial: Part 3</a>
       </li>
     
@@ -172,10 +285,6 @@
     
       <li class="post">
         <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/29/how-to-use-custom-nsattributedstring-attributes/">How to use custom NSAttributedString attributes</a>
       </li>
     
   </ul>

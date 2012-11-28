@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macos | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/macos/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-26T11:27:00-06:00</updated>
+  <updated>2012-11-28T06:28:02-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Forgetting Sandbox entitlements]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/11/28/forgetting-sandbox-entitlements/"/>
+    <updated>2012-11-28T06:19:00-06:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/11/28/forgetting-sandbox-entitlements</id>
+    <content type="html"><![CDATA[<p>I was recently prepping a Mac OS app for Sandbox compliance but couldn't figure out why the following error: <code>NSPOSIXErrorDomain Code=1 "The operation couldn’t be completed. Operation not permitted"</code></p>
+
+<p>Finally it dawned on me that even simple outgoing network requests from the app, need to be specifically enabled thusly.</p>
+
+<p><img src="http://i.imgur.com/6hz3q.png"></p>
+
+<p>I wish the error were more descriptive or that the <code>userInfo</code> dictionary of the <code>NSError</code> at least had a Sandbox violation description key.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[x86_64 Assembly language tutorial:part 4]]></title>

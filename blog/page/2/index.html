@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="NSRunLoop is one of the mysterious classes in the frameworks that few seem to understand really well. I recently encountered difficulties with some &hellip;">
+  <meta name="description" content="NSArrayController is a work-horse of Cocoa bindings. We recently ran into a problem with thread-safety which is not mentioned in the documentation. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,80 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/12/nsarraycontroller-thread-safety/">NSArrayController Thread Safety</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-12T03:18:00-05:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><code>NSArrayController</code> is a work-horse of Cocoa bindings.  We recently ran into a problem with thread-safety which is not mentioned <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSArrayController_Class/Reference/Reference.html">in the documentation</a>.</p>
+
+<p>Consider this piece of code that downloads some resources and populates an <code>NSArrayController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadUsers</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CCFUserListDownloader</span> <span class="o">*</span><span class="n">downloader</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFUserListDownloader</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSessionID:</span><span class="n">self</span><span class="p">.</span><span class="n">sessionID</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">downloader</span> <span class="nl">downloadWithCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">CCFAPIStatus</span> <span class="n">status</span><span class="p">,</span><span class="n">NSArray</span> <span class="o">*</span><span class="n">remoteObjects</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">remoteObjects</span> <span class="nl">enumerateObjectsUsingBlock:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">CCFRemoteUser</span> <span class="o">*</span><span class="n">user</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFRemoteUser</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithDictionary:</span><span class="n">obj</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span> <span class="n">user</span> <span class="p">)</span>
+</span><span class='line'>                <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">removeObjectAtArrangedObjectIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Occasionally, we would get crashes on startup traced to this method.  The problem is that our <code>userArrayController</code> has multiple bindings to the UI.  Since <code>downloadUsers</code> was being executed on a background queue, its completion block was executed on the same queue.  When we add a <code>user</code> object to the array controller on a queue other than main, we would occasionally crash.  The solution is simple, just wrap the <code>addObject</code> call in an asynchronous dispatch to the main queue:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">userArrayController</span><span class="p">]</span> <span class="nl">addObject:</span><span class="n">user</span><span class="p">];</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, don&#8217;t add objects to instances of <code>NSArrayController</code> on a background queue.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -268,6 +342,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/28/forgetting-sandbox-entitlements/">Forgetting Sandbox entitlements</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4/">x86_64 Assembly language tutorial:part 4</a>
       </li>
     
@@ -281,10 +359,6 @@
     
       <li class="post">
         <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">x86_64 Assembly Language Tutorial: Part 1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/30/style-guide/">Cocoa Factory Style Guide</a>
       </li>
     
   </ul>

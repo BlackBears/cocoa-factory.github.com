@@ -1,0 +1,140 @@
+---
+layout: post
+title: "x86_64 Assembly language tutorial:part 4"
+date: 2012-11-24 05:41
+comments: false
+categories: x86_64 assembler tutorial macos
+---
+In [Part I]() or our x86_64 assembly language tutorial for Mac OS, we analyzed the disassembly of a simple C program.  In [Part II](), we extended the example and learned more about the x86_64 ABI and register usage.  In [Part III](), we delved into the world of objects and showed what happens behind the scenes when objects meet silicon.
+
+This time, we'll take a break from the analytical mode to try our hand at writing a simple program in assembly.   We're going to use two different assemblers to show the range of syntactical differences.
+
+### Xcode assembly language project ###
+
+Although Xcode doesn't have an assembly language project template, you can start a new command line tool project for Mac OS and just delete the main.m file.  Then you can add an assembly language file to the project and paste the following code:
+
+{% gist 4139421 %}
+
+Like we've done with each of the prior tutorials, lets walk through the code, as simple as it is, step-by-step
+
+#### Step 1 - Preamble ####
+
+``` c-objdump
+.private_extern	_main
+.globl	_main
+_main:                                  #   main entry point
+```
+
+Here we're just defining symbols for our entry point `_main`.
+
+#### Step 2 - Save frame pointer ####
+
+``` c-objdump
+pushq	%rbp
+
+movq	%rsp, %rbp
+```
+Now we just save the frame pointer.
+
+#### Step 3 - Print a "Hello world!" string ####
+
+``` c-objdump
+leaq	_helloMessage(%rip), %rdi
+callq	_puts
+
+//
+
+.section	__TEXT,__cstring,cstring_literals
+
+_helloMessage:  
+    .asciz	 "Hello world!"
+```
+
+Here we load a reference to the `_helloMessage` into `%rdi` our first function argument register.  And call `_puts`.  The `leaq` instruction is the 64-bit version of `lea` in x86 assembly.  This instruction places the _address_ specified by the second operand into the register specified by the first operand.  It's not the contents of the memory location that are loaded, only the effective address that is computed and placed into the register.  (Sounds like a pointer in higher level languages, doesn't it?)
+
+#### Step 4 - Clean up ####
+
+``` c-objdump
+xorl	%eax, %eax
+popq	%rbp
+ret
+```
+
+Here we zero our function return register, pop the frame pointer, and return.  That was easy!
+
+### NASM project ###
+
+Next, we're going to go through an alternative way of getting the job done with an assembler called nasm - for "netwide assembler".  It uses a very different syntax than we are accustomed to seeing from the analyses we've done so far.  We also are responsible for building the Mach-O object code and linking the program ourselves.  But it's a good experience to go through.
+
+#### Download the 64-bit version of `nasm` ####
+
+For compatibility with our GNU assembler version of the "Hello world" program, we want to do it in 64 bit form.  But the version of `nasm` that ships with Mac as of this writing is an older 32 bit version.  You can check it our on your computer with `nasm -v` at the Terminal.  On my machine, it is `0.98.40`.  We need to download the latest version before continuing.  You can find it [here](http://www.nasm.us/pub/nasm/releasebuilds/2.10.05/macosx/).  I just downloaded it, unzipped, and copied to `/usr/bin` so I wouldn't have to deal with mofiying the path.
+
+#### Write the program for use in `nasm` ####
+
+Here's the complete source:
+
+{% gist 4139297 %}
+
+The first thing to recognize with `nasm` syntax is that the operand order is reversed compared with the GNU assembler syntax.  So the instruction `mov r15, rsp` moves the contents of register `rsp` to `r15`.  We also omit the `%` sign before register names.  And nasm infers the correct version of an instruction depending on the width of the operands; so we use `mov` instead of `movb`, `movl`, or `movq`.  Apart from those differences, we do things the same way.  Let's go through the program step-by-step.
+
+#### Step 1: Application sections ####
+
+``` c-objdump
+section .data
+    
+    hello            db "Hello, world!", 0  
+
+section .text
+    
+    global _main
+    extern _puts
+```
+
+We being with a data section that contain a single symbol `hello`.  `db` signifies a data block.  In this case the data block is a NULL-terminated string.  The `0` after the string is the NULL termination.  After the `.data` section, we have the `.text` section which is the code.  He expose `_main` - our entry point - as a global symbol and mame note that `_puts` is defined elsewhere and will need to be linked.
+
+#### Step 2: Prologue ####
+
+``` c-objdump
+_main:
+    push    r15             ;save %r15 to stack
+    mov     r15,    rsp     ;load the stack pointer into %r15
+    push    rbx             ;push base pointer to the stack
+``` 
+
+This is similar to the prologues we've seen before - but take a close look here at the reversed order of the operands.  If you don't understand what our function prologue is doing at this point, best go back to our earlier tutorials and review.
+
+#### Step 3: Call `puts` ####
+
+``` c-objdump
+mov     rbx,    rsp     ;load the stack pointer into the base pointer
+and     spl,    0xF0    ;align the stack pointer on a boundary
+
+mov     rdi,    hello   ;move address of string to %rdi (1st function arg register)
+call    _puts           ;call puts
+```
+
+The first two instructions have the effect of aligning the stack pointer to a 16 byte boundary as required by the x86_64 ABI before the upcoming call.  Then we move the address of the symbol `hello` to the `%rdi` register (the first function argument register) and call `_puts`.
+
+#### Step 4: Cleanup ####
+
+``` c-objdump
+mov     rsp,    rbx     ;mov %rbx back into stack pointer after the library call
+
+pop     rbx             ;restore %rbx (a callee saved register)
+mov     rsp,    r15     ;restore the stack pointer from %r15
+pop     r15             ;restore %r15
+ret
+```
+
+All that's left is to clean up, restoring the registers and the stack before returning.
+
+{% img left http://i.imgur.com/a7rqS.png "Build, link, run" %}
+#### Build ####
+
+But the program text file isn't useful by itself.  Save it to disk as "hello64.asm".  Now we need to generate the object code.  You will need to adjust the path names but on my machine, it's: `nasm-2.09.10 -f macho64 hello64.asm` to generate the 64-bit Mach-O object code and `gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o` to link it.
+
+Now to run our little application, from the directory where it resides:  `/.hello64`.
+
+Questions or comments about this post?  Contact the author of this post `@NSBum`.
+

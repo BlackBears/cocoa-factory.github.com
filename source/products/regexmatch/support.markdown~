@@ -1,0 +1,39 @@
+---
+layout: page
+title: "RegexMatch Support"
+date: 2012-11-13 13:30
+comments: false
+sharing: true
+footer: true
+---
+### RegexMatch support ###
+
+#### FGA's (Frequently Given Answers) ####
+
+> What programming languages are currently supported?
+
+You can export code in Objective-C, Perl, Python, PHP, JavaScript, Ruby.  It seemed like these were the right ones to start with; but if you really want others, drop us a line.
+
+> How do I export code?
+
+We imagine you want to actually use your code somewhere.  So RegexMatch can export code to the pasteboard - so that you can paste it into another app such as a text editor, or you can email the code to yourself (or someone else, for that matter.)
+
+> Does it use standard regex syntax.
+
+Yes, of course.
+
+> Do you have a trial, or lite version?
+
+No, sorry.
+
+> How can I save regular expressions that I want to use or work on later?
+
+You can use Snapshots for that purpose.  In the main table, just add (+) to add a new Snapshot.  Give it a name; and RegexMatch will persist it for it.
+
+> There's something I don't like about the App.  What can I do?
+
+We'd definitely like to hear from you so we can fix whatever you're noticing.  Of course, you can always review it on the App Store - but if you've got something tough to say, give us a chance first.  If you're using the app, chances are you're also a developer, let's keep it nice and collegial.
+
+> How can I get in touch with you if there's a problem?
+
+Two ways: alan@cocoa-factory.com and @NSBum

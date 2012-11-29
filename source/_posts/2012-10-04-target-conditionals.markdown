@@ -75,3 +75,5 @@ if( [UIImage respondsToSelector:@selector(someNewMethod)]  ) {
 ##What is `__IPHONE_OS_VERSION_MIN_REQUIRED?`##
 
 Unless you set it yourself, the compiler will set it to your target deployment version.  Same for `__MAC_OS_VERSION_MIN_REQUIRED`.  But you probably guessed that already.
+
+Question? Comments?  Tweet Alan `@NSBum`.

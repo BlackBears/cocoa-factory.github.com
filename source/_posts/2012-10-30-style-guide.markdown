@@ -146,3 +146,5 @@ The method signature should be left-justified with one space after the scope (th
 - (void)setFoo:(NSString*)aFoo;     //  INCORRECT - no space between type and pointer *
 ```
 
+Question? Comments?  Tweet Alan `@NSBum`.
+

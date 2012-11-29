@@ -255,3 +255,6 @@ Let's turn our attention to `CCFMainWindowController` where our attributes are b
 The rest of the code in `CCFMainWindowController` is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.
 
 Athough here's much more to the text system in Cocoa you should have a good starting point for custom attributes. 
+
+
+Question? Comments?  Tweet Alan `@NSBum`.

@@ -8,9 +8,7 @@ footer: true
 ---
 ### RegexMatch support ###
 
-_Coming soon: submitted to App Store on 19 November 2012_
-
-#### FGA's (Frequently Given Answers)
+#### FGA's (Frequently Given Answers) ####
 
 > What programming languages are currently supported?
 
@@ -38,4 +36,4 @@ We'd definitely like to hear from you so we can fix whatever you're noticing.  O
 
 > How can I get in touch with you if there's a problem?
 
-Two ways: alan@cocoa-factory.com and @NSBum
+Two ways: `support@cocoafactory.com` and `@CocoaFactory`

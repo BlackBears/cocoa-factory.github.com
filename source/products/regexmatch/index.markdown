@@ -8,9 +8,9 @@ footer: true
 ---
 ### RegexMatch ###
 
-_Coming soon: submitted to App Store on 19 November 2012_
+[{% img right http://i.imgur.com/HpF1A.png %}](https://itunes.apple.com/us/app/regexmatch/id578617071?ls=1&mt=8)
 
-{% img http://i.imgur.com/s2JWp.png %}
+{% img left http://i.imgur.com/s2JWp.png %}
 
 Develop and test regular expressions on your iPad.  Create your expression and automatically generate code in any one of several languages.
 
@@ -40,7 +40,8 @@ You can use RegexMatch to generate code for you once you've defined the expressi
 
 #### Availability ####
 
-RegexMatch will be available soon on the iOS App Store.
+{% img left http://i.imgur.com/HpF1A.png %}
+RegexMatch is [available](https://itunes.apple.com/us/app/regexmatch/id578617071?ls=1&mt=8) on the iOS App Store. On your iPad you can open the App Store app and search for _"RegexMatch"_ or you can go to the App Store in iTunes on your Mac or PC and search for _"RegexMatch"_.
 
 #### Support ####
 

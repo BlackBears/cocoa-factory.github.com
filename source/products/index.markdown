@@ -8,7 +8,14 @@ footer: true
 ---
 ### Cocoa Factory Software ###
 
-#### RegexMatch ####
+#### RegexMatch for iPad ####
 {% img left http://i.imgur.com/s2JWp.png %} [RegexMatch for iPad](/products/regexmatch) allows developers to create, test, and generate code for regular expressions.  Regular expressions are patterns that describe how to process text strings.
 
-_Coming soon: submitted to App Store on 19 November 2012_
+{% img left http://i.imgur.com/HpF1A.png %}
+##### Availability #####
+RegexMatch is available for [download](https://itunes.apple.com/us/app/regexmatch/id578617071?ls=1&mt=8#) on the iTunes App Store.  Check it out now.
+
+#### RegexMatch for Mac OS ####
+{% img left http://i.imgur.com/s2JWp.png %} [RegexMatch for Mac OS]() is just like its iPad counterpart but with the convenience of running on your Mac.  That means exporting code just got 100x easier.
+
+_Coming soon we're just putting the finishing touches on it!  Stay tuned._

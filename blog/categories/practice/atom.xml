@@ -4,7 +4,7 @@
   <title><![CDATA[Category: practice | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/practice/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-29T03:07:51-06:00</updated>
+  <updated>2012-11-29T04:16:48-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -176,6 +176,8 @@ if (flag) {</p>
 - (void)setFoo: (NSString </em>)aFoo;   //  INCORRECT - space after the colon
 - (void)setFoo:(NSString*)aFoo;     //  INCORRECT - no space between type and pointer *
 ```</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

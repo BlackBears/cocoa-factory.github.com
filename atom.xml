@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-29T03:07:51-06:00</updated>
+  <updated>2012-11-29T04:16:48-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -25,6 +25,8 @@
 <p><img src="http://i.imgur.com/6hz3q.png"></p>
 
 <p>I wish the error were more descriptive or that the <code>userInfo</code> dictionary of the <code>NSError</code> at least had a Sandbox violation description key.</p>
+
+<p>Questions or comments about this post?  Contact the author of this post <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   
@@ -267,6 +269,8 @@ _main:
 <p>But the program text file isn&#8217;t useful by itself.  Save it to disk as &#8220;hello64.asm&#8221;.  Now we need to generate the object code.  You will need to adjust the path names but on my machine, it&#8217;s: <code>nasm-2.09.10 -f macho64 hello64.asm</code> to generate the 64-bit Mach-O object code and <code>gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o</code> to link it.</p>
 
 <p>Now to run our little application, from the directory where it resides:  <code>/.hello64</code>.</p>
+
+<p>Questions or comments about this post?  Contact the author of this post <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   
@@ -1606,7 +1610,7 @@ int main(int argc, const char * argv[]) {
 </span></code></pre></td></tr></table></div></figure>
 
 
-
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   
@@ -2011,6 +2015,8 @@ int main(int argc, const char * argv[]) {
 <p>The rest of the code in <code>CCFMainWindowController</code> is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.</p>
 
 <p>Athough here&#8217;s much more to the text system in Cocoa you should have a good starting point for custom attributes.</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   
@@ -2148,6 +2154,8 @@ int main(int argc, const char * argv[]) {
 <h2>What is <code>__IPHONE_OS_VERSION_MIN_REQUIRED?</code></h2>
 
 <p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

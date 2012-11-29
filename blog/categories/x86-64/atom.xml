@@ -4,7 +4,7 @@
   <title><![CDATA[Category: x86_64 | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/x86-64/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-29T03:07:51-06:00</updated>
+  <updated>2012-11-29T04:16:48-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -217,6 +217,8 @@ ret
 <p>But the program text file isn't useful by itself.  Save it to disk as "hello64.asm".  Now we need to generate the object code.  You will need to adjust the path names but on my machine, it's: <code>nasm-2.09.10 -f macho64 hello64.asm</code> to generate the 64-bit Mach-O object code and <code>gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o</code> to link it.</p>
 
 <p>Now to run our little application, from the directory where it resides:  <code>/.hello64</code>.</p>
+
+<p>Questions or comments about this post?  Contact the author of this post <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

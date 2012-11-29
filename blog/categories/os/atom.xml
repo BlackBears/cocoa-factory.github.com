@@ -4,7 +4,7 @@
   <title><![CDATA[Category: os | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/os/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-11-29T03:07:51-06:00</updated>
+  <updated>2012-11-29T04:16:48-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -301,6 +301,8 @@ NSTextStorage *textStorage = self.textView.textStorage;
 <p>The rest of the code in <code>CCFMainWindowController</code> is for setup and for observing for changes in the highlight and line colors.  Using Key-value observing, we are able to detect when the colors change and re-do our markup accordingly.</p>
 
 <p>Athough here's much more to the text system in Cocoa you should have a good starting point for custom attributes.</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

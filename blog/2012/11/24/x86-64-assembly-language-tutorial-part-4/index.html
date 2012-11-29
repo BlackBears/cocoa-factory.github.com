@@ -328,6 +328,8 @@ _main:
 <p>But the program text file isn&#8217;t useful by itself.  Save it to disk as &#8220;hello64.asm&#8221;.  Now we need to generate the object code.  You will need to adjust the path names but on my machine, it&#8217;s: <code>nasm-2.09.10 -f macho64 hello64.asm</code> to generate the 64-bit Mach-O object code and <code>gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o</code> to link it.</p>
 
 <p>Now to run our little application, from the directory where it resides:  <code>/.hello64</code>.</p>
+
+<p>Questions or comments about this post?  Contact the author of this post <code>@NSBum</code>.</p>
 </div>
 
 

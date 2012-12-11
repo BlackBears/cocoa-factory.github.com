@@ -8,7 +8,7 @@ footer: true
 ---
 
 #### Version 1.0.0 ####
-**Release date:** _TBD_
+**Release date:** 2012-12-10
 
 **Notes:**
 - this is the initial release

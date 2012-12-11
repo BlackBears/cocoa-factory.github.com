@@ -8,8 +8,6 @@ footer: true
 ---
 ### RegexMatch support ###
 
-_RegexMatch for Mac is coming soon! Stay tuned._
-
 #### FGA's (Frequently Given Answers) #### 
 
 > What programming languages are currently supported?

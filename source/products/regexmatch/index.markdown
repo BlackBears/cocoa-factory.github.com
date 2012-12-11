@@ -43,6 +43,8 @@ You can use RegexMatch to generate code for you once you've defined the expressi
 {% img left http://i.imgur.com/HpF1A.png %}
 RegexMatch is [available](https://itunes.apple.com/us/app/regexmatch/id578617071?ls=1&mt=8) on the iOS App Store. On your iPad you can open the App Store app and search for _"RegexMatch"_ or you can go to the App Store in iTunes on your Mac or PC and search for _"RegexMatch"_.
 
+RegexMatch is also [available](https://itunes.apple.com/us/app/regexmatch/id582049745?ls=1&mt=12) on the Mac App Store.
+
 #### Support ####
 
 Do you already use RegexMatch for iPad and [need support](/products/regexmatch/support.html)?

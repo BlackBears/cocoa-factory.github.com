@@ -18,4 +18,6 @@ RegexMatch is available for [download](https://itunes.apple.com/us/app/regexmatc
 #### RegexMatch for Mac OS ####
 {% img left http://i.imgur.com/s2JWp.png %} [RegexMatch for Mac OS]() is just like its iPad counterpart but with the convenience of running on your Mac.  That means exporting code just got 100x easier.
 
-_Coming soon we're just putting the finishing touches on it!  Stay tuned._
+{% img left http://i.imgur.com/HpF1A.png %}
+##### Availability #####
+RegexMatch is available for [download](https://itunes.apple.com/us/app/regexmatch/id582049745?ls=1&mt=12) on the iTunes App Store.

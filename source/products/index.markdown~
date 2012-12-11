@@ -1,0 +1,23 @@
+---
+layout: page
+title: "Products"
+date: 2012-11-13 12:48
+comments: false
+sharing: true
+footer: true
+---
+### Cocoa Factory Software ###
+
+#### RegexMatch for iPad ####
+{% img left http://i.imgur.com/s2JWp.png %} [RegexMatch for iPad](/products/regexmatch) allows developers to create, test, and generate code for regular expressions.  Regular expressions are patterns that describe how to process text strings.
+
+{% img left http://i.imgur.com/HpF1A.png %}
+##### Availability #####
+RegexMatch is available for [download](https://itunes.apple.com/us/app/regexmatch/id578617071?ls=1&mt=8#) on the iTunes App Store.  Check it out now.
+
+#### RegexMatch for Mac OS ####
+{% img left http://i.imgur.com/s2JWp.png %} [RegexMatch for Mac OS]() is just like its iPad counterpart but with the convenience of running on your Mac.  That means exporting code just got 100x easier.
+
+{% img left http://i.imgur.com/HpF1A.png %}
+##### Availability #####
+RegexMatch is available for [download](https://itunes.apple.com/us/app/regexmatch/id582049745?ls=1&mt=12) on the iTunes App Store.  Check it out now.

@@ -7,8 +7,6 @@ sharing: true
 footer: true
 ---
 
-_Coming soon!_
-
 {% img http://i.imgur.com/kudTr.png %}
 
 With RegexMatch for Mac OS you can develop and test regular expressions on your Mac.  Create your expression and automatically generate code in any one of several languages.
@@ -31,11 +29,13 @@ You can use RegexMatch to generate code once you've defined the expression.  Cur
 
 #### Availability ####
 
-RegexMatch for Mac OS will be available on the Mac App Store shortly.
+RegexMatch for Mac OS is [available](https://itunes.apple.com/us/app/regexmatch/id582049745?ls=1&mt=12) on the Mac App Store.
 
 #### Support ####
 
-Do you already use RegexMatch for Mac and need support?
+Do you already use RegexMatch for Mac and [need support](/products/regexmatch/macos/support)?
+
+[Release notes](/products/regexmatch/macos/support/releasenotes)
 
 
 

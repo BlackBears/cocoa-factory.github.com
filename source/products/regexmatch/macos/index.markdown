@@ -33,7 +33,9 @@ RegexMatch for Mac OS is [available](https://itunes.apple.com/us/app/regexmatch/
 
 #### Support ####
 
-Do you already use RegexMatch for Mac and need support?
+Do you already use RegexMatch for Mac and [need support](/products/regexmatch/macos/support)?
+
+[Release notes](/products/regexmatch/macos/support/releasenotes.html)
 
 
 

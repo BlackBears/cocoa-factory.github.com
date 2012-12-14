@@ -12,7 +12,7 @@ footer: true
 
 > What programming languages are currently supported?
 
-You can export code in Objective-C, Perl, Python, PHP, JavaScript, Ruby and Java.  It seemed like these were the right ones to start with; but if you really want others, drop us a line.
+You can export code in Objective-C, Perl, Python, PHP, JavaScript, Ruby.  It seemed like these were the right ones to start with; but if you really want others, drop us a line.
 
 > How do I export code?
 

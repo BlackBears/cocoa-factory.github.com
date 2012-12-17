@@ -4,7 +4,7 @@
   <title><![CDATA[Category: regular expressions | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/regular-expressions/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-12-16T20:39:28-06:00</updated>
+  <updated>2012-12-16T20:43:19-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -18,7 +18,7 @@
     <link href="http://cocoa-factory.github.com/blog/2012/12/15/announcing-regexmatch-for-mac/"/>
     <updated>2012-12-15T06:44:00-06:00</updated>
     <id>http://cocoa-factory.github.com/blog/2012/12/15/announcing-regexmatch-for-mac</id>
-    <content type="html"><![CDATA[<p>{% img left http://i.imgur.com/s2JWp.png %}
+    <content type="html"><![CDATA[<p><img class="left" src="http://i.imgur.com/s2JWp.png">
 We're delighted to announce our newest app - <strong>RegexMatch for Mac OS</strong>! If you use regular expressions in your development process, you'll want to <a href="https://itunes.apple.com/us/app/regexmatch/id582049745?mt=12">check it out</a>.  You can write and test regular expressions, then generate and export code in your language of choice.</p>
 
 <p>Learn more about <a href="/products/regexmatch/macos">RegexMatch</a>.</p>

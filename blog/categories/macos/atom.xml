@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macos | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/macos/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-12-15T06:52:53-06:00</updated>
+  <updated>2012-12-16T20:39:28-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -14,11 +14,23 @@
 
   
   <entry>
+    <title type="html"><![CDATA[LLDB print registers]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/12/16/lldb-print-registers/"/>
+    <updated>2012-12-16T12:53:00-06:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/12/16/lldb-print-registers</id>
+    <content type="html"><![CDATA[<p>Somes while debugging, or when you want to understand what the compiler doing with your code under the hood, you may want to print the contents of all the registers in the current frame.</p>
+
+<p>To print the current register contents in LLDB it's <code>register read</code>:
+{% img "/images/lldb_print_reg.png" %}</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Announcing RegexMatch for Mac]]></title>
     <link href="http://cocoa-factory.github.com/blog/2012/12/15/announcing-regexmatch-for-mac/"/>
     <updated>2012-12-15T06:44:00-06:00</updated>
     <id>http://cocoa-factory.github.com/blog/2012/12/15/announcing-regexmatch-for-mac</id>
-    <content type="html"><![CDATA[<p><img class="left" src="http://i.imgur.com/s2JWp.png">
+    <content type="html"><![CDATA[<p>{% img left http://i.imgur.com/s2JWp.png %}
 We're delighted to announce our newest app - <strong>RegexMatch for Mac OS</strong>! If you use regular expressions in your development process, you'll want to <a href="https://itunes.apple.com/us/app/regexmatch/id582049745?mt=12">check it out</a>.  You can write and test regular expressions, then generate and export code in your language of choice.</p>
 
 <p>Learn more about <a href="/products/regexmatch/macos">RegexMatch</a>.</p>
@@ -36,7 +48,7 @@ We're delighted to announce our newest app - <strong>RegexMatch for Mac OS</stro
 
 <p>Finally it dawned on me that even simple outgoing network requests from the app, need to be specifically enabled thusly.</p>
 
-<p><img src="http://i.imgur.com/6hz3q.png"></p>
+<p>{% img http://i.imgur.com/6hz3q.png %}</p>
 
 <p>I wish the error were more descriptive or that the <code>userInfo</code> dictionary of the <code>NSError</code> at least had a Sandbox violation description key.</p>
 
@@ -57,26 +69,7 @@ We're delighted to announce our newest app - <strong>RegexMatch for Mac OS</stro
 
 <p>Although Xcode doesn't have an assembly language project template, you can start a new command line tool project for Mac OS and just delete the main.m file.  Then you can add an assembly language file to the project and paste the following code:</p>
 
-<p><div><script src='https://gist.github.com/4139421.js?file='></script>
-<noscript><pre><code>.private_extern	_main
-.globl	_main
-_main:                                  #   main entry point
-
-    pushq	%rbp
-
-    movq	%rsp, %rbp
-
-    leaq	_helloMessage(%rip), %rdi
-    callq	_puts
-    xorl	%eax, %eax
-    popq	%rbp
-    ret
-
-.section	__TEXT,__cstring,cstring_literals
-
-_helloMessage:  
-    .asciz	 &quot;Hello world!&quot;</code></pre></noscript></div>
-</p>
+<p>{% gist 4139421 %}</p>
 
 <p>Like we've done with each of the prior tutorials, lets walk through the code, as simple as it is, step-by-step</p>
 
@@ -140,47 +133,7 @@ ret
 
 <p>Here's the complete source:</p>
 
-<p><div><script src='https://gist.github.com/4139297.js?file='></script>
-<noscript><pre><code>;
-;
-;   hello64.asm
-;
-;   A quick demonstration of 64 assembly language on Mac OS
-;
-;   Generate object code:
-;nasm-2.09.10 -f macho64 hello64.asm
-;
-;   Link executable
-;gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o
-;
-
-section .data
-    
-    hello            db &quot;Hello, world!&quot;, 0  
-
-section .text
-    
-    global _main
-    extern _puts
-
-_main:
-    push    r15             ;save %r15 to stack
-    mov     r15,    rsp     ;load the stack pointer into %r15
-    push    rbx             ;push base pointer to the stack
-
-    mov     rbx,    rsp     ;load the stack pointer into the base pointer
-    and     spl,    0xF0    ;align the stack pointer on a boundary
-
-    mov     rdi,    hello   ;move address of string to %rdi (1st function arg register)
-    call    _puts           ;call puts
-
-    mov     rsp,    rbx     ;mov %rbx back into stack pointer after the library call
-
-    pop     rbx             ;restore %rbx (a callee saved register)
-    mov     rsp,    r15     ;restore the stack pointer from %r15
-    pop     r15             ;restore %r15
-    ret</code></pre></noscript></div>
-</p>
+<p>{% gist 4139297 %}</p>
 
 <p>The first thing to recognize with <code>nasm</code> syntax is that the operand order is reversed compared with the GNU assembler syntax.  So the instruction <code>mov r15, rsp</code> moves the contents of register <code>rsp</code> to <code>r15</code>.  We also omit the <code>%</code> sign before register names.  And nasm infers the correct version of an instruction depending on the width of the operands; so we use <code>mov</code> instead of <code>movb</code>, <code>movl</code>, or <code>movq</code>.  Apart from those differences, we do things the same way.  Let's go through the program step-by-step.</p>
 
@@ -241,7 +194,7 @@ ret
 
 <p>All that's left is to clean up, restoring the registers and the stack before returning.</p>
 
-<p><img class="left" src="http://i.imgur.com/a7rqS.png" title="&#34;Build, link, run&#34;" alt="&#34;Build, link, run&#34;"></p>
+<p>{% img left http://i.imgur.com/a7rqS.png "Build, link, run" %}</p>
 
 <h4>Build</h4>
 
@@ -262,80 +215,11 @@ ret
 
 <p>Now, we're going to start to tiptoe gently into the world of Objective-C objects and use that as a platform for peeking into what ARC does to our code behind our backs.  Let's get started with a very simple Objective-C program:</p>
 
-<p><div><script src='https://gist.github.com/4135901.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-@interface Foo : NSObject {
-    NSInteger _bar;
-}
-
-- (id)initWithBar:(NSInteger)aBar;
-- (void)printBar;
-
-@end
-
-@implementation Foo
-
-- (id)initWithBar:(NSInteger)aBar {
-    self = [super init];
-    if( !self ) return nil;
-    
-    _bar = aBar;
-    return self;
-}
-
-- (void)printBar {
-    printf(&quot;%ld&quot;,_bar);
-}
-
-@end
-
-int main(int argc, const char * argv[])
-{
-
-    @autoreleasepool {
-        Foo *foo = [[Foo alloc] initWithBar:15];
-        [foo printBar];
-    }
-    return 0;
-}</code></pre></noscript></div>
-</p>
+<p>{% gist 4135901 %}</p>
 
 <p>Build and run this little application in Xcode and use the Assistant editor to review its disassembly just like we showed in <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">Part II</a>:</p>
 
-<p><div><script src='https://gist.github.com/4135938.js?file='></script>
-<noscript><pre><code>0x100000de0:  pushq  %rbp
-0x100000de1:  movq   %rsp, %rbp
-0x100000de4:  pushq  %r15
-0x100000de6:  pushq  %r14
-0x100000de8:  pushq  %rbx
-0x100000de9:  pushq  %rax
-0x100000dea:  callq  0x100000e52               ; symbol stub for: objc_autoreleasePoolPush
-0x100000def:  movq   %rax, %r14
-0x100000df2:  movq   903(%rip), %rdi           ; (void *)0x0000000100001190: Foo
-0x100000df9:  leaq   880(%rip), %rsi           ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
-0x100000e00:  callq  *874(%rip)                ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
-0x100000e06:  movq   843(%rip), %rsi           ; &quot;initWithBar:&quot;
-0x100000e0d:  movq   508(%rip), %r15           ; (void *)0x00007fff871c3240: objc_msgSend
-0x100000e14:  movq   %rax, %rdi
-0x100000e17:  movl   $15, %edx
-0x100000e1c:  callq  *%r15
-0x100000e1f:  movq   %rax, %rbx
-0x100000e22:  movq   823(%rip), %rsi           ; &quot;printBar&quot;
-0x100000e29:  movq   %rbx, %rdi
-0x100000e2c:  callq  *%r15
-0x100000e2f:  movq   %rbx, %rdi
-0x100000e32:  callq  0x100000e5e               ; symbol stub for: objc_release
-0x100000e37:  movq   %r14, %rdi
-0x100000e3a:  callq  0x100000e4c               ; symbol stub for: objc_autoreleasePoolPop
-0x100000e3f:  xorl   %eax, %eax
-0x100000e41:  addq   $8, %rsp
-0x100000e45:  popq   %rbx
-0x100000e46:  popq   %r14
-0x100000e48:  popq   %r15
-0x100000e4a:  popq   %rbp
-0x100000e4b:  ret</code></pre></noscript></div>
-</p>
+<p>{% gist 4135938 %}</p>
 
 <h3>Step-by-step</h3>
 
@@ -522,449 +406,6 @@ The rest of our function clean-up is that same as in the prior installment of ou
 <h3>Conclusion</h3>
 
 <p>In this tutorial, we dived into Objective-C objects and learned about method dispatch optimizations in the Objective-C runtime while getting still more practice in interpreting x86_64 assembly language on the Mac.</p>
-
-<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[x86_64 Assembly Language Tutorial: Part 2]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/"/>
-    <updated>2012-11-23T05:34:00-06:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2</id>
-    <content type="html"><![CDATA[<p>In our <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">last installment</a> of our x86_64 assembler tutorial, we introduced the registers and walked through a simple C program and its assembly langugage counterpart.  This time, we'll talk a little more about the effect of optimizations and while we're at it, present some of the highlights of the application binary interface, the ABI.</p>
-
-<p>Let's start with our original code that we <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">presented last time</a>:</p>
-
-<p><div><script src='https://gist.github.com/4135115.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        uint8_t i;
-        for( i = 0; i &lt; 16; i++ ) {
-            printf(&quot;i = %d\n&quot;,i);
-        }
-    }
-    return 0;
-}</code></pre></noscript></div>
-</p>
-
-<h3>Optimization setting - -O, O1</h3>
-
-<p><img class="left" src="http://i.imgur.com/O9LQR.png" title="'Figure 1: Optimization setting'" >
-This time, we're going to set the optimizations differently to see what effect it has on the code.  Recall that we ran with no optimizations the first time.  If you want to follow along in Xcode, then just create a command-line application project and search for 'optimization' in the target build settings.</p>
-
-<p><img class="right" src="http://i.imgur.com/NcgDW.png" title="'Figure 2: Disassembly assistant setting'" >
-Paste the code above into <code>main.m</code> to replace the code that's autogenerated by the template; and place a breakpoint on the return line.  We won't be able to see the disassembly code unless the application is actually running; so we want to break somewhere accordingly.  We can view either the assembly or disassembly code.  We're going to look at the former because the latter contains a lot of debugging symbols that make it harder to understand what we're really interested in - the instructions.  To show the disassembly results, build and run the project.  When the debugger stops on the return line, show the Assistant editor which splits the main viewer into two panes.  In the right pane, select Disassembly as the assistant pane content.  If you're not with me, then you may want to take a while to get familiar with the Xcode 4.x interface so that you can configure it the way you want.</p>
-
-<h3>Disassembler code</h3>
-
-<p>The disassembler takes the machine code that your C code generated and expresses it symbolically in assembly langugage.  Let's take a look at the results and compare it to the results from the <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">last tutorial</a>.</p>
-
-<p><div><script src='https://gist.github.com/4135317.js?file='></script>
-<noscript><pre><code>0x100000ee0:  pushq  %rbp
-0x100000ee1:  movq   %rsp, %rbp
-0x100000ee4:  pushq  %r15
-0x100000ee6:  pushq  %r14
-0x100000ee8:  pushq  %rbx
-0x100000ee9:  pushq  %rax
-0x100000eea:  callq  0x100000f2e               ; symbol stub for: objc_autoreleasePoolPush
-0x100000eef:  movq   %rax, %r14
-0x100000ef2:  xorl   %ebx, %ebx
-0x100000ef4:  leaq   111(%rip), %r15           ; &quot;i = %d\n&quot;
-0x100000efb:  nopl   (%rax,%rax)
-0x100000f00:  movq   %r15, %rdi
-0x100000f03:  movl   %ebx, %esi
-0x100000f05:  xorb   %al, %al
-0x100000f07:  callq  0x100000f34               ; symbol stub for: printf
-0x100000f0c:  incl   %ebx
-0x100000f0e:  cmpb   $16, %bl
-0x100000f11:  jne    0x100000f00               ; main + 32 at main.m:17
-0x100000f13:  movq   %r14, %rdi
-0x100000f16:  callq  0x100000f28               ; symbol stub for: objc_autoreleasePoolPop
-0x100000f1b:  xorl   %eax, %eax
-0x100000f1d:  addq   $8, %rsp
-0x100000f21:  popq   %rbx
-0x100000f22:  popq   %r14
-0x100000f24:  popq   %r15
-0x100000f26:  popq   %rbp
-0x100000f27:  ret    </code></pre></noscript></div>
-</p>
-
-<h3>Step-by-step</h3>
-
-<p>And just like we did before, let's look at the code step-by-step.  This time we're going to compare it to the code with no optimizations from last time, so you may want to be familiar with it first.</p>
-
-<h4>Step 1 - Preamble</h4>
-
-<p><code>c-objdump
-0x100000ee0:  pushq  %rbp
-0x100000ee1:  movq   %rsp, %rbp
-</code></p>
-
-<p>This is the same function preamble as before, saving the current base pointer and moving the stack pointer to the base pointer register.</p>
-
-<h4>Step 2 - Save the registers</h4>
-
-<p><code>c-objdump
-0x100000ee4:  pushq  %r15
-0x100000ee6:  pushq  %r14
-0x100000ee8:  pushq  %rbx
-0x100000ee9:  pushq  %rax
-</code></p>
-
-<p>We push several 64-bit registers to the stack.  We don't know yet; but probably this is because we're going to use them later on.  Let's see what's next.</p>
-
-<h4>Step 3 - Start the autorelease pool</h4>
-
-<p><code>c-objdump
-0x100000eea:  callq  0x100000f2e               ; symbol stub for: objc_autoreleasePoolPush
-0x100000eef:  movq   %rax, %r14
-</code></p>
-
-<p>Set up the autorelease pool for the function as before.  This time, we're saving the return value - a reference to the autorelease pool, presumably - to <code>%r14</code>.  We'll set it again later before we pop the autorelease pool.  But before we do, it's a good time to present some of the register allocations from the <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI</a>.  The ABI exists to create some standardization in the way that assembly code interacts with the machine.  Part of that specification are standards that determine which registers are used for a given purpose.  We'll present them here:</p>
-
-<table>
-<thead>
-<tr>
-<th>Register  </th>
-<th> Usage                                                           </th>
-<th> Preserved across function calls</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>%rax</code>    </td>
-<td> 1st return register, number of vector registers used            </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rbx</code>    </td>
-<td> callee-saved register; base pointer                             </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%rcx</code>    </td>
-<td> pass 4th integer argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rdx</code>    </td>
-<td> pass 3rd argument fo functions, 2nd return register             </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rsp</code>    </td>
-<td> stack pointer                                                   </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%rbp</code>    </td>
-<td> callee-saved register, frame pointer                            </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%rsi</code>    </td>
-<td> used to pass 2nd argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rdi</code>    </td>
-<td> used to pass 1st argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r8</code>     </td>
-<td> used to pass 5th argunent to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r9</code>     </td>
-<td> used to pass 6th argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r10</code>    </td>
-<td> temp register, used for passing a function's static chain ptr   </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r11</code>    </td>
-<td> temp register                                                   </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r12</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%r13</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%r14</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%r15</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%xmm0</code>   </td>
-<td> used to pass and return floating point arguments                </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm1</code>   </td>
-<td> used to pass and return floating point arguments                </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm2</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm3</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm4</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm5</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm6</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm7</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm8</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm9</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm10</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm11</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm12</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm13</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm14</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm15</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx0</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx1</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx2</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx3</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx4</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx5</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx6</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx7</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st0</code>    </td>
-<td> temporary register, used to return long double arguments        </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st1</code>    </td>
-<td> temporary register, used to return long double arguments        </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st2</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st3</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st4</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st5</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st6</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st7</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>Whew! Got that memorized yet?  Oh well, let's move on.</p>
-
-<h4>Step 4 - Idiom for clearing register</h4>
-
-<p><code>c-objdump
-0x100000ef2:  xorl   %ebx, %ebx
-</code></p>
-
-<p>This is a curious instruction, XOR long <code>%ebx</code> with itself.  Self-XOR has the effect of clearing the register which on some processors is faster than <code>movl $0, %ebx</code>.  If we're setting something to zero, I wonder if the compiler is using <code>%ebx</code> as the loop index.  We shall see...</p>
-
-<h4>Step 5 - Obtain format string address</h4>
-
-<p><code>c-objdump
-0x100000ef4:  leaq   111(%rip), %r15           ; "i = %d\n"
-</code></p>
-
-<p>This instruction reads "load effective address 64-bit into <code>%15</code>".  We're just grabbing the format string from a particular location in memory relative to the instruction pointer.</p>
-
-<h4>Step 6 - Alignment</h4>
-
-<p><code>c-objdump
-0x100000efb:  nopl   (%rax,%rax)
-</code></p>
-
-<p>This is an optimization that does nothing other than align the code properly for the jump target so that it can be fetched in a single cacheline request.</p>
-
-<h4>Step 7 - Setting up call to <code>printf</code></h4>
-
-<p><code>c-objdump
-0x100000f00:  movq   %r15, %rdi
-0x100000f03:  movl   %ebx, %esi
-0x100000f05:  xorb   %al, %al
-0x100000f07:  callq  0x100000f34               ; symbol stub for: printf
-</code></p>
-
-<p>Remember from the ABI register usage table above that <code>%rdi</code> is used to pass the first argument to functions.  In this case, the format string is the first argument of <code>printf</code>.  Earlier in Step 5, we loaded the address of the string into <code>%r15</code>; now we're moving it to <code>%rdi</code> in preparation for the <code>printf</code> function call.  Next, <code>movl   %ebx, %esi</code> - remember earlier we wondered if the compiler was using <code>%esi</code> as the loop index?  From the reference table above, <code>%rsi</code> is used to pass the second function parameter; so this instruction passes the second parameter which is the loop index <code>i</code> in the C code.</p>
-
-<p><code>xorb   %al, %al</code> clears the <code>%al</code> register which is the lowest 8 bits of <code>%rax</code> which is the register that passes the number of vector arguments.  As in the prior tutorial, since we are printing an integer, we don't need a vector register.  Hence, we clear <code>%al</code>.</p>
-
-<h4>Step 8 - Increment, compare, and jump</h4>
-
-<p><code>c-objdump
-0x100000f0c:  incl   %ebx
-0x100000f0e:  cmpb   $16, %bl
-0x100000f11:  jne    0x100000f00               ; main + 32 at main.m:17
-</code></p>
-
-<p>In order, we increment the register we're using for the loop index, compare its lower 8 bits to decimal 16 with a byte compare instruction and jump if not equal back to Step 7.</p>
-
-<h4>Step 9 - Pop the autorelease pool</h4>
-
-<p><code>c-objdump
-0x100000f13:  movq   %r14, %rdi
-0x100000f16:  callq  0x100000f28               ; symbol stub for: objc_autoreleasePoolPop
-</code></p>
-
-<p>Recall that in Step 3 we saved a reference to the autorelease pool in <code>%r14</code>?  Now we move that reference back to <code>%rdi</code> which is used to pass the first argument to functions. (Is this sounding like a broken record now?)  Then we call objc_autoreleasePoolPop in the Objective-C runtime to release the autorelease pool.</p>
-
-<h4>Step 10 - Setting up to return</h4>
-
-<p><code> c-objdump
-0x100000f1b:  xorl   %eax, %eax
-0x100000f1d:  addq   $8, %rsp
-0x100000f21:  popq   %rbx
-0x100000f22:  popq   %r14
-0x100000f24:  popq   %r15
-0x100000f26:  popq   %rbp
-0x100000f27:  ret  
-</code></p>
-
-<p>Now all that's left is just to clean up.  First we clear <code>%eax</code>.  Why now?  Since it's the lower 32 bits of the first return register, we just clear it after returning from the last function call so that we can return 0 to <strong>our</strong> caller.</p>
-
-<p>Next we add 8 to the stack pointer.  This is an interesting development.  Why do we manually adjust the stack pointer?  Take a look at the function setup.  Initially we pushed the following registers: <code>%rbp</code>, <code>%r15</code>, <code>%r14</code>, <code>%rbx</code> and <code>%rax</code>.  But if we pop <code>%rax</code> which is our 1st function return value register, then we risk blowing away the effects of clearing <code>%eax</code> that we just did in <code>0x100000f1b:  xorl   %eax, %eax</code>, right?  So instead of popping the value, we manually adjust the stack pointer before popping the other variables in the reverse order to that in which we pushed them to the stack.</p>
-
-<p>Lastly, we return to the caller.</p>
-
-<p>Again, we close another chapter in our x86_64 assembly tutorial for Mac.  We will continue to build on our knowledge base with slightly more complex tutorials as we progress; so stay tuned.  Here are some interesting and useful references for you:</p>
-
-<ul>
-<li><a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI reference</a></li>
-<li><a href="http://www.cs.virginia.edu/~evans/cs216/guides/x86.html">x86 assembly guide</a></li>
-<li><a href="http://cs.mtu.edu/~mmkoksal/blog/?x=entry:entry120116-130037">GNU assembler directives</a></li>
-<li><a href="http://stackoverflow.com/questions/2647640/x86-assembly-idioms">x86 assembly idioms</a></li>
-</ul>
-
-
-<p>And of course, <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">Part I</a> or our tutorial.</p>
 
 <p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
 ]]></content>

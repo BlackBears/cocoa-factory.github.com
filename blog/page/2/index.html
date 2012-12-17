@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="After 3 years of full-time development on iOS and Mac (and many years of dabbling), I&#8217;ve had the chance to write and read a lot of code. The &hellip;">
+  <meta name="description" content="We just released CCFBrowserTextField for public consumption. Take a look at our github repository to get started using it. Here&#8217;s what this &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,288 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/21/introducing-ccfbrowsertextfield/">Introducing CCFBrowserTextField</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-21T06:10:00-05:00" pubdate data-updated="true">Sep 21<span>st</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We just released <code>CCFBrowserTextField</code> for public consumption.  Take a look at <a href="https://github.com/cocoa-factory/CCFBrowserTextField">our github repository</a> to get started using it.  Here&#8217;s what this <code>NSTextField</code> subclass looks like:</p>
+
+<p><img class="right" src="http://i46.tinypic.com/2nlz5ah.jpg"></p>
+
+<p>That&#8217;s it.  A text field with an embedded document-like icon.  The intent is to provide a way of browsing to a path that should be contained in the text field without an external button.  It was inspired both a desire for a more compact, connected UI and by seeing someone else who had done something similar.  In the amazing <a href="https://github.com/omnigroup/OmniGroup">Omni Frameworks</a> in OmniAppKit framework, you&#8217;ll find a number of interesting widgets.  They created a text field with a calendar button that popups up a calendar picker.  We liked the idea and learned a lot about how text fields work, then adapted it to meet our needs.  By the way, Omni writes great software besides putting their frameworks out for public use.  I use at least one of their pieces of software every day.</p>
+
+<h3>Using <code>CCFBrowserTextField</code></h3>
+
+<p>If you want to use <code>CCFBrowserTextField</code> just go to the <a href="https://github.com/cocoa-factory/CCFBrowserTextField">github repository</a> and download it.  When you want to use it, just insert an <code>NSTextField</code> object into your interface and set its class type to <code>CCFBrowserTextField</code>.  For the button to be active, you just need to provide it with an action block:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">self</span> <span class="n">browserTextField</span><span class="p">]</span> <span class="nl">setActionBlock:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// do something here like launch NSOpenPanel etc.</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, <code>[self browserTextField]</code> is a property with an IBOutlet to your custom text field.</p>
+
+<h3>Creating a custom <code>NSTextField</code></h3>
+
+<p>This part is a bit like the &#8220;Making of &#8230;&#8221; that comes with DVD&#8217;s.  If you want to get under the hood and learn a little about developing for Mac OS, here&#8217;s your chance.  (We&#8217;ve been developing so much for iOS that some of the older parts of Mac, like <code>NSCell</code> are a little foreign to us.)</p>
+
+<p>Let&#8217;s start from the inside out.</p>
+
+<h4>Drawing into an image</h4>
+
+<p>Where possible we favor drawing into an <code>NSView</code> or in this case <code>NSImage</code> rather than loading images from the bundle.  This makes adapting to resolution changes like the Retina transition easier for us.  We use <a href="http://www.paintcodeapp.com/">PaintCode</a> to generate the drawing code from vector drawings on-screen.  It&#8217;s a great piece of software.</p>
+
+<p>Let&#8217;s take a look at the process of drawing into an image.  I&#8217;m going to focus on just that aspect rather than the Core Graphics details.  In the <code>CCFBrowserTextFieldButtonImage</code> implementation we have one public method <code>init</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">self</span> <span class="p">)</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">NSMakeSize</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_drawIcon</span><span class="p">(</span><span class="n">self</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The important thing to remember here is to set the size of the image before attempting to draw into it <code>self.size = ...</code>.  Then we call <code>_drawIcon:</code> on ourself.</p>
+
+<p>Drawing into the <code>NSImage</code> is a three step process.  First we lock focus on ourself.  This prepares the image for drawing.  More specifically, it sets the current graphics context to the area of the offscreen window that is used to cache the <code>NSImage</code> contents.  All of the drawing until we call <code>unlockFocus</code> is composited to the offscreen window.  In step 2, we draw the image.  I&#8217;m not going to go through each shape in this post - but you can get a feel for how the image is built up.  Finally, we unlock focus which resotores the focus to the previous owner.  That&#8217;s it for drawing the image.  But the image has to go somewhere, right?  Next up, <code>CCFBrowserTextFieldButton</code></p>
+
+<h3>An embeddable button</h3>
+
+<p>Next up in our inside-out tour is <code>CCFBrowserTextFieldButton</code>.  Starting with the class interface, we see block type definition:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">CCFBrowserButtonBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the typedef for the block used as an action for the button.  More on this in a minute.  Next up the class method(s):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSSize</span><span class="p">)</span><span class="nf">browserImageSize</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Class users will use this method to get information about the size of the image in the button.  Some of the upstream users will need to know how large our image is to provide for cursor changes and text formatting in the fields.</p>
+
+<p>Finally we have a couple methods to set the frame and/or the action handler.  On to the implementation, let&#8217;s look at the <code>initWithFrame:</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">NSRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithFrame:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">self</span> <span class="p">)</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setButtonType:</span><span class="n">NSMomentaryPushInButton</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setBordered:</span><span class="n">NO</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setImage:</span><span class="n">browserImage</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setImagePosition:</span><span class="n">NSImageOnly</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setAutoresizingMask:</span><span class="n">NSViewMinXMargin</span> <span class="o">|</span> <span class="n">NSViewMinYMargin</span> <span class="o">|</span> <span class="n">NSViewMaxYMargin</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we&#8217;re just defining the basic properties of the button.  We want the button to be an ordinary momentary push in button, without borders, with our specified image, and positioning the image as an image only button.  So where does the image come from?  We declare some static variables in the implementation:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">NSImage</span> <span class="o">*</span><span class="n">browserImage</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="n">NSSize</span> <span class="n">browserImageSize</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and we set them up in the <code>initialize</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initialize</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">browserImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFBrowserTextFieldButtonImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">browserImageSize</span> <span class="o">=</span> <span class="n">browserImage</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And by the way, we&#8217;re using ARC throughout.  So should you.  We were reference counting  gurus before ARC; but ARC is too good to ignore.</p>
+
+<p>Finally, we have a pair of methods that set the <code>frame</code> and the <code>_actionBlock</code>  Because <code>NSButton</code> doesn&#8217;t have a blocks-based action handler, we extended it by setting its <code>target</code> to <code>self</code> and the <code>action</code> to a method that just calls the action block.  On to the cell.</p>
+
+<h3>A digression on why controls have cells</h3>
+
+<p>Newcomers to Mac OS X are often perplexed by the existence of <code>NSCell</code>.  It&#8217;s like <code>NSView</code>, but not really.  It&#8217;s associated with <code>NSControl</code>, but why?</p>
+
+<p>Basiclaly <code>NSCell</code> is just a lightweight view.  Take the example of <code>NSTableView</code>, in the old days, its cells were always made up of <code>NSCell</code> because the size of its instance was less than a view; and using a lighter weight object made tremendous difference in memory savings.  So, most controls are backed by an <code>NSCell</code> that handles much of the lower-level work of the control.</p>
+
+<h3>So, our cell</h3>
+
+<p>To take care of some drawing bits, we subclass <code>NSTextFieldCell</code>.  Here&#8217;s how it works:  By overriding <code>-titleRectForBounds:</code> we have the opportunity to modify the region in which our text can be drawn.  Ordinarily the cell takes the insert area of the field to draw the text minus a little inset.  In our case, we want to give plenty of room for the button.  So we do this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSRect</span><span class="p">)</span><span class="nf">titleRectForBounds:</span><span class="p">(</span><span class="n">NSRect</span><span class="p">)</span><span class="nv">bounds</span><span class="p">;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSRect</span> <span class="n">buttonRect</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">class</span><span class="p">]</span> <span class="nl">rectForBrowserFrame:</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">horizontalEdgeGap</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-=</span> <span class="n">NSWidth</span><span class="p">(</span><span class="n">buttonRect</span><span class="p">)</span> <span class="o">+</span> <span class="n">horizontalEdgeGap</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We get the frame of the button in our bounds, then move the width accordingly.</p>
+
+<h3>And, last but not least, <code>CCFBrowserTextField</code></h3>
+
+<p>The outermost component is the field itself.  There are a few things we need to take care of here.  For example we have to add the button itself:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">_initTextFieldCompletion</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">_browserButton</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSSize</span> <span class="n">browserImageSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">CCFBrowserTextFieldButton</span> <span class="n">browserImageSize</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSRect</span> <span class="n">buttonFrame</span> <span class="o">=</span> <span class="n">NSMakeRect</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="n">browserImageSize</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">browserImageSize</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_browserButton</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CCFBrowserTextFieldButton</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">buttonFrame</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">buttonFrame</span> <span class="o">=</span> <span class="p">[</span><span class="n">CCFBrowserTextFieldCell</span> <span class="nl">rectForBrowserFrame:</span><span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">_setCellClass</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">addSubview:</span><span class="n">_browserButton</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">autoresizesSubviews</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">_browserButton</span> <span class="nl">setFrame:</span><span class="n">buttonFrame</span> <span class="nl">actionHandler:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;pushed&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We instantiate the <code>_browserButton</code> lazily here, first getting the size of its image, then setting its frame accordingly.  We set the class of the cell our field uses directly.  More on that in a moment.  Then we add the button and set a silly default handler.  If you want the button to do something meaningful, you&#8217;ll have to set the field&#8217;s action handler.</p>
+
+<p>Now we have to tell our custom field to use <strong>our</strong> cell and not the default cell for the superclass.  This is what we&#8217;re doing here:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">_setCellClass</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">customClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">CCFBrowserTextFieldCell</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// since we are switching the isa pointer, we need to guarantee that the class layout in memory is the same</span>
+</span><span class='line'>    <span class="n">NSAssert</span><span class="p">(</span><span class="n">class_getInstanceSize</span><span class="p">(</span><span class="n">customClass</span><span class="p">)</span> <span class="o">==</span> <span class="n">class_getInstanceSize</span><span class="p">(</span><span class="n">class_getSuperclass</span><span class="p">(</span><span class="n">customClass</span><span class="p">)),</span> <span class="s">@&quot;Incompatible class assignment&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// switch classes if we are not already switched</span>
+</span><span class='line'>    <span class="n">NSCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">cell</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="p">[</span><span class="n">cell</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">CCFBrowserTextFieldCell</span> <span class="n">class</span><span class="p">]]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">object_setClass</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">customClass</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This private method makes use of our access to the Objective-C runtime.  In the assertion, we make sure that the instance size of our custom cell is the same as <code>NSTextFieldCell</code>.  This is just a protection against us screwing something up badly when we switch classes.  Next we do the switch using <code>object_setClass()</code>.</p>
+
+<p>Enough of the swizzly stuff.  Let&#8217;s look add some of the subtleties that we could have easily forgotten, like the cursor.  Over text fields, we are accustomed to seeing the I beam cursor.  But over a button, it looks silly.  So we override <code>resetCursorRect</code>.  The documentation succinctly says what it does:  &#8220;Overridden by subclasses to define their default cursor rectangles.&#8221;  So, we just add the two rects with the correct cursors to the two parts of our field using <code>addCursorRect:cursor:</code>.</p>
+
+<p>That&#8217;s about it for the internals of <code>CCFBrowserTextField</code>; hopefully you can put it to use in your projects.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -398,6 +680,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/16/lldb-print-registers/">LLDB print registers</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/15/announcing-regexmatch-for-mac/">Announcing RegexMatch for Mac</a>
       </li>
     
@@ -411,10 +697,6 @@
     
       <li class="post">
         <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">x86_64 Assembly Language Tutorial: Part 3</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">x86_64 Assembly Language Tutorial: Part 2</a>
       </li>
     
   </ul>

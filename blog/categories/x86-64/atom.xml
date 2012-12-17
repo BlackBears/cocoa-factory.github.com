@@ -4,7 +4,7 @@
   <title><![CDATA[Category: x86_64 | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/x86-64/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-12-15T06:52:53-06:00</updated>
+  <updated>2012-12-16T20:39:28-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -26,26 +26,7 @@
 
 <p>Although Xcode doesn't have an assembly language project template, you can start a new command line tool project for Mac OS and just delete the main.m file.  Then you can add an assembly language file to the project and paste the following code:</p>
 
-<p><div><script src='https://gist.github.com/4139421.js?file='></script>
-<noscript><pre><code>.private_extern	_main
-.globl	_main
-_main:                                  #   main entry point
-
-    pushq	%rbp
-
-    movq	%rsp, %rbp
-
-    leaq	_helloMessage(%rip), %rdi
-    callq	_puts
-    xorl	%eax, %eax
-    popq	%rbp
-    ret
-
-.section	__TEXT,__cstring,cstring_literals
-
-_helloMessage:  
-    .asciz	 &quot;Hello world!&quot;</code></pre></noscript></div>
-</p>
+<p>{% gist 4139421 %}</p>
 
 <p>Like we've done with each of the prior tutorials, lets walk through the code, as simple as it is, step-by-step</p>
 
@@ -109,47 +90,7 @@ ret
 
 <p>Here's the complete source:</p>
 
-<p><div><script src='https://gist.github.com/4139297.js?file='></script>
-<noscript><pre><code>;
-;
-;   hello64.asm
-;
-;   A quick demonstration of 64 assembly language on Mac OS
-;
-;   Generate object code:
-;nasm-2.09.10 -f macho64 hello64.asm
-;
-;   Link executable
-;gcc -m64 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -o hello64 hello64.o
-;
-
-section .data
-    
-    hello            db &quot;Hello, world!&quot;, 0  
-
-section .text
-    
-    global _main
-    extern _puts
-
-_main:
-    push    r15             ;save %r15 to stack
-    mov     r15,    rsp     ;load the stack pointer into %r15
-    push    rbx             ;push base pointer to the stack
-
-    mov     rbx,    rsp     ;load the stack pointer into the base pointer
-    and     spl,    0xF0    ;align the stack pointer on a boundary
-
-    mov     rdi,    hello   ;move address of string to %rdi (1st function arg register)
-    call    _puts           ;call puts
-
-    mov     rsp,    rbx     ;mov %rbx back into stack pointer after the library call
-
-    pop     rbx             ;restore %rbx (a callee saved register)
-    mov     rsp,    r15     ;restore the stack pointer from %r15
-    pop     r15             ;restore %r15
-    ret</code></pre></noscript></div>
-</p>
+<p>{% gist 4139297 %}</p>
 
 <p>The first thing to recognize with <code>nasm</code> syntax is that the operand order is reversed compared with the GNU assembler syntax.  So the instruction <code>mov r15, rsp</code> moves the contents of register <code>rsp</code> to <code>r15</code>.  We also omit the <code>%</code> sign before register names.  And nasm infers the correct version of an instruction depending on the width of the operands; so we use <code>mov</code> instead of <code>movb</code>, <code>movl</code>, or <code>movq</code>.  Apart from those differences, we do things the same way.  Let's go through the program step-by-step.</p>
 
@@ -210,7 +151,7 @@ ret
 
 <p>All that's left is to clean up, restoring the registers and the stack before returning.</p>
 
-<p><img class="left" src="http://i.imgur.com/a7rqS.png" title="&#34;Build, link, run&#34;" alt="&#34;Build, link, run&#34;"></p>
+<p>{% img left http://i.imgur.com/a7rqS.png "Build, link, run" %}</p>
 
 <h4>Build</h4>
 
@@ -231,80 +172,11 @@ ret
 
 <p>Now, we're going to start to tiptoe gently into the world of Objective-C objects and use that as a platform for peeking into what ARC does to our code behind our backs.  Let's get started with a very simple Objective-C program:</p>
 
-<p><div><script src='https://gist.github.com/4135901.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-@interface Foo : NSObject {
-    NSInteger _bar;
-}
-
-- (id)initWithBar:(NSInteger)aBar;
-- (void)printBar;
-
-@end
-
-@implementation Foo
-
-- (id)initWithBar:(NSInteger)aBar {
-    self = [super init];
-    if( !self ) return nil;
-    
-    _bar = aBar;
-    return self;
-}
-
-- (void)printBar {
-    printf(&quot;%ld&quot;,_bar);
-}
-
-@end
-
-int main(int argc, const char * argv[])
-{
-
-    @autoreleasepool {
-        Foo *foo = [[Foo alloc] initWithBar:15];
-        [foo printBar];
-    }
-    return 0;
-}</code></pre></noscript></div>
-</p>
+<p>{% gist 4135901 %}</p>
 
 <p>Build and run this little application in Xcode and use the Assistant editor to review its disassembly just like we showed in <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">Part II</a>:</p>
 
-<p><div><script src='https://gist.github.com/4135938.js?file='></script>
-<noscript><pre><code>0x100000de0:  pushq  %rbp
-0x100000de1:  movq   %rsp, %rbp
-0x100000de4:  pushq  %r15
-0x100000de6:  pushq  %r14
-0x100000de8:  pushq  %rbx
-0x100000de9:  pushq  %rax
-0x100000dea:  callq  0x100000e52               ; symbol stub for: objc_autoreleasePoolPush
-0x100000def:  movq   %rax, %r14
-0x100000df2:  movq   903(%rip), %rdi           ; (void *)0x0000000100001190: Foo
-0x100000df9:  leaq   880(%rip), %rsi           ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
-0x100000e00:  callq  *874(%rip)                ; { /usr/lib/libobjc.A.dylib`objc_msgSend_vtable1, &quot;alloc&quot; }
-0x100000e06:  movq   843(%rip), %rsi           ; &quot;initWithBar:&quot;
-0x100000e0d:  movq   508(%rip), %r15           ; (void *)0x00007fff871c3240: objc_msgSend
-0x100000e14:  movq   %rax, %rdi
-0x100000e17:  movl   $15, %edx
-0x100000e1c:  callq  *%r15
-0x100000e1f:  movq   %rax, %rbx
-0x100000e22:  movq   823(%rip), %rsi           ; &quot;printBar&quot;
-0x100000e29:  movq   %rbx, %rdi
-0x100000e2c:  callq  *%r15
-0x100000e2f:  movq   %rbx, %rdi
-0x100000e32:  callq  0x100000e5e               ; symbol stub for: objc_release
-0x100000e37:  movq   %r14, %rdi
-0x100000e3a:  callq  0x100000e4c               ; symbol stub for: objc_autoreleasePoolPop
-0x100000e3f:  xorl   %eax, %eax
-0x100000e41:  addq   $8, %rsp
-0x100000e45:  popq   %rbx
-0x100000e46:  popq   %r14
-0x100000e48:  popq   %r15
-0x100000e4a:  popq   %rbp
-0x100000e4b:  ret</code></pre></noscript></div>
-</p>
+<p>{% gist 4135938 %}</p>
 
 <h3>Step-by-step</h3>
 
@@ -505,61 +377,21 @@ The rest of our function clean-up is that same as in the prior installment of ou
 
 <p>Let's start with our original code that we <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">presented last time</a>:</p>
 
-<p><div><script src='https://gist.github.com/4135115.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        uint8_t i;
-        for( i = 0; i &lt; 16; i++ ) {
-            printf(&quot;i = %d\n&quot;,i);
-        }
-    }
-    return 0;
-}</code></pre></noscript></div>
-</p>
+<p>{% gist 4135115 %}</p>
 
 <h3>Optimization setting - -O, O1</h3>
 
-<p><img class="left" src="http://i.imgur.com/O9LQR.png" title="'Figure 1: Optimization setting'" >
+<p>{% img left http://i.imgur.com/O9LQR.png 'Figure 1: Optimization setting' %}
 This time, we're going to set the optimizations differently to see what effect it has on the code.  Recall that we ran with no optimizations the first time.  If you want to follow along in Xcode, then just create a command-line application project and search for 'optimization' in the target build settings.</p>
 
-<p><img class="right" src="http://i.imgur.com/NcgDW.png" title="'Figure 2: Disassembly assistant setting'" >
+<p>{% img right http://i.imgur.com/NcgDW.png 'Figure 2: Disassembly assistant setting' %}
 Paste the code above into <code>main.m</code> to replace the code that's autogenerated by the template; and place a breakpoint on the return line.  We won't be able to see the disassembly code unless the application is actually running; so we want to break somewhere accordingly.  We can view either the assembly or disassembly code.  We're going to look at the former because the latter contains a lot of debugging symbols that make it harder to understand what we're really interested in - the instructions.  To show the disassembly results, build and run the project.  When the debugger stops on the return line, show the Assistant editor which splits the main viewer into two panes.  In the right pane, select Disassembly as the assistant pane content.  If you're not with me, then you may want to take a while to get familiar with the Xcode 4.x interface so that you can configure it the way you want.</p>
 
 <h3>Disassembler code</h3>
 
 <p>The disassembler takes the machine code that your C code generated and expresses it symbolically in assembly langugage.  Let's take a look at the results and compare it to the results from the <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">last tutorial</a>.</p>
 
-<p><div><script src='https://gist.github.com/4135317.js?file='></script>
-<noscript><pre><code>0x100000ee0:  pushq  %rbp
-0x100000ee1:  movq   %rsp, %rbp
-0x100000ee4:  pushq  %r15
-0x100000ee6:  pushq  %r14
-0x100000ee8:  pushq  %rbx
-0x100000ee9:  pushq  %rax
-0x100000eea:  callq  0x100000f2e               ; symbol stub for: objc_autoreleasePoolPush
-0x100000eef:  movq   %rax, %r14
-0x100000ef2:  xorl   %ebx, %ebx
-0x100000ef4:  leaq   111(%rip), %r15           ; &quot;i = %d\n&quot;
-0x100000efb:  nopl   (%rax,%rax)
-0x100000f00:  movq   %r15, %rdi
-0x100000f03:  movl   %ebx, %esi
-0x100000f05:  xorb   %al, %al
-0x100000f07:  callq  0x100000f34               ; symbol stub for: printf
-0x100000f0c:  incl   %ebx
-0x100000f0e:  cmpb   $16, %bl
-0x100000f11:  jne    0x100000f00               ; main + 32 at main.m:17
-0x100000f13:  movq   %r14, %rdi
-0x100000f16:  callq  0x100000f28               ; symbol stub for: objc_autoreleasePoolPop
-0x100000f1b:  xorl   %eax, %eax
-0x100000f1d:  addq   $8, %rsp
-0x100000f21:  popq   %rbx
-0x100000f22:  popq   %r14
-0x100000f24:  popq   %r15
-0x100000f26:  popq   %rbp
-0x100000f27:  ret    </code></pre></noscript></div>
-</p>
+<p>{% gist 4135317 %}</p>
 
 <h3>Step-by-step</h3>
 
@@ -1029,52 +861,13 @@ Paste the code above into <code>main.m</code> to replace the code that's autogen
 
 <h3>C code</h3>
 
-<p><div><script src='https://gist.github.com/4135115.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        uint8_t i;
-        for( i = 0; i &lt; 16; i++ ) {
-            printf(&quot;i = %d\n&quot;,i);
-        }
-    }
-    return 0;
-}</code></pre></noscript></div>
-</p>
+<p>{% gist 4135115 %}</p>
 
 <p>We've compiled this using no optimizations to see how the compiler behaves when it can't optimize.  In the next installment, we'll take a look at the effect of optimizations on the compiled code.</p>
 
 <h3>Disassembly</h3>
 
-<p><div><script src='https://gist.github.com/4134960.js?file='></script>
-<noscript><pre><code>0x100000eeb:  pushq  %rbp
-0x100000eec:  movq   %rsp, %rbp
-0x100000eef:  pushq  %r15
-0x100000ef1:  pushq  %r14
-0x100000ef3:  pushq  %rbx
-0x100000ef4:  pushq  %rax
-0x100000ef5:  callq  0x100000f34               ; symbol stub for: objc_autoreleasePoolPush
-0x100000efa:  movq   %rax, %r14
-0x100000efd:  xorl   %ebx, %ebx
-0x100000eff:  leaq   104(%rip), %r15           ; &quot;i = %d\n&quot;
-0x100000f06:  movq   %r15, %rdi
-0x100000f09:  movl   %ebx, %esi
-0x100000f0b:  xorb   %al, %al
-0x100000f0d:  callq  0x100000f3a               ; symbol stub for: printf
-0x100000f12:  incl   %ebx
-0x100000f14:  cmpb   $16, %bl
-0x100000f17:  jne    0x100000f06               ; main + 27 at main.m:17
-0x100000f19:  movq   %r14, %rdi
-0x100000f1c:  callq  0x100000f2e               ; symbol stub for: objc_autoreleasePoolPop
-0x100000f21:  xorl   %eax, %eax
-0x100000f23:  addq   $8, %rsp
-0x100000f27:  popq   %rbx
-0x100000f28:  popq   %r14
-0x100000f2a:  popq   %r15
-0x100000f2c:  popq   %rbp
-0x100000f2d:  ret  </code></pre></noscript></div>
-</p>
+<p>{% gist 4134960 %}</p>
 
 <h3>Step-by-step</h3>
 

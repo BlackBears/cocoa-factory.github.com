@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cocoa | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/cocoa/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-12-16T22:21:42-06:00</updated>
+  <updated>2012-12-17T09:44:27-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Expanding NSOutlineView at load time]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2012/12/17/expanding-nsoutlineview-at-load-time/"/>
+    <updated>2012-12-17T09:40:00-06:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2012/12/17/expanding-nsoutlineview-at-load-time</id>
+    <content type="html"><![CDATA[<p>Ran across <a href="http://simplyhacking.com/expanding-nsoutlineview-nodes-at-application-start.html">this post</a> on <a href="simplyhacking.com">Simply Hacking</a> that deals with the problem of expanding items in <code>NSOutlineView</code> when the view loads.</p>
+
+<p>If you try to expand items in <code>awakeFromNib</code>, it will fail because the content is not prepared until after <code>awakeFromNib</code> is called on the controller.  The key is to observe <code>content</code> on the <code>NSTreeController</code> using KVO.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Announcing RegexMatch for Mac]]></title>

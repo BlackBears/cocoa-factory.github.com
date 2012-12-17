@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="We just released CCFBrowserTextField for public consumption. Take a look at our github repository to get started using it. Here&#8217;s what this &hellip;">
+  <meta name="description" content="If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like this one - Preprocessor macro &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,172 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/04/target-conditionals/">Target Conditionals</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:04:00-05:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>If you hang out on Stack Overflow long enough, you&#8217;re bound to see a few questions about target conditionals like <a href="http://stackoverflow.com/questions/12132933/preprocessor-macro-for-os-x-targets">this one - Preprocessor macro for OS X targets</a>; so here&#8217;s an attempt to sort it out:</p>
+
+<h2>How do you conditionally compile for Mac and iOS platforms?</h2>
+
+<p>This one is a little confusing because <code>TARGET_MAC_OS</code> doesn&#8217;t really do what you think.</p>
+
+<table>
+<thead>
+<tr>
+<th>  Conditional                  </th>
+<th> Mac OS </th>
+<th> iOS device </th>
+<th> iOS sim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>  <code>TARGET_OS_MAC</code>              </td>
+<td>   X    </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE</code>           </td>
+<td>        </td>
+<td>    X       </td>
+<td>    X    </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_EMBEDDED</code>         </td>
+<td>        </td>
+<td>    X       </td>
+<td>         </td>
+</tr>
+<tr>
+<td>  <code>TARGET_OS_IPHONE_SIMULATOR</code> </td>
+<td>        </td>
+<td>            </td>
+<td>    X    </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>(Credits to Greg Parker, <a href="http://www.sealiesoftware.com/blog/archive/2010/8/16/TargetConditionalsh.html"><em>Hamster Emporium Target Conditionals</em></a> for the table)</p>
+
+<p>If you have one block of code for Mac and another for iOS, the trick is to place the iOS condition first:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if TARGET_OS_IPHONE</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %d&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'><span class="c1">// this compiles on Mac OS</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">dataString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">&quot;data = %ld&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How I support multiple iOS or Mac versions?</h2>
+
+<p>Usually this means that the developer wants to incorporate features in a new OS version while maintaing backwards compatibility.  The solution has a few steps:</p>
+
+<ul>
+<li>Set the base SDK on the target build setting to the newest vesion that you need.</li>
+<li>Set the deployment target to the oldest version that you support</li>
+</ul>
+
+
+<p>Having set the target build settings, we have to do some work in the code.  Let&#8217;s say we want to incorporate iOS 5 features in an app that should support earlier versions, say iOS 4.3.  Then we&#8217;ll set the base SDK to iOS 5+ and the deployment target to iOS 4.3.  In the code, we do something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'><span class="cp">// compile this when the target base SDK is iOS 5.0 or greater.  </span>
+</span><span class='line'><span class="cp">// We use this as a compile-time test to prevent errors if we </span>
+</span><span class='line'><span class="cp">// try to recompile the project with a lower base SDK setting</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So far, we will be able to compile for platforms between the OS ranges specified by our lower boundary of the deployment target and our upper boundary of the base SDK.  But what happens at runtime?  We&#8217;ll crash on any features above our deployment target; so we need a runtime check for class availability.  As of the iOS 4.2 SDK, you should use the <code>NSObject</code> <code>class</code> method to check for the availability of weakly linked classes at runtime.  This takes advantage of the <code>NS_CLASS_AVAILABLE</code> macro; so in our example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">CIImage</span> <span class="n">class</span><span class="p">]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// CIImage is available in iOS 5.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first check is a compile-time check to ensure that we can compile on lower SDK&#8217;s and the second check is a runtime check to ensure that the weakly linked <code>CIImage</code> class is available on the device where the app is running.  Of course, we can also test for method availability instead:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 50000</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">someNewMethod</span><span class="p">)]</span>  <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// we can use fancy new method on UIImage</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>What is <code>__IPHONE_OS_VERSION_MIN_REQUIRED?</code></h2>
+
+<p>Unless you set it yourself, the compiler will set it to your target deployment version.  Same for <code>__MAC_OS_VERSION_MIN_REQUIRED</code>.  But you probably guessed that already.</p>
+
+<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -680,6 +846,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/17/expanding-nsoutlineview-at-load-time/">Expanding NSOutlineView at load time</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/16/lldb-print-registers/">LLDB print registers</a>
       </li>
     
@@ -693,10 +863,6 @@
     
       <li class="post">
         <a href="/blog/2012/11/24/x86-64-assembly-language-tutorial-part-4/">x86_64 Assembly language tutorial:part 4</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-3/">x86_64 Assembly Language Tutorial: Part 3</a>
       </li>
     
   </ul>

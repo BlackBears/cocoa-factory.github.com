@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macos | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/macos/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2012-12-16T20:43:19-06:00</updated>
+  <updated>2012-12-16T22:21:42-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -21,7 +21,7 @@
     <content type="html"><![CDATA[<p>Somes while debugging, or when you want to understand what the compiler doing with your code under the hood, you may want to print the contents of all the registers in the current frame.</p>
 
 <p>To print the current register contents in LLDB it's <code>register read</code>:
-<img src=""/assets/images/lldb_print_reg.png""></p>
+<img src="/images/lldb.png" alt="console" /></p>
 ]]></content>
   </entry>
   

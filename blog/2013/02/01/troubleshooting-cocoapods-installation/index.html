@@ -1,0 +1,559 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>troubleshooting cocoapods installation - Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
+
+  
+  <meta name="description" content="CocoaPods is a popular new way to manage dependencies in Xcode projects. Canonical installation CocoaPods is installed as a ruby gem; and usually &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2013/02/01/troubleshooting-cocoapods-installation/">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about">About</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/products">Products</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Troubleshooting Cocoapods Installation</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-01T04:49:00-06:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://cocoapods.org/?q=rvm%20sy#">CocoaPods</a> is a popular new way to manage dependencies in Xcode projects.</p>
+
+<h4>Canonical installation</h4>
+
+<p>CocoaPods is installed as a ruby gem; and usually everything &#8216;just works.&#8217;  Here&#8217;s how you install CocoaPods:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo gem install cocoapods
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If everything works properly, you should see something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Fetching: i18n-0.6.1.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: multi_json-1.5.0.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: activesupport-3.2.11.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: colored-1.2.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: xcodeproj-0.4.2.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Building native extensions.  This could take a <span class="k">while</span>...
+</span><span class='line'>Fetching: multipart-post-1.1.5.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: faraday-0.8.4.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: addressable-2.3.2.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: faraday_middleware-0.9.0.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: hashie-1.2.0.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: netrc-0.7.7.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: octokit-1.22.0.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: escape-0.0.4.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: json-1.7.6.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Building native extensions.  This could take a <span class="k">while</span>...
+</span><span class='line'>Fetching: open4-1.3.0.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: rake-0.9.6.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: cocoapods-0.16.1.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Successfully installed i18n-0.6.1
+</span><span class='line'>Successfully installed multi_json-1.5.0
+</span><span class='line'>Successfully installed activesupport-3.2.11
+</span><span class='line'>Successfully installed colored-1.2
+</span><span class='line'>Successfully installed xcodeproj-0.4.2
+</span><span class='line'>Successfully installed multipart-post-1.1.5
+</span><span class='line'>Successfully installed faraday-0.8.4
+</span><span class='line'>Successfully installed addressable-2.3.2
+</span><span class='line'>Successfully installed faraday_middleware-0.9.0
+</span><span class='line'>Successfully installed hashie-1.2.0
+</span><span class='line'>Successfully installed netrc-0.7.7
+</span><span class='line'>Successfully installed octokit-1.22.0
+</span><span class='line'>Successfully installed escape-0.0.4
+</span><span class='line'>Successfully installed json-1.7.6
+</span><span class='line'>Successfully installed open4-1.3.0
+</span><span class='line'>Successfully installed rake-0.9.6
+</span><span class='line'>Successfully installed cocoapods-0.16.1
+</span><span class='line'>17 gems installed
+</span><span class='line'>Installing ri documentation <span class="k">for </span>i18n-0.6.1...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>multi_json-1.5.0...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>activesupport-3.2.11...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>colored-1.2...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>xcodeproj-0.4.2...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>multipart-post-1.1.5...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>faraday-0.8.4...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>addressable-2.3.2...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>faraday_middleware-0.9.0...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>hashie-1.2.0...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>netrc-0.7.7...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>octokit-1.22.0...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>escape-0.0.4...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>json-1.7.6...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>open4-1.3.0...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>rake-0.9.6...
+</span><span class='line'>Installing ri documentation <span class="k">for </span>cocoapods-0.16.1...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>i18n-0.6.1...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>multi_json-1.5.0...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>activesupport-3.2.11...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>colored-1.2...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>xcodeproj-0.4.2...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>multipart-post-1.1.5...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>faraday-0.8.4...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>addressable-2.3.2...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>faraday_middleware-0.9.0...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>hashie-1.2.0...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>netrc-0.7.7...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>octokit-1.22.0...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>escape-0.0.4...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>json-1.7.6...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>open4-1.3.0...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>rake-0.9.6...
+</span><span class='line'>Installing RDoc documentation <span class="k">for </span>cocoapods-0.16.1...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Failed installation</h4>
+
+<p>However, CocoaPods installation can fail for a number of reasons.  Here are a few things to check if the installation fails:</p>
+
+<ul>
+<li><p><strong>Have you installed the Xcode command line tools?</strong>  If you update Xcode, then you need to re-download the command line tools.  This is a common gotcha.</p></li>
+<li><p><strong>Are you using MacRuby?</strong> MacRuby is not supported.  Your ruby should be Ruby MRI 1.8.7 or 1.9.3</p></li>
+</ul>
+
+
+<h4>Errors during installation</h4>
+
+<p>Our initial attempt with <code>sudo gem install cocoapods</code> gave the following error:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/usr/local/lib/ruby/1.9.1/yaml.rb:56:in <span class="sb">`</span>&lt;top <span class="o">(</span>required<span class="o">)</span>&gt;<span class="err">&#39;</span>:
+</span><span class='line'>It seems your ruby installation is missing psych <span class="o">(</span><span class="k">for </span>YAML output<span class="o">)</span>.
+</span><span class='line'>To eliminate this warning, please install libyaml and reinstall your ruby.
+</span><span class='line'>ERROR:  Loading <span class="nb">command</span>: install <span class="o">(</span>LoadError<span class="o">)</span>
+</span><span class='line'>    cannot load such file -- zlib
+</span><span class='line'>ERROR:  While executing gem ... <span class="o">(</span>NameError<span class="o">)</span>
+</span><span class='line'>    uninitialized constant Gem::Commands::InstallCommand
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First, we tried to just install the libyaml package with <code>rvm pkg install libyaml</code> but this got us nowhere.  Same error when we try to <code>sudo gem install cocoapods</code>.</p>
+
+<p>Since we weren&#8217;t using ruby for anything else on the system, blowing away RVM seemed like a benign (if nuclear) option.  So we used <code>rvm implode</code> and removed all references to <code>.rvm</code> in our PATH.  You need to also take a look at <code>.bashrc</code> <code>.profile</code> and <code>.bash_profile</code> for other references to rvm if you want to try this option.  See the accepted answer to <a href="http://stackoverflow.com/questions/3558656/how-to-remove-rvm-ruby-version-manager-from-my-system">this question</a> for details on the nuclear option for removing <code>rvm</code>.</p>
+
+<p>Next we reinstalled <code>rvm</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -L https://get.rvm.io | bash -s stable --ruby
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This installs <code>rvm</code> and the latest stable version of ruby.  Next update the terminal and check the version of ruby in use:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Darwin:~ alan<span class="nv">$ </span><span class="nb">source</span> /usr/local/rvm/scripts/rvm
+</span><span class='line'>Darwin:~ alan<span class="nv">$ </span>which ruby
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hmmm&#8230;.we&#8217;re still using the system ruby.  Let&#8217;s see what ruby versions we have:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Darwin:~ alan<span class="nv">$ </span>rvm list
+</span><span class='line'>
+</span><span class='line'>A RVM version 1.18.5 <span class="o">(</span>stable<span class="o">)</span> is installed yet 1.15.7 <span class="o">(</span>stable<span class="o">)</span> is loaded.
+</span><span class='line'>Please <span class="k">do </span>one of the following:
+</span><span class='line'>  * <span class="s1">&#39;rvm reload&#39;</span>
+</span><span class='line'>  * open a new shell
+</span><span class='line'>  * <span class="s1">&#39;echo rvm_auto_reload_flag=1 &gt;&gt; ~/.rvmrc&#39;</span> <span class="c"># for auto reload with msg.</span>
+</span><span class='line'>  * <span class="s1">&#39;echo rvm_auto_reload_flag=2 &gt;&gt; ~/.rvmrc&#39;</span> <span class="c"># for silent auto reload.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, let&#8217;s do as it says and reload:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Darwin:~ alan<span class="nv">$ </span>rvm reload
+</span><span class='line'>RVM reloaded!
+</span><span class='line'>Darwin:~ alan<span class="nv">$ </span>rvm list
+</span><span class='line'>
+</span><span class='line'>rvm rubies
+</span><span class='line'>
+</span><span class='line'>   ruby-1.9.3-p194 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'><span class="o">=</span>* ruby-1.9.3-p374 <span class="o">[</span> x86_64 <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># =&gt; - current</span>
+</span><span class='line'><span class="c"># =* - current &amp;&amp; default</span>
+</span><span class='line'><span class="c">#  * - default</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can confirm the ruby version in use:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Darwin:~ alan<span class="nv">$ </span>which ruby
+</span><span class='line'>/usr/local/rvm/rubies/ruby-1.9.3-p374/bin/ruby
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So we should be good to go.  Let&#8217;s try installing CocoaPods again:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Darwin:~ alan<span class="nv">$ </span>sudo gem install cocoapods
+</span><span class='line'>Fetching: i18n-0.6.1.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: multi_json-1.5.0.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: activesupport-3.2.11.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: colored-1.2.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'>Fetching: xcodeproj-0.4.2.gem <span class="o">(</span>100%<span class="o">)</span>
+</span><span class='line'><span class="c"># many more lines follow...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Success! Now back to the canonical installation:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Darwin:~ alan<span class="nv">$ </span>pod setup
+</span><span class='line'>Setting up CocoaPods master repo
+</span><span class='line'>Cloning spec repo <span class="sb">`</span>master<span class="s1">&#39; from `https://github.com/CocoaPods/Specs.git&#39;</span> <span class="o">(</span>branch <span class="sb">`</span>master<span class="err">&#39;</span><span class="o">)</span>
+</span><span class='line'>Setup completed <span class="o">(</span><span class="nb">read</span>-only access<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&#8220;`</p>
+
+<h4>Conclusion</h4>
+
+<p>For developers with more experience dealing with ruby, its versions and dependencies, deleting rvm and reinstalling may seem like a blunt instrument.  For me, this worked well and allowed us to start working with CocoaPods after a lot of earlier frustration.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-01T04:49:00-06:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cocoapods/'>cocoapods</a>, <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2013/02/01/troubleshooting-cocoapods-installation/" data-via="CocoaFactory" data-counturl="http://cocoa-factory.github.com/blog/2013/02/01/troubleshooting-cocoapods-installation/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/17/expanding-nsoutlineview-at-load-time/" title="Previous Post: Expanding NSOutlineView at load time">&laquo; Expanding NSOutlineView at load time</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+	<h1>Our open source components</h1>
+	<p>Not only do we make great software, we support the developer community by open-sourcing some of what we do.  We plan to more of this, so stay tuned.</p>
+	<ul>
+		<li><a href="https://github.com/cocoa-factory/CCFNumberPickerView">CCFNumberPickerView</a> A iOS component for choosing number from a continuous scale.</li>
+		<li><a href="https://github.com/cocoa-factory/CCFBrowserTextField">CCFBrowserTextField</a>A Mac OS component incorporating a miniature button in an NSTextField</li>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/02/01/troubleshooting-cocoapods-installation/">troubleshooting cocoapods installation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/17/expanding-nsoutlineview-at-load-time/">Expanding NSOutlineView at load time</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/16/lldb-print-registers/">LLDB print registers</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/15/announcing-regexmatch-for-mac/">Announcing RegexMatch for Mac</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/28/forgetting-sandbox-entitlements/">Forgetting Sandbox entitlements</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("CocoaFactory", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/CocoaFactory" class="twitter-follow-button" data-show-count="false">Follow @CocoaFactory</a>
+  
+</section>
+
+<section>
+    <h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/134245/nsbum">
+<img src="http://stackoverflow.com/users/flair/134245.png" width="208" height="58" alt="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+
+</section>
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

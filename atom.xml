@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-02-01T05:30:34-06:00</updated>
+  <updated>2013-02-11T04:59:03-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,63 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing CCFScrollingTabBar]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2013/02/10/introducing-ccfscrollingtabbar/"/>
+    <updated>2013-02-10T21:56:00-06:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2013/02/10/introducing-ccfscrollingtabbar</id>
+    <content type="html"><![CDATA[<p>We&#8217;re pleased to announce the release of a new open source control called <code>CCFScrollingTabBar</code>, a refined scrolling control for iPhone.  You can find it on github <a href="https://github.com/cocoa-factory/CCFScrollingTabBar">here</a>.</p>
+
+<p>It&#8217;s a little like <a href="https://github.com/jasarien/JSScrollableTabBar"><code>JSScrollableTabBar</code></a> with completely customizable colors.  Rather than just talk about it, here&#8217;s what it looks like:
+<img class="right" src="http://cocoa-factory.github.com/images/tab-bar-img-001.jpg">  For the developer, this is a simple component to use.  Just provide the instance of <code>CCFScrollableTabView</code> with the colors for the gradient background and text, and the titles of the tabs, and we take care of the rest.  You can receive delegate messages when the use taps on an item.  We setup a simple example project to see it in action.</p>
+
+<h4>Using CCFScrollingTabBar in a nutshell</h4>
+
+<p>Our example project uses a scrolling tab bar instantiated in a nib.  It should be exactly 41 pixels high.  Your instance of <code>CCFScrollingTabView</code> should have a delegate and a data source.  Without a data source you would see nothing.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark - CCFScrollableTabViewDataSource</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nf">textColorInScrollableTabView:</span><span class="p">(</span><span class="n">CCFScrollableTabView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tabView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nf">darkColorInScrollableTabView:</span><span class="p">(</span><span class="n">CCFScrollableTabView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tabView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.0706f</span> <span class="nl">green:</span><span class="mf">0.1529f</span> <span class="nl">blue:</span><span class="mf">0.4235f</span> <span class="nl">alpha:</span><span class="mf">1.0f</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nf">lightColorInScrollableTabView:</span><span class="p">(</span><span class="n">CCFScrollableTabView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tabView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.258f</span> <span class="nl">green:</span><span class="mf">0.639f</span> <span class="nl">blue:</span><span class="mf">0.890f</span> <span class="nl">alpha:</span><span class="mf">1.0f</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">titlesInScrollableTabView:</span><span class="p">(</span><span class="n">CCFScrollableTabView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tabView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span><span class="s">@&quot;Afrikaans&quot;</span><span class="p">,</span><span class="s">@&quot;Basque&quot;</span><span class="p">,</span><span class="s">@&quot;Catalan&quot;</span><span class="p">,</span><span class="s">@&quot;Croatian&quot;</span><span class="p">,</span><span class="s">@&quot;Danish&quot;</span><span class="p">,</span><span class="s">@&quot;English&quot;</span><span class="p">,</span><span class="s">@&quot;French&quot;</span><span class="p">,</span><span class="s">@&quot;German&quot;</span><span class="p">,</span><span class="s">@&quot;Hungarian&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s it!  If you want to know when the user taps on an item, you should implement the <code>scrollableTabView:didSelectItemAtIndex:</code> method on the <code>CCFScrollableTabViewDelegate</code> protocol.  That way your class will get a message with the index of the selection.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[troubleshooting cocoapods installation]]></title>
@@ -323,6 +380,10 @@
 <h4>Conclusion</h4>
 
 <p>For developers with more experience dealing with ruby, its versions and dependencies, deleting rvm and reinstalling may seem like a blunt instrument.  For me, this worked well and allowed us to start working with CocoaPods after a lot of earlier frustration.</p>
+
+<h4>Questions/comments?</h4>
+
+<p>I&#8217;d love to hear from you at <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

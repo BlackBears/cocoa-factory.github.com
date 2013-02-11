@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-02-11T04:59:03-06:00</updated>
+  <updated>2013-02-11T08:53:58-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -67,6 +67,14 @@
 
 
 <p>That&#8217;s it!  If you want to know when the user taps on an item, you should implement the <code>scrollableTabView:didSelectItemAtIndex:</code> method on the <code>CCFScrollableTabViewDelegate</code> protocol.  That way your class will get a message with the index of the selection.</p>
+
+<ul>
+<li><a href="https://github.com/cocoa-factory/CCFScrollingTabBar">CCFScrollingTabBar</a> on github</li>
+<li><a href="http://184.72.241.210/docs/CCFScrollingTabView/index.html">Documentation</a></li>
+</ul>
+
+
+<p>Comments, questions?  Contact Alan at <code>@NSBum</code></p>
 ]]></content>
   </entry>
   

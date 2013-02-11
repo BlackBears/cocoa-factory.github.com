@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coding | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-02-11T05:02:05-06:00</updated>
+  <updated>2013-02-11T08:53:58-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -30,9 +30,9 @@
 
 <p>Therefore, we begin a project with a basic degree of organization in the file system that is reflected in Xcode and provides a skeletal organization for the project as it develops.</p>
 
-<p>{% img left http://i.imgur.com/SG3Uf.png 'file system organization' %}  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.  We adopted this practice after reading a post by Adrian Kosmacezewski entitled <a href="http://akosma.com/2009/07/28/code-organization-in-xcode-projects/">Code Organization in Xcode Projects</a>.  The approach he describes is for Xcode 3; but it works fine with modern versions of Xcode.  The work of setting up the initial organization needs to be done up-front before you write any code.  Otherwise, moving files into place in the file system becomes tedious.</p>
+<p><img class="left" src="http://i.imgur.com/SG3Uf.png" title="'file system organization'" >  Before writing any code, we add the directories as depicted to the file system.  Any project template files that are generated automatically by Xcode are then moved into the appropriate directories in the file system.  At that point, we return to Xcode and delete the file references.  Then we drag all of the folders from the file system back into Xcode.  This establishes the basic structure in Xcode that parallels that in the file system.  As our project grows, we add the remaining hierarchical structure only in Xcode.  We adopted this practice after reading a post by Adrian Kosmacezewski entitled <a href="http://akosma.com/2009/07/28/code-organization-in-xcode-projects/">Code Organization in Xcode Projects</a>.  The approach he describes is for Xcode 3; but it works fine with modern versions of Xcode.  The work of setting up the initial organization needs to be done up-front before you write any code.  Otherwise, moving files into place in the file system becomes tedious.</p>
 
-<p>{% img left http://i.imgur.com/EZMkz.png 'Xcode organization' %}</p>
+<p><img class="left" src="http://i.imgur.com/EZMkz.png" title="'Xcode organization'" ></p>
 
 <h3>Naming conventions</h3>
 

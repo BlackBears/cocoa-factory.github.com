@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ios | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-02-11T05:02:05-06:00</updated>
+  <updated>2013-02-11T08:53:58-06:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -21,7 +21,7 @@
     <content type="html"><![CDATA[<p>We're pleased to announce the release of a new open source control called <code>CCFScrollingTabBar</code>, a refined scrolling control for iPhone.  You can find it on github <a href="https://github.com/cocoa-factory/CCFScrollingTabBar">here</a>.</p>
 
 <p>It's a little like <a href="https://github.com/jasarien/JSScrollableTabBar"><code>JSScrollableTabBar</code></a> with completely customizable colors.  Rather than just talk about it, here's what it looks like:
-{% img right /images/tab-bar-img-001.jpg %}  For the developer, this is a simple component to use.  Just provide the instance of <code>CCFScrollableTabView</code> with the colors for the gradient background and text, and the titles of the tabs, and we take care of the rest.  You can receive delegate messages when the use taps on an item.  We setup a simple example project to see it in action.</p>
+<img class="right" src="/images/tab-bar-img-001.jpg">  For the developer, this is a simple component to use.  Just provide the instance of <code>CCFScrollableTabView</code> with the colors for the gradient background and text, and the titles of the tabs, and we take care of the rest.  You can receive delegate messages when the use taps on an item.  We setup a simple example project to see it in action.</p>
 
 <h4>Using CCFScrollingTabBar in a nutshell</h4>
 
@@ -49,6 +49,14 @@
 
 
 <p>That's it!  If you want to know when the user taps on an item, you should implement the <code>scrollableTabView:didSelectItemAtIndex:</code> method on the <code>CCFScrollableTabViewDelegate</code> protocol.  That way your class will get a message with the index of the selection.</p>
+
+<ul>
+<li><a href="https://github.com/cocoa-factory/CCFScrollingTabBar">CCFScrollingTabBar</a> on github</li>
+<li><a href="http://184.72.241.210/docs/CCFScrollingTabView/index.html">Documentation</a></li>
+</ul>
+
+
+<p>Comments, questions?  Contact Alan at <code>@NSBum</code></p>
 ]]></content>
   </entry>
   

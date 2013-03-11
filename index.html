@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="We&#8217;re pleased to announce the release of a new open source control called CCFScrollingTabBar, a refined scrolling control for iPhone. You can &hellip;">
+  <meta name="description" content="If you haven&#8217;t heard yet, the fifth iteration of NSConference was awesome. Lots of great talks, meeting other developers, and of course, sunny &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,51 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/">App Version Icon Overlays: The Mac Edition</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-10T16:28:00-05:00" pubdate data-updated="true">Mar 10<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>If you haven&#8217;t heard yet, the fifth iteration of <a href="http://nsconference.com">NSConference</a> was awesome.  Lots of great talks, meeting other developers, and of course, sunny Leicester, UK.</p>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/icon_128x128.png' width='' height='' alt='Stamped icon' title='Stamped icon'><span class='caption-text'>Stamped icon</span></span> Among the great talks was Evan Doll&#8217;s about how Flipboard makes use of the development toolchain in novel ways to make their process more efficient and less error-prone.  Krzysztof Zablocki <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">has written up</a> a great description on his implementation of Evan&#8217;s idea.  It works really well for iOS.  It&#8217;s such a neat trick, that I thought I&#8217;d build on it for Mac OS.  Turns out that core process is almost the same as Krzysztof&#8217;s; but with some twists.</p>
+
+<p>Read on for more about how I implemented Mac icon overlays.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -1772,402 +1817,6 @@ Paste the code above into <code>main.m</code> to replace the code that&#8217;s a
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">X86_64 Assembly Language Tutorial: Part 1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-23T04:21:00-06:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The majority of the time, Cocoa developers work at a such a high level of abstraction that we almost forget that all of those abstractions ultimately interact with silicon at the level of machine language.  Few of us will ever need to write such performance-critical code that we need to hand-write assembly language code; but a rudimentary understanding of it will help developers understand how the compiler behaves and how our objects that live in the upper levels of abstraction actually work.  If for no other reason, a passing familiarity with x86_64 assembly language will comfort the developer a little when the debugger stops on some line of assembly code.  With that, let&#8217;s dive in.</p>
-
-<p>Registers are the &#8220;variables&#8221; at a hardware level.  In the x86_64 architecture, the registers are 64 bits wide, of course; but they have 32, 16, and 8 bit sub-registers that are used for particular instructions.  The following table shows some of those relationships:</p>
-
-<table>
-<thead>
-<tr>
-<th>64-bit register </th>
-<th> Lower 32 bits </th>
-<th> Lower 16 bits </th>
-<th> Lower 8 bits</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>rax        </td>
-<td> eax           </td>
-<td> ax            </td>
-<td> al</td>
-</tr>
-<tr>
-<td>rbx             </td>
-<td> ebx           </td>
-<td> bx            </td>
-<td> bl</td>
-</tr>
-<tr>
-<td>rcx             </td>
-<td> ecx           </td>
-<td> cx            </td>
-<td> cl</td>
-</tr>
-<tr>
-<td>rdx             </td>
-<td> edx           </td>
-<td> dx            </td>
-<td> dl</td>
-</tr>
-<tr>
-<td>rsi             </td>
-<td> esi           </td>
-<td> si            </td>
-<td> sil</td>
-</tr>
-<tr>
-<td>rdi             </td>
-<td> edi           </td>
-<td> di            </td>
-<td> dil</td>
-</tr>
-<tr>
-<td>rbp             </td>
-<td> ebp           </td>
-<td> bp            </td>
-<td> bpi</td>
-</tr>
-<tr>
-<td>rsp             </td>
-<td> esp           </td>
-<td> sp            </td>
-<td> spi</td>
-</tr>
-<tr>
-<td>r8              </td>
-<td> r8d           </td>
-<td> r8w           </td>
-<td> r8b</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>(<code>r8</code>-<code>r15</code> follow the same convention.)  The <code>rip</code> register is the instruction pointer register which points to the instruction being executed.  As we go through this series, we&#8217;ll introduce more information about the x86_64 registers.  Before we move on, it&#8217;s important to note that although there are dozens of registers that the compiler can use, their use is restricted by several factors:</p>
-
-<ol>
-<li><strong>Width of register</strong> - an 8 bit register can&#8217;t hold a 64-bit value.  (Duh.)</li>
-<li><strong>Instructions</strong> - instructions operate on certain types of registers.</li>
-<li><strong>Application binary interface</strong> - this is the low-level equivalent of an API, specifying data types, widths, calling conventions, etc.</li>
-</ol>
-
-
-<p>Our example is a simple C program that prints the first 16 integers:</p>
-
-<h3>C code</h3>
-
-<div><script src='https://gist.github.com/4135115.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        uint8_t i;
-        for( i = 0; i &lt; 16; i++ ) {
-            printf(&quot;i = %d\n&quot;,i);
-        }
-    }
-    return 0;
-}</code></pre></noscript></div>
-
-
-<p>We&#8217;ve compiled this using no optimizations to see how the compiler behaves when it can&#8217;t optimize.  In the next installment, we&#8217;ll take a look at the effect of optimizations on the compiled code.</p>
-
-<h3>Disassembly</h3>
-
-<div><script src='https://gist.github.com/4134960.js?file='></script>
-<noscript><pre><code>0x100000eeb:  pushq  %rbp
-0x100000eec:  movq   %rsp, %rbp
-0x100000eef:  pushq  %r15
-0x100000ef1:  pushq  %r14
-0x100000ef3:  pushq  %rbx
-0x100000ef4:  pushq  %rax
-0x100000ef5:  callq  0x100000f34               ; symbol stub for: objc_autoreleasePoolPush
-0x100000efa:  movq   %rax, %r14
-0x100000efd:  xorl   %ebx, %ebx
-0x100000eff:  leaq   104(%rip), %r15           ; &quot;i = %d\n&quot;
-0x100000f06:  movq   %r15, %rdi
-0x100000f09:  movl   %ebx, %esi
-0x100000f0b:  xorb   %al, %al
-0x100000f0d:  callq  0x100000f3a               ; symbol stub for: printf
-0x100000f12:  incl   %ebx
-0x100000f14:  cmpb   $16, %bl
-0x100000f17:  jne    0x100000f06               ; main + 27 at main.m:17
-0x100000f19:  movq   %r14, %rdi
-0x100000f1c:  callq  0x100000f2e               ; symbol stub for: objc_autoreleasePoolPop
-0x100000f21:  xorl   %eax, %eax
-0x100000f23:  addq   $8, %rsp
-0x100000f27:  popq   %rbx
-0x100000f28:  popq   %r14
-0x100000f2a:  popq   %r15
-0x100000f2c:  popq   %rbp
-0x100000f2d:  ret  </code></pre></noscript></div>
-
-
-<h3>Step-by-step</h3>
-
-<h4>Step 1</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ec0</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mh">0x100000ec1</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rsp</span><span class="p">,</span> <span class="o">%</span><span class="n">rbp</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is a standard preamble for a C function.  <code>pushq %rbp</code> saves the base pointer to the stack so that it can be restored later (see <code>popq %rbp</code>…)  Then <code>movq %rsp, %rbp</code> copies <code>rsp</code> to <code>rbp</code> setting the base pointer (temporarily for our function) to the stack pointer.  That way we can push variables to the stack if our function requires it.</p>
-
-<h4>Step 2</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ec4</span><span class="o">:</span>  <span class="n">subq</span>   <span class="err">$</span><span class="mi">48</span><span class="p">,</span> <span class="o">%</span><span class="n">rsp</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Grow our stack 48 bytes upward.  The compiler evidently concluded that our function may need 48 bytes of stack space for its use.</p>
-
-<h4>Step 3</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ec8</span><span class="o">:</span>  <span class="n">movl</span>   <span class="err">$</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Store a 32-bit zero at the bottom of the stack.  As the stack grows, we use lower-numbered addresses in memory.  Here, the bottom four bytes of the stack are set to zero.  Presumably this is just to make sure we&#8217;ve cleared the stack that we are using.</p>
-
-<h4>Step 4</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ecf</span><span class="o">:</span>  <span class="n">movl</span>   <span class="o">%</span><span class="n">edi</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Since <code>edi</code> is the first integer argument register - and the lower 32 bits of <code>rdi</code> we are pushing this to the stack 8 bytes up.  Since we set the bottom 4 bytes to zero, we are ensuring that the 64 bit value now on the stack is just the value of <code>argc</code> from the C code.  Makes sense?</p>
-
-<h4>Step 5</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ed2</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rsi</span><span class="p">,</span> <span class="o">-</span><span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we&#8217;re saving <code>rsi</code> another 8 bytes up the stack.</p>
-
-<h4>Step 6</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ed6</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000f2e</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Like the comment says, we&#8217;re calling the start of the autorelease pool.  Remember, we&#8217;re looking at the disassembly.  If we were looking at the assembly instead, we&#8217;d see something like this:  <code>callq _objc_autoreleasePoolPush</code></p>
-
-<h4>Step 7</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000edb</span><span class="o">:</span>  <span class="n">movb</span>   <span class="err">$</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">17</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What&#8217;s going on here?  We&#8217;re pushing a an 8-bit zero to a position 17 bytes up the stack.  I&#8217;ll bet this refers to initializing our <code>uint8_t</code> loop variable <code>i</code> to zero.  We&#8217;ll see in a minute.</p>
-
-<h4>Step 8</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000edf</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rax</span><span class="p">,</span> <span class="o">-</span><span class="mi">32</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we&#8217;re moving the accumulator register <code>rax</code> to the stack.</p>
-
-<h4>Step 9</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ee3</span><span class="o">:</span>  <span class="n">movzbl</span> <span class="o">-</span><span class="mi">17</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span> <span class="o">%</span><span class="n">eax</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here&#8217;s an instruction that we haven&#8217;t seen yet: <code>movzbl</code>.  This instruction means &#8220;move byte to long&#8221; so we are moving a byte at <code>-17(%rbp)</code> (remember that was hypothesized to be our loop variable…) to the register <code>%eax</code> which, you will recall, is the lower 32 bits of <code>%rax</code>.  Since we&#8217;re moving it back off the stack, I wonder if we&#8217;re getting ready to compare it to our maximum loop index?</p>
-
-<h4>Step 10</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ee7</span><span class="o">:</span>  <span class="n">cmpl</span>   <span class="err">$</span><span class="mi">16</span><span class="p">,</span> <span class="o">%</span><span class="n">eax</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Yep!  <code>cmpl</code> means &#8220;compare long&#8221;, so we are comparing decimal 16 to <code>%eax</code> the lower 32 bits of the accumulator - the place where we just pulled our byte-to-long off the stack.  Now we&#8217;d expect to see some conditional jump next, I think.</p>
-
-<h4>Step 11</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000eec</span><span class="o">:</span>  <span class="n">jge</span>    <span class="mh">0x100000f14</span>               <span class="p">;</span> <span class="n">main</span> <span class="o">+</span> <span class="mi">84</span> <span class="n">at</span> <span class="n">main</span><span class="p">.</span><span class="n">m</span><span class="o">:</span><span class="mi">19</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And right again!</p>
-
-<p>The <code>jge</code> instruction is &#8220;jump when greater than or equal to&#8221;; so if <code>%eax</code> is greater than or equal to 16, we&#8217;ll jump to <code>0x100000f14</code> which, if you look ahead pops our autorelease pool and restores the stack, etc. thereby finishing the function.</p>
-
-<h4>Step 12</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ef2</span><span class="o">:</span>  <span class="n">leaq</span>   <span class="mi">113</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">rdi</span>           <span class="p">;</span> <span class="s">&quot;i = %d</span><span class="se">\n</span><span class="s">&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If we reach this point, our comparison failed and the integer is under 16.  So all that was left to do in the C code is to print it.  In this case, we&#8217;re loading an address 113 decimal bytes ahead of our current instruction pointer into <code>%rdi</code>.  Without seeing what&#8217;s beyond the end of the function in memory and without the comment, we&#8217;d be lost.  But the disassembler gives us a comment that tells us that this points to the format string that we&#8217;ll use to print the integer value.  But why did the compiler chosse <code>%rdi</code> for the this argument?  The answer is buried in the <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI</a> in the section 3.2.3. which states that register <code>%rdi</code> is used to pass the first argument to functions.</p>
-
-<h4>Step 13</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ef9</span><span class="o">:</span>  <span class="n">movzbl</span> <span class="o">-</span><span class="mi">17</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span> <span class="o">%</span><span class="n">esi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Again, our &#8220;move byte to long&#8221; instruction.  This time moving the integer value to <code>%esi</code>.  I bet that&#8217;s what <code>printf</code> is expecting as the integer argument.  Referring again to the <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI</a>, <code>%rsi</code> is used to pass the second argument to functions.  Since <code>%esi</code> is the lower 32 bits of <code>%rsi</code>, this makes sense.</p>
-
-<h4>Step 14</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000efd</span><span class="o">:</span>  <span class="n">movb</span>   <span class="err">$</span><span class="mi">0</span><span class="p">,</span> <span class="o">%</span><span class="n">al</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is the tricky bit to understand without references to the ABI.  <code>%rax</code> is used to pass information about the number of vector registers that are used.  It is also the 1st return register.  Register <code>%al</code> is the lower 8 bits of <code>%rax</code> so in this instruction we are setting the number of vector registers to zero.  Since we are simply printing an integer, no need for vector registers.</p>
-
-<h4>Step 15</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000eff</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000f34</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">printf</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we find the call to <code>printf</code> after the setup.  In assembly, this would have been <code>callq _printf</code>.</p>
-
-<h4>Step 16</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f04</span><span class="o">:</span>  <span class="n">movl</span>   <span class="o">%</span><span class="n">eax</span><span class="p">,</span> <span class="o">-</span><span class="mi">36</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This action (which is not really necessary) is a &#8220;Spill&#8221;; if we look at the assembly it labels it as such:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="n">movl</span> <span class="o">%</span><span class="n">eax</span><span class="p">,</span> <span class="o">-</span><span class="mi">36</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>         <span class="err">##</span> <span class="mi">4</span><span class="o">-</span><span class="n">byte</span> <span class="n">Spill</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>When optimizations are off, the compiler looks ahead and sees that we need <code>%eax</code> or one of its sub-registers and pushes it to the stack.  That is a Spill.</p>
-
-<h4>Step 17</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f07</span><span class="o">:</span>  <span class="n">movb</span>   <span class="o">-</span><span class="mi">17</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span> <span class="o">%</span><span class="n">al</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we get the integer loop value at <code>-17(%rbp)</code> off the stack into <code>%al</code>.  The upcoming use of <code>%al</code> is the reason that the compiler spilled the 4 bytes of <code>%eax</code> in the last instruction.</p>
-
-<h4>Step 18</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f0a</span><span class="o">:</span>  <span class="n">addb</span>   <span class="err">$</span><span class="mi">1</span><span class="p">,</span> <span class="o">%</span><span class="n">al</span>
-</span><span class='line'><span class="mh">0x100000f0c</span><span class="o">:</span>  <span class="n">movb</span>   <span class="o">%</span><span class="n">al</span><span class="p">,</span> <span class="o">-</span><span class="mi">17</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now, as expected, the increment and move back to the stack.</p>
-
-<h4>Step 19</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f0f</span><span class="o">:</span>  <span class="n">jmpq</span>   <span class="mh">0x100000ee3</span>               <span class="p">;</span> <span class="n">main</span> <span class="o">+</span> <span class="mi">35</span> <span class="n">at</span> <span class="n">main</span><span class="p">.</span><span class="n">m</span><span class="o">:</span><span class="mi">16</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Finally, the end of our loop.  Jump back to address <code>0x100000ee3</code> which is step 9 above and the setup for our loop index comparison.</p>
-
-<h4>Step 20</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f14</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">-</span><span class="mi">32</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span> <span class="o">%</span><span class="n">rdi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we get <code>%rdi</code> off the stack; this is the opposite of a Spill - a Reload.</p>
-
-<h4>Step 21</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f18</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000f28</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">objc_autoreleasePoolPop</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Pop our Objective-C autorelease pool.</p>
-
-<h4>Step 22</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f1d</span><span class="o">:</span>  <span class="n">movl</span>   <span class="err">$</span><span class="mi">0</span><span class="p">,</span> <span class="o">%</span><span class="n">eax</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Remember that <code>%rax</code> is our first return register; so this instruction is simply setting our return to 0.</p>
-
-<h4>Step 23</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f22</span><span class="o">:</span>  <span class="n">addq</span>   <span class="err">$</span><span class="mi">48</span><span class="p">,</span> <span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mh">0x100000f26</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mh">0x100000f27</span><span class="o">:</span>  <span class="n">ret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Restore the stack pointer and the base pointer. And return.</p>
-
-<p>With that, our first installment on x86_64 comes to a close.  We hope this was a helpful first introduction to x86_64 assembly language and that you will find it useful in understanding and debugging your applications.</p>
-
-<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2194,6 +1843,10 @@ int main(int argc, const char * argv[]) {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/">App version icon overlays:  The Mac edition</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/10/introducing-ccfscrollingtabbar/">Introducing CCFScrollingTabBar</a>
       </li>
     
@@ -2207,10 +1860,6 @@ int main(int argc, const char * argv[]) {
     
       <li class="post">
         <a href="/blog/2012/12/16/lldb-print-registers/">LLDB print registers</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/15/announcing-regexmatch-for-mac/">Announcing RegexMatch for Mac</a>
       </li>
     
   </ul>

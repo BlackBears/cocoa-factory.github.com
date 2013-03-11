@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>App version icon overlays:  The Mac edition - Cocoa Factory</title>
+  <meta name="author" content="Alan Duncan">
+
+  
+  <meta name="description" content="If you haven&#8217;t heard yet, the fifth iteration of NSConference was awesome. Lots of great talks, meeting other developers, and of course, sunny &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cocoa Factory" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cocoa Factory</a></h1>
+  
+    <h2>Industrial strength software for iOS and Mac</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cocoa-factory.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about">About</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/products">Products</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">App Version Icon Overlays: The Mac Edition</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-10T16:28:00-05:00" pubdate data-updated="true">Mar 10<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>If you haven&#8217;t heard yet, the fifth iteration of <a href="http://nsconference.com">NSConference</a> was awesome.  Lots of great talks, meeting other developers, and of course, sunny Leicester, UK.</p>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/icon_128x128.png' width='' height='' alt='Stamped icon' title='Stamped icon'><span class='caption-text'>Stamped icon</span></span> Among the great talks was Evan Doll&#8217;s about how Flipboard makes use of the development toolchain in novel ways to make their process more efficient and less error-prone.  Krzysztof Zablocki <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">has written up</a> a great description on his implementation of Evan&#8217;s idea.  It works really well for iOS.  It&#8217;s such a neat trick, that I thought I&#8217;d build on it for Mac OS.  Turns out that core process is almost the same as Krzysztof&#8217;s; but with some twists.</p>
+
+<p>Read on for more about how I implemented Mac icon overlays.</p>
+
+<!-- more -->
+
+
+<p>As I mentioned, <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">Krzysztof did the heavy lifting</a>; so you&#8217;ll want to check that out first.  Briefly, he uses a Run Script build phase in Xcode to apply certain data to the icon, including:</p>
+
+<ul>
+<li>application version number from the <code>CFBundleVersion</code></li>
+<li>branch name</li>
+<li>part of the commit hash</li>
+</ul>
+
+
+<p>I&#8217;ve largely left his <code>processIcon()</code> function intact with a couple exceptions:</p>
+
+<h4>Caption height</h4>
+
+<p>In the original version of <code>processIcon()</code> the caption height is fixed at 40px.  This works for icons in the iOS range; but Mac icons range from 16 to 1024px; so we wanted to be able to scale the caption height proportionally.  Also, we can&#8217;t really stamp icons below a certain threshold size value - say around 64 px.  Otherwise, the text is not rendered legibly.  So we&#8217;ll add these lines:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">height</span><span class="o">=</span><span class="sb">`</span>identify -format %h <span class="k">${</span><span class="nv">base_file</span><span class="k">}</span><span class="sb">`</span>
+</span><span class='line'><span class="nv">banner_height</span><span class="o">=</span><span class="k">$((</span><span class="nv">$height</span><span class="o">/</span><span class="m">3</span><span class="k">))</span>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$width</span> -lt 64 <span class="o">]</span>; <span class="k">then return</span>; <span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Dealing with iconsets</h4>
+
+<p>Mac icons are packaged in iconsets. A <code>.iconset</code> file is just a folder renamed so that the extension is <code>.iconset</code> and which contains all of the icons that will be built into a <code>.icns</code> file during the build process.  Therefore, we need a new bash function to process an iconset.  Let&#8217;s call it <code>processIconset()</code> <em>(Aren&#8217;t we creative!)</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">function </span>processIconset<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nv">base_name</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$1</span> | sed <span class="s2">&quot;s/\.iconset//g&quot;</span><span class="sb">`</span>
+</span><span class='line'>    <span class="nv">WORKING_DIR</span><span class="o">=</span><span class="sb">`</span>mktemp -d /tmp/icon_processor.XXXXXXXX<span class="sb">`</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;Created working directory at $WORKING_DIR&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">DIR</span><span class="o">=</span><span class="nv">$1</span>
+</span><span class='line'>    cp -r <span class="k">${</span><span class="nv">DIR</span><span class="k">}</span>/ <span class="nv">$WORKING_DIR</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;Finished copying application icons to temporary directory&quot;</span>
+</span><span class='line'>    mkdir <span class="nv">$WORKING_DIR</span>/<span class="nv">$DIR</span>
+</span><span class='line'>    <span class="k">for </span>icon in <span class="nv">$WORKING_DIR</span>/*.png
+</span><span class='line'>    <span class="k">do</span>
+</span><span class='line'><span class="k">        </span><span class="nb">echo</span> <span class="s2">&quot;Annotating icon file $icon&quot;</span>
+</span><span class='line'>        processIcon <span class="nv">$icon</span>
+</span><span class='line'>        mv <span class="nv">$icon</span> <span class="nv">$WORKING_DIR</span>/<span class="nv">$DIR</span>
+</span><span class='line'>    <span class="k">done</span>
+</span><span class='line'><span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;Converting iconset to .icns&quot;</span>
+</span><span class='line'>    iconutil --convert icns --output <span class="nv">$WORKING_DIR</span>/<span class="nv">$base_name</span>.icns  <span class="nv">$WORKING_DIR</span>/<span class="nv">$DIR</span>
+</span><span class='line'>    mv <span class="nv">$WORKING_DIR</span>/<span class="nv">$base_name</span>.icns <span class="nv">$icns_target_path</span>
+</span><span class='line'>    rm -r <span class="nv">$WORKING_DIR</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Briefly, we:</p>
+
+<ul>
+<li>Grab the name of the iconset (everything but the file extension)</li>
+<li>Create a working directory in <code>/tmp</code></li>
+<li>Copy all of our icons from the <code>.iconset</code> to the working directory</li>
+<li>Iterate over each icon, calling our new <code>processIcon()</code> function</li>
+<li>Move the &#8220;stamped&#8221; icon into an interior directory whose name is the same as the original <code>.iconset</code></li>
+<li>Use <code>iconutil</code> to create the <code>.icns</code> file and move it to the proper build directory</li>
+<li>Clean up</li>
+</ul>
+
+
+<p>So, here&#8217;s the complete script in use in our RegexMatch application for Mac:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">commit</span><span class="o">=</span><span class="sb">`</span>git rev-parse --short HEAD<span class="sb">`</span>
+</span><span class='line'><span class="nv">branch</span><span class="o">=</span><span class="sb">`</span>git rev-parse --abbrev-ref HEAD<span class="sb">`</span>
+</span><span class='line'><span class="nv">version</span><span class="o">=</span><span class="sb">`</span>/usr/libexec/PlistBuddy -c <span class="s2">&quot;Print CFBundleVersion&quot;</span> <span class="s2">&quot;${INFOPLIST_FILE}&quot;</span><span class="sb">`</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>processIcon<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/usr/local/bin
+</span><span class='line'>    <span class="nv">base_file</span><span class="o">=</span><span class="nv">$1</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="nv">$1</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">[</span> ! -f <span class="nv">$base_file</span> <span class="o">]</span>; <span class="k">then return</span>; <span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#target_file=`echo $base_file | sed &quot;s/_base//&quot;`</span>
+</span><span class='line'>    <span class="nv">target_file</span><span class="o">=</span><span class="nv">$base_file</span>
+</span><span class='line'>    <span class="nv">target_path</span><span class="o">=</span><span class="nv">$target_file</span>
+</span><span class='line'>    <span class="nv">icns_target_path</span><span class="o">=</span><span class="s2">&quot;${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}&quot;</span>
+</span><span class='line'>    <span class="c">#target_path=&quot;${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/${target_file}&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="o">[</span> <span class="nv">$CONFIGURATION</span> <span class="o">=</span> <span class="s2">&quot;Release&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">    </span>cp <span class="k">${</span><span class="nv">base_file</span><span class="k">}</span> <span class="nv">$target_path</span>
+</span><span class='line'>    <span class="k">return</span>
+</span><span class='line'><span class="k">    fi</span>
+</span><span class='line'><span class="k">    </span>
+</span><span class='line'><span class="k">    </span><span class="nv">width</span><span class="o">=</span><span class="sb">`</span>identify -format %w <span class="k">${</span><span class="nv">base_file</span><span class="k">}</span><span class="sb">`</span>
+</span><span class='line'>    <span class="nv">height</span><span class="o">=</span><span class="sb">`</span>identify -format %h <span class="k">${</span><span class="nv">base_file</span><span class="k">}</span><span class="sb">`</span>
+</span><span class='line'>    <span class="nv">banner_height</span><span class="o">=</span><span class="k">$((</span><span class="nv">$height</span><span class="o">/</span><span class="m">3</span><span class="k">))</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">[</span> <span class="nv">$width</span> -lt 64 <span class="o">]</span>; <span class="k">then return</span>; <span class="k">fi</span>
+</span><span class='line'><span class="k">    </span>convert -background <span class="s1">&#39;#0008&#39;</span> -fill white -gravity center -size <span class="k">${</span><span class="nv">width</span><span class="k">}</span>x<span class="k">${</span><span class="nv">banner_height</span><span class="k">}</span><span class="se">\</span>
+</span><span class='line'>    -quality 1<span class="se">\</span>
+</span><span class='line'>    caption:<span class="s2">&quot;${version} ${branch} ${commit}&quot;</span><span class="se">\</span>
+</span><span class='line'>    <span class="k">${</span><span class="nv">base_file</span><span class="k">}</span> +swap -gravity south -composite <span class="k">${</span><span class="nv">target_path</span><span class="k">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>processIconset<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nv">base_name</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$1</span> | sed <span class="s2">&quot;s/\.iconset//g&quot;</span><span class="sb">`</span>
+</span><span class='line'>    <span class="nv">WORKING_DIR</span><span class="o">=</span><span class="sb">`</span>mktemp -d /tmp/icon_processor.XXXXXXXX<span class="sb">`</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;Created working directory at $WORKING_DIR&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">DIR</span><span class="o">=</span><span class="nv">$1</span>
+</span><span class='line'>    cp -r <span class="k">${</span><span class="nv">DIR</span><span class="k">}</span>/ <span class="nv">$WORKING_DIR</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;Finished copying application icons to temporary directory&quot;</span>
+</span><span class='line'>    mkdir <span class="nv">$WORKING_DIR</span>/<span class="nv">$DIR</span>
+</span><span class='line'>    <span class="k">for </span>icon in <span class="nv">$WORKING_DIR</span>/*.png <span class="c"># */</span>
+</span><span class='line'>    <span class="k">do</span>
+</span><span class='line'><span class="k">        </span><span class="nb">echo</span> <span class="s2">&quot;Annotating icon file $icon&quot;</span>
+</span><span class='line'>        processIcon <span class="nv">$icon</span>
+</span><span class='line'>        mv <span class="nv">$icon</span> <span class="nv">$WORKING_DIR</span>/<span class="nv">$DIR</span>
+</span><span class='line'>    <span class="k">done</span>
+</span><span class='line'><span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;Converting iconset to .icns&quot;</span>
+</span><span class='line'>    iconutil --convert icns --output <span class="nv">$WORKING_DIR</span>/<span class="nv">$base_name</span>.icns  <span class="nv">$WORKING_DIR</span>/<span class="nv">$DIR</span>
+</span><span class='line'>    mv <span class="nv">$WORKING_DIR</span>/<span class="nv">$base_name</span>.icns <span class="nv">$icns_target_path</span>
+</span><span class='line'>    rm -r <span class="nv">$WORKING_DIR</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>processIconset RegexMatch.iconset
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Thanks to Evan for the idea and Krzysztof for the iOS implementation.  As always, you can find Alan at <code>@NSBum</code>.  We&#8217;d love to hear questions and comments.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-10T16:28:00-05:00" pubdate data-updated="true">Mar 10<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/" data-via="CocoaFactory" data-counturl="http://cocoa-factory.github.com/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/10/introducing-ccfscrollingtabbar/" title="Previous Post: Introducing CCFScrollingTabBar">&laquo; Introducing CCFScrollingTabBar</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Cocoa Factory</h1>
+  <p>We design great software for iOS and Mac platforms.  And you can hire us for your next project.  Contact us at info@cocoa-factory.com</p>
+</section>
+<section>
+	<h1>Our open source components</h1>
+	<p>Not only do we make great software, we support the developer community by open-sourcing some of what we do.  We plan to more of this, so stay tuned.</p>
+	<ul>
+		<li><a href="https://github.com/cocoa-factory/CCFNumberPickerView">CCFNumberPickerView</a> A iOS component for choosing number from a continuous scale.</li>
+		<li><a href="https://github.com/cocoa-factory/CCFBrowserTextField">CCFBrowserTextField</a>A Mac OS component incorporating a miniature button in an NSTextField</li>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/">App version icon overlays:  The Mac edition</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/10/introducing-ccfscrollingtabbar/">Introducing CCFScrollingTabBar</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/01/troubleshooting-cocoapods-installation/">troubleshooting cocoapods installation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/17/expanding-nsoutlineview-at-load-time/">Expanding NSOutlineView at load time</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/16/lldb-print-registers/">LLDB print registers</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("CocoaFactory", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/CocoaFactory" class="twitter-follow-button" data-show-count="false">Follow @CocoaFactory</a>
+  
+</section>
+
+<section>
+    <h1>Stack Overflow</h1>
+<a href="http://stackoverflow.com/users/134245/nsbum">
+<img src="http://stackoverflow.com/users/flair/134245.png" width="208" height="58" alt="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for NSBum at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
+
+</section>
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Alan Duncan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

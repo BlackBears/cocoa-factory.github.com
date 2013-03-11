@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macos | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/macos/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-02-11T08:53:58-06:00</updated>
+  <updated>2013-03-11T04:55:52-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,154 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[App version icon overlays:  The Mac edition]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/"/>
+    <updated>2013-03-10T16:28:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2013/03/10/app-version-icon-overlays-the-mac-edition</id>
+    <content type="html"><![CDATA[<p>If you haven't heard yet, the fifth iteration of <a href="http://nsconference.com">NSConference</a> was awesome.  Lots of great talks, meeting other developers, and of course, sunny Leicester, UK.</p>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/icon_128x128.png' width='' height='' alt='Stamped icon' title='Stamped icon'><span class='caption-text'>Stamped icon</span></span> Among the great talks was Evan Doll's about how Flipboard makes use of the development toolchain in novel ways to make their process more efficient and less error-prone.  Krzysztof Zablocki <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">has written up</a> a great description on his implementation of Evan's idea.  It works really well for iOS.  It's such a neat trick, that I thought I'd build on it for Mac OS.  Turns out that core process is almost the same as Krzysztof's; but with some twists.</p>
+
+<p>Read on for more about how I implemented Mac icon overlays.</p>
+
+<!-- more -->
+
+
+<p>As I mentioned, <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">Krzysztof did the heavy lifting</a>; so you'll want to check that out first.  Briefly, he uses a Run Script build phase in Xcode to apply certain data to the icon, including:</p>
+
+<ul>
+<li>application version number from the <code>CFBundleVersion</code></li>
+<li>branch name</li>
+<li>part of the commit hash</li>
+</ul>
+
+
+<p>I've largely left his <code>processIcon()</code> function intact with a couple exceptions:</p>
+
+<h4>Caption height</h4>
+
+<p>In the original version of <code>processIcon()</code> the caption height is fixed at 40px.  This works for icons in the iOS range; but Mac icons range from 16 to 1024px; so we wanted to be able to scale the caption height proportionally.  Also, we can't really stamp icons below a certain threshold size value - say around 64 px.  Otherwise, the text is not rendered legibly.  So we'll add these lines:</p>
+
+<p><code>bash
+height=`identify -format %h ${base_file}`
+banner_height=$(($height/3))
+if [ $width -lt 64 ]; then return; fi
+</code></p>
+
+<h4>Dealing with iconsets</h4>
+
+<p>Mac icons are packaged in iconsets. A <code>.iconset</code> file is just a folder renamed so that the extension is <code>.iconset</code> and which contains all of the icons that will be built into a <code>.icns</code> file during the build process.  Therefore, we need a new bash function to process an iconset.  Let's call it <code>processIconset()</code> <em>(Aren't we creative!)</em></p>
+
+<p>``` bash
+function processIconset() {</p>
+
+<pre><code>base_name=`echo $1 | sed "s/\.iconset//g"`
+WORKING_DIR=`mktemp -d /tmp/icon_processor.XXXXXXXX`
+echo "Created working directory at $WORKING_DIR"
+
+DIR=$1
+cp -r ${DIR}/ $WORKING_DIR
+
+echo "Finished copying application icons to temporary directory"
+mkdir $WORKING_DIR/$DIR
+for icon in $WORKING_DIR/*.png
+do
+    echo "Annotating icon file $icon"
+    processIcon $icon
+    mv $icon $WORKING_DIR/$DIR
+done
+echo "Converting iconset to .icns"
+iconutil --convert icns --output $WORKING_DIR/$base_name.icns  $WORKING_DIR/$DIR
+mv $WORKING_DIR/$base_name.icns $icns_target_path
+rm -r $WORKING_DIR
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Briefly, we:</p>
+
+<ul>
+<li>Grab the name of the iconset (everything but the file extension)</li>
+<li>Create a working directory in <code>/tmp</code></li>
+<li>Copy all of our icons from the <code>.iconset</code> to the working directory</li>
+<li>Iterate over each icon, calling our new <code>processIcon()</code> function</li>
+<li>Move the "stamped" icon into an interior directory whose name is the same as the original <code>.iconset</code></li>
+<li>Use <code>iconutil</code> to create the <code>.icns</code> file and move it to the proper build directory</li>
+<li>Clean up</li>
+</ul>
+
+
+<p>So, here's the complete script in use in our RegexMatch application for Mac:</p>
+
+<p><code>`` bash
+commit=</code>git rev-parse --short HEAD<code>
+branch=</code>git rev-parse --abbrev-ref HEAD<code>
+version=</code>/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "${INFOPLIST_FILE}"`</p>
+
+<p>function processIcon() {</p>
+
+<pre><code>export PATH=$PATH:/usr/local/bin
+base_file=$1
+echo $1
+if [ ! -f $base_file ]; then return; fi
+
+#target_file=`echo $base_file | sed "s/_base//"`
+target_file=$base_file
+target_path=$target_file
+icns_target_path="${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
+#target_path="${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/${target_file}"
+
+if [ $CONFIGURATION = "Release" ]; then
+cp ${base_file} $target_path
+return
+fi
+
+width=`identify -format %w ${base_file}`
+height=`identify -format %h ${base_file}`
+banner_height=$(($height/3))
+if [ $width -lt 64 ]; then return; fi
+convert -background '#0008' -fill white -gravity center -size ${width}x${banner_height}\
+-quality 1\
+caption:"${version} ${branch} ${commit}"\
+${base_file} +swap -gravity south -composite ${target_path}
+</code></pre>
+
+<p>}</p>
+
+<p>function processIconset() {</p>
+
+<pre><code>base_name=`echo $1 | sed "s/\.iconset//g"`
+WORKING_DIR=`mktemp -d /tmp/icon_processor.XXXXXXXX`
+echo "Created working directory at $WORKING_DIR"
+
+DIR=$1
+cp -r ${DIR}/ $WORKING_DIR
+
+echo "Finished copying application icons to temporary directory"
+mkdir $WORKING_DIR/$DIR
+for icon in $WORKING_DIR/*.png # */
+do
+    echo "Annotating icon file $icon"
+    processIcon $icon
+    mv $icon $WORKING_DIR/$DIR
+done
+echo "Converting iconset to .icns"
+iconutil --convert icns --output $WORKING_DIR/$base_name.icns  $WORKING_DIR/$DIR
+mv $WORKING_DIR/$base_name.icns $icns_target_path
+rm -r $WORKING_DIR
+</code></pre>
+
+<p>}</p>
+
+<p>processIconset RegexMatch.iconset
+```</p>
+
+<p>Thanks to Evan for the idea and Krzysztof for the iOS implementation.  As always, you can find Alan at <code>@NSBum</code>.  We'd love to hear questions and comments.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[troubleshooting cocoapods installation]]></title>
@@ -257,23 +405,6 @@ We're delighted to announce our newest app - <strong>RegexMatch for Mac OS</stro
 <p>Learn more about <a href="/products/regexmatch/macos">RegexMatch</a>.</p>
 
 <p>Do you like RegexMatch - drop us a line <code>@CocoaFactory</code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Forgetting Sandbox entitlements]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/11/28/forgetting-sandbox-entitlements/"/>
-    <updated>2012-11-28T06:19:00-06:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/11/28/forgetting-sandbox-entitlements</id>
-    <content type="html"><![CDATA[<p>I was recently prepping a Mac OS app for Sandbox compliance but couldn't figure out why the following error: <code>NSPOSIXErrorDomain Code=1 "The operation couldn’t be completed. Operation not permitted"</code></p>
-
-<p>Finally it dawned on me that even simple outgoing network requests from the app, need to be specifically enabled thusly.</p>
-
-<p><img src="http://i.imgur.com/6hz3q.png"></p>
-
-<p>I wish the error were more descriptive or that the <code>userInfo</code> dictionary of the <code>NSError</code> at least had a Sandbox violation description key.</p>
-
-<p>Questions or comments about this post?  Contact the author of this post <code>@NSBum</code>.</p>
 ]]></content>
   </entry>
   

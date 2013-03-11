@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-03-11T05:04:43-05:00</updated>
+  <updated>2013-03-11T05:08:01-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -20,7 +20,7 @@
     <id>http://cocoa-factory.github.com/blog/2013/03/10/app-version-icon-overlays-the-mac-edition</id>
     <content type="html"><![CDATA[<p>If you haven&#8217;t heard yet, the fifth iteration of <a href="http://nsconference.com">NSConference</a> was awesome.  Lots of great talks, meeting other developers, and of course, sunny Leicester, UK.</p>
 
-<p><span class='caption-wrapper left'><img class='caption' src='http://cocoa-factory.github.com/images/icon_128x128.png' width='' height='' alt='Stamped icon' title='Stamped icon'><span class='caption-text'>Stamped icon</span></span> Among the great talks was Evan Doll&#8217;s about how Flipboard makes use of the development toolchain in novel ways to make their process more efficient and less error-prone.  Krzysztof Zablocki <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">has written up</a> a great description on his implementation of Evan&#8217;s idea.  It works really well for iOS.  It&#8217;s such a neat trick, that I thought I&#8217;d build on it for Mac OS.  Turns out that core process is almost the same as Krzysztof&#8217;s; but with some twists.</p>
+<p><span class='caption-wrapper left'><img class='caption' src='http://cocoa-factory.github.com/images/icon_128x128.png' width='' height='' alt='Fig 1. Stamped icon' title='Fig 1. Stamped icon'><span class='caption-text'>Fig 1. Stamped icon</span></span> Among the great talks was Evan Doll&#8217;s about how Flipboard makes use of the development toolchain in novel ways to make their process more efficient and less error-prone.  Krzysztof Zablocki <a href="http://www.merowing.info/2013/03/overlaying-application-version-on-top-of-your-icon/">has written up</a> a great description on his implementation of Evan&#8217;s idea.  It works really well for iOS.  It&#8217;s such a neat trick, that I thought I&#8217;d build on it for Mac OS.  Turns out that core process is almost the same as Krzysztof&#8217;s; but with some twists.</p>
 
 <p>Read on for more about how I implemented Mac icon overlays.</p>
 

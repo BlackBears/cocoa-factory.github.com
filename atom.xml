@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-03-11T04:55:52-05:00</updated>
+  <updated>2013-03-11T05:04:43-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -167,23 +167,19 @@
 <span class='line-number'>50</span>
 <span class='line-number'>51</span>
 <span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">commit</span><span class="o">=</span><span class="sb">`</span>git rev-parse --short HEAD<span class="sb">`</span>
 </span><span class='line'><span class="nv">branch</span><span class="o">=</span><span class="sb">`</span>git rev-parse --abbrev-ref HEAD<span class="sb">`</span>
 </span><span class='line'><span class="nv">version</span><span class="o">=</span><span class="sb">`</span>/usr/libexec/PlistBuddy -c <span class="s2">&quot;Print CFBundleVersion&quot;</span> <span class="s2">&quot;${INFOPLIST_FILE}&quot;</span><span class="sb">`</span>
+</span><span class='line'><span class="nv">icns_target_path</span><span class="o">=</span><span class="s2">&quot;${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">function </span>processIcon<span class="o">()</span> <span class="o">{</span>
 </span><span class='line'>    <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/usr/local/bin
 </span><span class='line'>    <span class="nv">base_file</span><span class="o">=</span><span class="nv">$1</span>
 </span><span class='line'>    <span class="nb">echo</span> <span class="nv">$1</span>
 </span><span class='line'>    <span class="k">if</span> <span class="o">[</span> ! -f <span class="nv">$base_file</span> <span class="o">]</span>; <span class="k">then return</span>; <span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#target_file=`echo $base_file | sed &quot;s/_base//&quot;`</span>
-</span><span class='line'>    <span class="nv">target_file</span><span class="o">=</span><span class="nv">$base_file</span>
+</span><span class='line'><span class="k">    </span>
+</span><span class='line'><span class="k">    </span><span class="nv">target_file</span><span class="o">=</span><span class="nv">$base_file</span>
 </span><span class='line'>    <span class="nv">target_path</span><span class="o">=</span><span class="nv">$target_file</span>
-</span><span class='line'>    <span class="nv">icns_target_path</span><span class="o">=</span><span class="s2">&quot;${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}&quot;</span>
-</span><span class='line'>    <span class="c">#target_path=&quot;${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/${target_file}&quot;</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">if</span> <span class="o">[</span> <span class="nv">$CONFIGURATION</span> <span class="o">=</span> <span class="s2">&quot;Release&quot;</span> <span class="o">]</span>; <span class="k">then</span>
 </span><span class='line'><span class="k">    </span>cp <span class="k">${</span><span class="nv">base_file</span><span class="k">}</span> <span class="nv">$target_path</span>
@@ -226,7 +222,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Thanks to Evan for the idea and Krzysztof for the iOS implementation.  As always, you can find Alan at <code>@NSBum</code>.  We&#8217;d love to hear questions and comments.</p>
+<p>Oh, lastly there are many images in a typical <code>.iconset</code> so it can take a long time to complete the script.  Something you may not want to execute every build. Thanks to Evan for the idea and Krzysztof for the iOS implementation.  As always, you can find Alan at <code>@NSBum</code>.  We&#8217;d love to hear questions and comments.</p>
 ]]></content>
   </entry>
   

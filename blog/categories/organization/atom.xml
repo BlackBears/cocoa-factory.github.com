@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: organization | Cocoa Factory]]></title>
+  <link href="http://cocoa-factory.github.com/blog/categories/organization/atom.xml" rel="self"/>
+  <link href="http://cocoa-factory.github.com/"/>
+  <updated>2013-03-11T22:27:09-05:00</updated>
+  <id>http://cocoa-factory.github.com/</id>
+  <author>
+    <name><![CDATA[Alan Duncan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Organizing developer reference materials]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2013/03/11/organizing-developer-reference-materials/"/>
+    <updated>2013-03-11T06:45:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2013/03/11/organizing-developer-reference-materials</id>
+    <content type="html"><![CDATA[<p>Like every other developer, I lookup information, API's, blog posts every day.  Recently, I was inspired to change that way that I accumulate all of this data.  Since I'm a long-term <a href="http://www.devontechnologies.com">DEVONthink</a> user. I decided to harness some of is power to organize my reference materials.  Here's how I went about organizing everything and why.</p>
+
+<h3>Make a committment to keeping everything in one place</h3>
+
+<p>As I started this process, I was trying to solve two problems:</p>
+
+<ul>
+<li>I wanted to be able to find developer-related information that was important to me.</li>
+<li>I wanted to control the data - meaning I wanted to have the data stored locally.</li>
+<li>I wanted to be able to find information again without having to reconstruct the Google search that found it in the first place.  Sometimes, you find interesting material only after a circuitous search.  It's hard to remember those pathways and they are dynamic.  Further, I'm in the process of designing and building an office out in the country where web access is harder.</li>
+</ul>
+
+
+<p>These goals are best met by ensuring there's a place for everything go.  In my case, I keep a single DEVONThink database called <code>dev</code> for this.  I have others where I keep personal data, hobby-related information, etc.</p>
+
+<h3>Gather everything</h3>
+
+<p>I started by adopting the GTD approach of gathering everything in one place.  In this case, it meant grabbing references from Dropbox, from Evernote, and a bunch of other places and dropping them in a virgin DEVONthink database.  I've used DEVONthink for years - long before Evernote and the majority of my reference materials were already there; so the workflow was already somewhat familiar to me.  After ongoing mental debates about the merits of DEVONthink (DT) vs Evernote, I've finally come down on the side of DT.  Although I like the accessibility of Evernote, with DT, the security of the data, its format, and location are all known to me.  It's certainly not as ubiquitous as Evernote; but DT syncing is getting better.  Nonetheless, I'm sure everything about this workflow is doable in Evernote, too.</p>
+
+<p>Whatever tool you use, gather everything means exactly that - find a software home that can keep everything you need and put it there.  And classify it.</p>
+
+<p>In what form do I save my data?  It depends.  Basically, I favor plain text > right text > pdf.  I save a lot of web pages for offline reference.  It's easy to use the Safari DT plugin to generate paginated PDF content.  That said, sometimes I'll capture rich text from the Reader version of the page and save that.</p>
+
+<h3>Setup a basic group structure</h3>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/DT_C_expanded.png' width='' height='' alt='Figure 1 DEVONthink groups' title='Figure 1 DEVONthink groups'><span class='caption-text'>Figure 1 DEVONthink groups</span></span>  The top-level entity in DT is the database, followed by <strong>Groups</strong>.  I created a single group called "references" and sub-groups by letters "A" to "Z".  Each letter gets alphabetic topics. Figure 1 shows my current "C" group expanded to show subgroups.  As an example, note that although the "core data" group has only three items in it.  There are other locations where there may be other entries about Core Data, e.g. <code>NSManagedObjectContext</code> may have its own group.  We'll get to tagging and search next.  The group structure is arbitrary because as you get better at tagging, the latter becomes the main way of finding things.  While I have a file-system bias, groups are becoming less-used because of the power of tag-based search.</p>
+
+<h3>Setup and maintain a hierarchical tagging structure</h3>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/DT_taglist.png' width='' height='' alt='Figure 2 Top-level tags' title='Figure 2 Top-level tags'><span class='caption-text'>Figure 2 Top-level tags</span></span>  Tags are an orthogonal way of finding information in DT.  Although you go drill-down the group hierarchy if you wanted (in a manner analogous to the file system), tags look orthogonally across the data.  And the better and more consistent you are with tagging, the better your searches become.  An important feature of DT tags is that they are <strong>hierarchical</strong> as I discovered <a href="http://www.organizingcreativity.com/2012/02/tagging-in-devonthink/">here</a>.  I spent a long while coming up with a concise hierarchy for my data which is shown in Figure 2.</p>
+
+<p>Since the tag hierarchy is what's important to this system, I'll briefly explain what each top-level item is:</p>
+
+<ul>
+<li><strong>language</strong>  Since many of my entities contain code, I wanted to be able to find items by language.</li>
+<li><strong>main_areas</strong>  This holds all of the - well, main areas.</li>
+<li><strong>people</strong>    I tag posts that are attributable to a particular author here.  The format of the tag is like <code>people_fnln</code> or <code>people_alanduncan</code>.</li>
+<li><strong>platforms</strong> e.g. <code>platform_apple_ios</code></li>
+<li><strong>source</strong>  Where did the entity come from?</li>
+<li><strong>status</strong>  Is the item read or not?</li>
+<li><strong>use_tye</strong> Why was the item saved?  e.g. <code>use_type_reference</code> or <code>use_type_tutorial</code></li>
+</ul>
+
+
+<p>The beauty of hierarchical tags is that by clicking on any level of the hierarchy you can see everything in that branch.  Surprisingly useful.</p>
+
+<h3>Use tags to advantage</h3>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/DT_workflow_expanded.png' width='' height='' alt='Figure 3 Tag hierarchies' title='Figure 3 Tag hierarchies'><span class='caption-text'>Figure 3 Tag hierarchies</span></span>  Since tags are key to finding content in my databases, I treat them with a lot of care, adding layers of specificity where it makes sense and pruning others.  Figure 3 shows one of my <code>main_areas</code> - <code>topic_workflow</code> fully expanded to show the hierarchy.  One of the neat things that you can do with DT tags is dragging documents between tags.  By doing this, you can add a new tag to a document.  If you delete a document from a tag's list, you remove that tag from the document.</p>
+
+<h3>Frequently Given Answers</h3>
+
+<h4>What about mobile access?</h4>
+
+<p>DEVONthink has an iOS version.  I couldn't really make use of it.  Instead, the desktop version of DT Pro Office runs an embedded web server.  I expose that on the WAN.  Works for me.</p>
+
+<h4>What else do you find useful?</h4>
+
+<p>DT allows you to hyperlink content.  This is useful to me in the following way:  let's assume that I've been working on figuring out how to do something.  I've got a handful of tabs open in Safari with pages that helped me accomplish the task.  When I've finished, I'd like to write up a summary so that if I have to do it again, I can refer to it.  In DT, I'd just import all of the pages as PDFs and hyperlink them into a rich-text document.  In a way, it's like developing your own very highly tailored version of the web.</p>
+
+<h4>Why don't you use just use Evernote?</h4>
+
+<p>I like Evernote. A lot.  But I really admire DEVONthink's scriptability, the way its hyperlinking works and the fact that the data is on my machine.  In the end, it works for me.</p>
+]]></content>
+  </entry>
+  
+</feed>

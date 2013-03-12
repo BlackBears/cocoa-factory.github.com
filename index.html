@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="If you haven&#8217;t heard yet, the fifth iteration of NSConference was awesome. Lots of great talks, meeting other developers, and of course, sunny &hellip;">
+  <meta name="description" content="Like every other developer, I lookup information, API&#8217;s, blog posts every day. Recently, I was inspired to change that way that I accumulate &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +68,104 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/11/organizing-developer-reference-materials/">Organizing Developer Reference Materials</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-11T06:45:00-05:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Like every other developer, I lookup information, API&#8217;s, blog posts every day.  Recently, I was inspired to change that way that I accumulate all of this data.  Since I&#8217;m a long-term <a href="http://www.devontechnologies.com">DEVONthink</a> user. I decided to harness some of is power to organize my reference materials.  Here&#8217;s how I went about organizing everything and why.</p>
+
+<h3>Make a committment to keeping everything in one place</h3>
+
+<p>As I started this process, I was trying to solve two problems:</p>
+
+<ul>
+<li>I wanted to be able to find developer-related information that was important to me.</li>
+<li>I wanted to control the data - meaning I wanted to have the data stored locally.</li>
+<li>I wanted to be able to find information again without having to reconstruct the Google search that found it in the first place.  Sometimes, you find interesting material only after a circuitous search.  It&#8217;s hard to remember those pathways and they are dynamic.  Further, I&#8217;m in the process of designing and building an office out in the country where web access is harder.</li>
+</ul>
+
+
+<p>These goals are best met by ensuring there&#8217;s a place for everything go.  In my case, I keep a single DEVONThink database called <code>dev</code> for this.  I have others where I keep personal data, hobby-related information, etc.</p>
+
+<h3>Gather everything</h3>
+
+<p>I started by adopting the GTD approach of gathering everything in one place.  In this case, it meant grabbing references from Dropbox, from Evernote, and a bunch of other places and dropping them in a virgin DEVONthink database.  I&#8217;ve used DEVONthink for years - long before Evernote and the majority of my reference materials were already there; so the workflow was already somewhat familiar to me.  After ongoing mental debates about the merits of DEVONthink (DT) vs Evernote, I&#8217;ve finally come down on the side of DT.  Although I like the accessibility of Evernote, with DT, the security of the data, its format, and location are all known to me.  It&#8217;s certainly not as ubiquitous as Evernote; but DT syncing is getting better.  Nonetheless, I&#8217;m sure everything about this workflow is doable in Evernote, too.</p>
+
+<p>Whatever tool you use, gather everything means exactly that - find a software home that can keep everything you need and put it there.  And classify it.</p>
+
+<p>In what form do I save my data?  It depends.  Basically, I favor plain text > right text > pdf.  I save a lot of web pages for offline reference.  It&#8217;s easy to use the Safari DT plugin to generate paginated PDF content.  That said, sometimes I&#8217;ll capture rich text from the Reader version of the page and save that.</p>
+
+<h3>Setup a basic group structure</h3>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/DT_C_expanded.png' width='' height='' alt='Figure 1 DEVONthink groups' title='Figure 1 DEVONthink groups'><span class='caption-text'>Figure 1 DEVONthink groups</span></span>  The top-level entity in DT is the database, followed by <strong>Groups</strong>.  I created a single group called &#8220;references&#8221; and sub-groups by letters &#8220;A&#8221; to &#8220;Z&#8221;.  Each letter gets alphabetic topics. Figure 1 shows my current &#8220;C&#8221; group expanded to show subgroups.  As an example, note that although the &#8220;core data&#8221; group has only three items in it.  There are other locations where there may be other entries about Core Data, e.g. <code>NSManagedObjectContext</code> may have its own group.  We&#8217;ll get to tagging and search next.  The group structure is arbitrary because as you get better at tagging, the latter becomes the main way of finding things.  While I have a file-system bias, groups are becoming less-used because of the power of tag-based search.</p>
+
+<h3>Setup and maintain a hierarchical tagging structure</h3>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/DT_taglist.png' width='' height='' alt='Figure 2 Top-level tags' title='Figure 2 Top-level tags'><span class='caption-text'>Figure 2 Top-level tags</span></span>  Tags are an orthogonal way of finding information in DT.  Although you go drill-down the group hierarchy if you wanted (in a manner analogous to the file system), tags look orthogonally across the data.  And the better and more consistent you are with tagging, the better your searches become.  An important feature of DT tags is that they are <strong>hierarchical</strong> as I discovered <a href="http://www.organizingcreativity.com/2012/02/tagging-in-devonthink/">here</a>.  I spent a long while coming up with a concise hierarchy for my data which is shown in Figure 2.</p>
+
+<p>Since the tag hierarchy is what&#8217;s important to this system, I&#8217;ll briefly explain what each top-level item is:</p>
+
+<ul>
+<li><strong>language</strong>  Since many of my entities contain code, I wanted to be able to find items by language.</li>
+<li><strong>main_areas</strong>  This holds all of the - well, main areas.</li>
+<li><strong>people</strong>    I tag posts that are attributable to a particular author here.  The format of the tag is like <code>people_fnln</code> or <code>people_alanduncan</code>.</li>
+<li><strong>platforms</strong> e.g. <code>platform_apple_ios</code></li>
+<li><strong>source</strong>  Where did the entity come from?</li>
+<li><strong>status</strong>  Is the item read or not?</li>
+<li><strong>use_tye</strong> Why was the item saved?  e.g. <code>use_type_reference</code> or <code>use_type_tutorial</code></li>
+</ul>
+
+
+<p>The beauty of hierarchical tags is that by clicking on any level of the hierarchy you can see everything in that branch.  Surprisingly useful.</p>
+
+<h3>Use tags to advantage</h3>
+
+<p><span class='caption-wrapper left'><img class='caption' src='/images/DT_workflow_expanded.png' width='' height='' alt='Figure 3 Tag hierarchies' title='Figure 3 Tag hierarchies'><span class='caption-text'>Figure 3 Tag hierarchies</span></span>  Since tags are key to finding content in my databases, I treat them with a lot of care, adding layers of specificity where it makes sense and pruning others.  Figure 3 shows one of my <code>main_areas</code> - <code>topic_workflow</code> fully expanded to show the hierarchy.  One of the neat things that you can do with DT tags is dragging documents between tags.  By doing this, you can add a new tag to a document.  If you delete a document from a tag&#8217;s list, you remove that tag from the document.</p>
+
+<h3>Frequently Given Answers</h3>
+
+<h4>What about mobile access?</h4>
+
+<p>DEVONthink has an iOS version.  I couldn&#8217;t really make use of it.  Instead, the desktop version of DT Pro Office runs an embedded web server.  I expose that on the WAN.  Works for me.</p>
+
+<h4>What else do you find useful?</h4>
+
+<p>DT allows you to hyperlink content.  This is useful to me in the following way:  let&#8217;s assume that I&#8217;ve been working on figuring out how to do something.  I&#8217;ve got a handful of tabs open in Safari with pages that helped me accomplish the task.  When I&#8217;ve finished, I&#8217;d like to write up a summary so that if I have to do it again, I can refer to it.  In DT, I&#8217;d just import all of the pages as PDFs and hyperlink them into a rich-text document.  In a way, it&#8217;s like developing your own very highly tailored version of the web.</p>
+
+<h4>Why don&#8217;t you use just use Evernote?</h4>
+
+<p>I like Evernote. A lot.  But I really admire DEVONthink&#8217;s scriptability, the way its hyperlinking works and the fact that the data is on my machine.  In the end, it works for me.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1320,503 +1418,6 @@ int main(int argc, const char * argv[])
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/23/x86-64-assembly-language-tutorial-part-2/">X86_64 Assembly Language Tutorial: Part 2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-23T05:34:00-06:00" pubdate data-updated="true">Nov 23<span>rd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In our <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">last installment</a> of our x86_64 assembler tutorial, we introduced the registers and walked through a simple C program and its assembly langugage counterpart.  This time, we&#8217;ll talk a little more about the effect of optimizations and while we&#8217;re at it, present some of the highlights of the application binary interface, the ABI.</p>
-
-<p>Let&#8217;s start with our original code that we <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">presented last time</a>:</p>
-
-<div><script src='https://gist.github.com/4135115.js?file='></script>
-<noscript><pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        uint8_t i;
-        for( i = 0; i &lt; 16; i++ ) {
-            printf(&quot;i = %d\n&quot;,i);
-        }
-    }
-    return 0;
-}</code></pre></noscript></div>
-
-
-<h3>Optimization setting - -O, O1</h3>
-
-<p><img class="left" src="http://i.imgur.com/O9LQR.png" title="'Figure 1: Optimization setting'" >
-This time, we&#8217;re going to set the optimizations differently to see what effect it has on the code.  Recall that we ran with no optimizations the first time.  If you want to follow along in Xcode, then just create a command-line application project and search for &#8216;optimization&#8217; in the target build settings.</p>
-
-<p><img class="right" src="http://i.imgur.com/NcgDW.png" title="'Figure 2: Disassembly assistant setting'" >
-Paste the code above into <code>main.m</code> to replace the code that&#8217;s autogenerated by the template; and place a breakpoint on the return line.  We won&#8217;t be able to see the disassembly code unless the application is actually running; so we want to break somewhere accordingly.  We can view either the assembly or disassembly code.  We&#8217;re going to look at the former because the latter contains a lot of debugging symbols that make it harder to understand what we&#8217;re really interested in - the instructions.  To show the disassembly results, build and run the project.  When the debugger stops on the return line, show the Assistant editor which splits the main viewer into two panes.  In the right pane, select Disassembly as the assistant pane content.  If you&#8217;re not with me, then you may want to take a while to get familiar with the Xcode 4.x interface so that you can configure it the way you want.</p>
-
-<h3>Disassembler code</h3>
-
-<p>The disassembler takes the machine code that your C code generated and expresses it symbolically in assembly langugage.  Let&#8217;s take a look at the results and compare it to the results from the <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">last tutorial</a>.</p>
-
-<div><script src='https://gist.github.com/4135317.js?file='></script>
-<noscript><pre><code>0x100000ee0:  pushq  %rbp
-0x100000ee1:  movq   %rsp, %rbp
-0x100000ee4:  pushq  %r15
-0x100000ee6:  pushq  %r14
-0x100000ee8:  pushq  %rbx
-0x100000ee9:  pushq  %rax
-0x100000eea:  callq  0x100000f2e               ; symbol stub for: objc_autoreleasePoolPush
-0x100000eef:  movq   %rax, %r14
-0x100000ef2:  xorl   %ebx, %ebx
-0x100000ef4:  leaq   111(%rip), %r15           ; &quot;i = %d\n&quot;
-0x100000efb:  nopl   (%rax,%rax)
-0x100000f00:  movq   %r15, %rdi
-0x100000f03:  movl   %ebx, %esi
-0x100000f05:  xorb   %al, %al
-0x100000f07:  callq  0x100000f34               ; symbol stub for: printf
-0x100000f0c:  incl   %ebx
-0x100000f0e:  cmpb   $16, %bl
-0x100000f11:  jne    0x100000f00               ; main + 32 at main.m:17
-0x100000f13:  movq   %r14, %rdi
-0x100000f16:  callq  0x100000f28               ; symbol stub for: objc_autoreleasePoolPop
-0x100000f1b:  xorl   %eax, %eax
-0x100000f1d:  addq   $8, %rsp
-0x100000f21:  popq   %rbx
-0x100000f22:  popq   %r14
-0x100000f24:  popq   %r15
-0x100000f26:  popq   %rbp
-0x100000f27:  ret    </code></pre></noscript></div>
-
-
-<h3>Step-by-step</h3>
-
-<p>And just like we did before, let&#8217;s look at the code step-by-step.  This time we&#8217;re going to compare it to the code with no optimizations from last time, so you may want to be familiar with it first.</p>
-
-<h4>Step 1 - Preamble</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ee0</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mh">0x100000ee1</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rsp</span><span class="p">,</span> <span class="o">%</span><span class="n">rbp</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is the same function preamble as before, saving the current base pointer and moving the stack pointer to the base pointer register.</p>
-
-<h4>Step 2 - Save the registers</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ee4</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">r15</span>
-</span><span class='line'><span class="mh">0x100000ee6</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">r14</span>
-</span><span class='line'><span class="mh">0x100000ee8</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rbx</span>
-</span><span class='line'><span class="mh">0x100000ee9</span><span class="o">:</span>  <span class="n">pushq</span>  <span class="o">%</span><span class="n">rax</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We push several 64-bit registers to the stack.  We don&#8217;t know yet; but probably this is because we&#8217;re going to use them later on.  Let&#8217;s see what&#8217;s next.</p>
-
-<h4>Step 3 - Start the autorelease pool</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000eea</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000f2e</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">objc_autoreleasePoolPush</span>
-</span><span class='line'><span class="mh">0x100000eef</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">rax</span><span class="p">,</span> <span class="o">%</span><span class="n">r14</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Set up the autorelease pool for the function as before.  This time, we&#8217;re saving the return value - a reference to the autorelease pool, presumably - to <code>%r14</code>.  We&#8217;ll set it again later before we pop the autorelease pool.  But before we do, it&#8217;s a good time to present some of the register allocations from the <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI</a>.  The ABI exists to create some standardization in the way that assembly code interacts with the machine.  Part of that specification are standards that determine which registers are used for a given purpose.  We&#8217;ll present them here:</p>
-
-<table>
-<thead>
-<tr>
-<th>Register  </th>
-<th> Usage                                                           </th>
-<th> Preserved across function calls</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>%rax</code>    </td>
-<td> 1st return register, number of vector registers used            </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rbx</code>    </td>
-<td> callee-saved register; base pointer                             </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%rcx</code>    </td>
-<td> pass 4th integer argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rdx</code>    </td>
-<td> pass 3rd argument fo functions, 2nd return register             </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rsp</code>    </td>
-<td> stack pointer                                                   </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%rbp</code>    </td>
-<td> callee-saved register, frame pointer                            </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%rsi</code>    </td>
-<td> used to pass 2nd argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%rdi</code>    </td>
-<td> used to pass 1st argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r8</code>     </td>
-<td> used to pass 5th argunent to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r9</code>     </td>
-<td> used to pass 6th argument to functions                          </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r10</code>    </td>
-<td> temp register, used for passing a function&#8217;s static chain ptr   </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r11</code>    </td>
-<td> temp register                                                   </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%r12</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%r13</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%r14</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%r15</code>    </td>
-<td> callee-saved register                                           </td>
-<td> Yes</td>
-</tr>
-<tr>
-<td><code>%xmm0</code>   </td>
-<td> used to pass and return floating point arguments                </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm1</code>   </td>
-<td> used to pass and return floating point arguments                </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm2</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm3</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm4</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm5</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm6</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm7</code>   </td>
-<td> used to pass floating point arguments                           </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm8</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm9</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm10</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm11</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm12</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm13</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm14</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%xmm15</code>  </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx0</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx1</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx2</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx3</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx4</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx5</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx6</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%mmx7</code>   </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st0</code>    </td>
-<td> temporary register, used to return long double arguments        </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st1</code>    </td>
-<td> temporary register, used to return long double arguments        </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st2</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st3</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st4</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st5</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st6</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-<tr>
-<td><code>%st7</code>    </td>
-<td> temporary register                                              </td>
-<td> No</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>Whew! Got that memorized yet?  Oh well, let&#8217;s move on.</p>
-
-<h4>Step 4 - Idiom for clearing register</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ef2</span><span class="o">:</span>  <span class="n">xorl</span>   <span class="o">%</span><span class="n">ebx</span><span class="p">,</span> <span class="o">%</span><span class="n">ebx</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is a curious instruction, XOR long <code>%ebx</code> with itself.  Self-XOR has the effect of clearing the register which on some processors is faster than <code>movl $0, %ebx</code>.  If we&#8217;re setting something to zero, I wonder if the compiler is using <code>%ebx</code> as the loop index.  We shall see&#8230;</p>
-
-<h4>Step 5 - Obtain format string address</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000ef4</span><span class="o">:</span>  <span class="n">leaq</span>   <span class="mi">111</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span> <span class="o">%</span><span class="n">r15</span>           <span class="p">;</span> <span class="s">&quot;i = %d</span><span class="se">\n</span><span class="s">&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This instruction reads &#8220;load effective address 64-bit into <code>%15</code>&#8221;.  We&#8217;re just grabbing the format string from a particular location in memory relative to the instruction pointer.</p>
-
-<h4>Step 6 - Alignment</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000efb</span><span class="o">:</span>  <span class="n">nopl</span>   <span class="p">(</span><span class="o">%</span><span class="n">rax</span><span class="p">,</span><span class="o">%</span><span class="n">rax</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is an optimization that does nothing other than align the code properly for the jump target so that it can be fetched in a single cacheline request.</p>
-
-<h4>Step 7 - Setting up call to <code>printf</code></h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f00</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">r15</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
-</span><span class='line'><span class="mh">0x100000f03</span><span class="o">:</span>  <span class="n">movl</span>   <span class="o">%</span><span class="n">ebx</span><span class="p">,</span> <span class="o">%</span><span class="n">esi</span>
-</span><span class='line'><span class="mh">0x100000f05</span><span class="o">:</span>  <span class="n">xorb</span>   <span class="o">%</span><span class="n">al</span><span class="p">,</span> <span class="o">%</span><span class="n">al</span>
-</span><span class='line'><span class="mh">0x100000f07</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000f34</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">printf</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Remember from the ABI register usage table above that <code>%rdi</code> is used to pass the first argument to functions.  In this case, the format string is the first argument of <code>printf</code>.  Earlier in Step 5, we loaded the address of the string into <code>%r15</code>; now we&#8217;re moving it to <code>%rdi</code> in preparation for the <code>printf</code> function call.  Next, <code>movl   %ebx, %esi</code> - remember earlier we wondered if the compiler was using <code>%esi</code> as the loop index?  From the reference table above, <code>%rsi</code> is used to pass the second function parameter; so this instruction passes the second parameter which is the loop index <code>i</code> in the C code.</p>
-
-<p><code>xorb   %al, %al</code> clears the <code>%al</code> register which is the lowest 8 bits of <code>%rax</code> which is the register that passes the number of vector arguments.  As in the prior tutorial, since we are printing an integer, we don&#8217;t need a vector register.  Hence, we clear <code>%al</code>.</p>
-
-<h4>Step 8 - Increment, compare, and jump</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f0c</span><span class="o">:</span>  <span class="n">incl</span>   <span class="o">%</span><span class="n">ebx</span>
-</span><span class='line'><span class="mh">0x100000f0e</span><span class="o">:</span>  <span class="n">cmpb</span>   <span class="err">$</span><span class="mi">16</span><span class="p">,</span> <span class="o">%</span><span class="n">bl</span>
-</span><span class='line'><span class="mh">0x100000f11</span><span class="o">:</span>  <span class="n">jne</span>    <span class="mh">0x100000f00</span>               <span class="p">;</span> <span class="n">main</span> <span class="o">+</span> <span class="mi">32</span> <span class="n">at</span> <span class="n">main</span><span class="p">.</span><span class="n">m</span><span class="o">:</span><span class="mi">17</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In order, we increment the register we&#8217;re using for the loop index, compare its lower 8 bits to decimal 16 with a byte compare instruction and jump if not equal back to Step 7.</p>
-
-<h4>Step 9 - Pop the autorelease pool</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f13</span><span class="o">:</span>  <span class="n">movq</span>   <span class="o">%</span><span class="n">r14</span><span class="p">,</span> <span class="o">%</span><span class="n">rdi</span>
-</span><span class='line'><span class="mh">0x100000f16</span><span class="o">:</span>  <span class="n">callq</span>  <span class="mh">0x100000f28</span>               <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">objc_autoreleasePoolPop</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Recall that in Step 3 we saved a reference to the autorelease pool in <code>%r14</code>?  Now we move that reference back to <code>%rdi</code> which is used to pass the first argument to functions. (Is this sounding like a broken record now?)  Then we call objc_autoreleasePoolPop in the Objective-C runtime to release the autorelease pool.</p>
-
-<h4>Step 10 - Setting up to return</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c-objdump'><span class='line'><span class="mh">0x100000f1b</span><span class="o">:</span>  <span class="n">xorl</span>   <span class="o">%</span><span class="n">eax</span><span class="p">,</span> <span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mh">0x100000f1d</span><span class="o">:</span>  <span class="n">addq</span>   <span class="err">$</span><span class="mi">8</span><span class="p">,</span> <span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mh">0x100000f21</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">rbx</span>
-</span><span class='line'><span class="mh">0x100000f22</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">r14</span>
-</span><span class='line'><span class="mh">0x100000f24</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">r15</span>
-</span><span class='line'><span class="mh">0x100000f26</span><span class="o">:</span>  <span class="n">popq</span>   <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mh">0x100000f27</span><span class="o">:</span>  <span class="n">ret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now all that&#8217;s left is just to clean up.  First we clear <code>%eax</code>.  Why now?  Since it&#8217;s the lower 32 bits of the first return register, we just clear it after returning from the last function call so that we can return 0 to <strong>our</strong> caller.</p>
-
-<p>Next we add 8 to the stack pointer.  This is an interesting development.  Why do we manually adjust the stack pointer?  Take a look at the function setup.  Initially we pushed the following registers: <code>%rbp</code>, <code>%r15</code>, <code>%r14</code>, <code>%rbx</code> and <code>%rax</code>.  But if we pop <code>%rax</code> which is our 1st function return value register, then we risk blowing away the effects of clearing <code>%eax</code> that we just did in <code>0x100000f1b:  xorl   %eax, %eax</code>, right?  So instead of popping the value, we manually adjust the stack pointer before popping the other variables in the reverse order to that in which we pushed them to the stack.</p>
-
-<p>Lastly, we return to the caller.</p>
-
-<p>Again, we close another chapter in our x86_64 assembly tutorial for Mac.  We will continue to build on our knowledge base with slightly more complex tutorials as we progress; so stay tuned.  Here are some interesting and useful references for you:</p>
-
-<ul>
-<li><a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 ABI reference</a></li>
-<li><a href="http://www.cs.virginia.edu/~evans/cs216/guides/x86.html">x86 assembly guide</a></li>
-<li><a href="http://cs.mtu.edu/~mmkoksal/blog/?x=entry:entry120116-130037">GNU assembler directives</a></li>
-<li><a href="http://stackoverflow.com/questions/2647640/x86-assembly-idioms">x86 assembly idioms</a></li>
-</ul>
-
-
-<p>And of course, <a href="http://cocoafactory.com/blog/2012/11/23/x86-64-assembly-language-tutorial-part-1/">Part I</a> or our tutorial.</p>
-
-<p>Question? Comments?  Tweet Alan <code>@NSBum</code>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1843,6 +1444,10 @@ Paste the code above into <code>main.m</code> to replace the code that&#8217;s a
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/11/organizing-developer-reference-materials/">Organizing developer reference materials</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/10/app-version-icon-overlays-the-mac-edition/">App version icon overlays:  The Mac edition</a>
       </li>
     
@@ -1856,10 +1461,6 @@ Paste the code above into <code>main.m</code> to replace the code that&#8217;s a
     
       <li class="post">
         <a href="/blog/2012/12/17/expanding-nsoutlineview-at-load-time/">Expanding NSOutlineView at load time</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/16/lldb-print-registers/">LLDB print registers</a>
       </li>
     
   </ul>

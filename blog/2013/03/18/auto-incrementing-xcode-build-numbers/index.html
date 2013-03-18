@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>RegexMatch Support - Cocoa Factory</title>
+  <title>Auto-incrementing Xcode build numbers - Cocoa Factory</title>
   <meta name="author" content="Alan Duncan">
 
   
-  <meta name="description" content="RegexMatch Support Nov 13th, 2012 RegexMatch support FGA&#8217;s (Frequently Given Answers) What programming languages are currently supported? You &hellip;">
+  <meta name="description" content="There are as many schemes for versioning of Xcode projects as there are developers. One of the difficulties, of course, is the way that Xcode labels &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cocoa-factory.github.com/products/regexmatch/support.html">
+  <link rel="canonical" href="http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers/">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -67,62 +67,15 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">RegexMatch Support</h1>
-    <p class="meta">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-13T13:30:00-06:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time></p>
-  </header>
-  
-  <h3>RegexMatch support</h3>
-
-<h4>FGA&#8217;s (Frequently Given Answers)</h4>
-
-<blockquote><p>What programming languages are currently supported?</p></blockquote>
-
-<p>You can export code in Objective-C, Perl, Python, PHP, JavaScript, Ruby.  It seemed like these were the right ones to start with; but if you really want others, drop us a line.</p>
-
-<blockquote><p>How do I export code?</p></blockquote>
-
-<p>We imagine you want to actually use your code somewhere.  So RegexMatch can export code to the pasteboard - so that you can paste it into another app such as a text editor, or you can email the code to yourself (or someone else, for that matter.)</p>
-
-<blockquote><p>Does it use standard regex syntax.</p></blockquote>
-
-<p>Yes, of course.</p>
-
-<blockquote><p>Do you have a trial, or lite version?</p></blockquote>
-
-<p>No, sorry.</p>
-
-<blockquote><p>How can I save regular expressions that I want to use or work on later?</p></blockquote>
-
-<p>You can use Snapshots for that purpose.  In the main table, just add (+) to add a new Snapshot.  Give it a name; and RegexMatch will persist it for it.</p>
-
-<blockquote><p>There&#8217;s something I don&#8217;t like about the App.  What can I do?</p></blockquote>
-
-<p>We&#8217;d definitely like to hear from you so we can fix whatever you&#8217;re noticing.  Of course, you can always review it on the App Store - but if you&#8217;ve got something tough to say, give us a chance first.  If you&#8217;re using the app, chances are you&#8217;re also a developer, let&#8217;s keep it nice and collegial.</p>
-
-<blockquote><p>How can I get in touch with you if there&#8217;s a problem?</p></blockquote>
-
-<p>Two ways: <code>support@cocoafactory.com</code> and <code>@CocoaFactory</code></p>
-
-  
-    <footer>
+    
+      <h1 class="entry-title">Auto-incrementing Xcode Build Numbers</h1>
+    
+    
       <p class="meta">
         
-        
 
 
 
@@ -134,21 +87,85 @@
   
 
 
-<time datetime="2012-11-13T13:30:00-06:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+<time datetime="2013-03-18T05:16:00-05:00" pubdate data-updated="true">Mar 18<span>th</span>, 2013</time>
         
       </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>There are as many schemes for versioning of Xcode projects as there are developers.  One of the difficulties, of course, is the way that Xcode labels the two version identifiers in the IDE.  First, there&#8217;s <code>CFBundleShortVersionString</code> which according the <a href="https://developer.apple.com/library/mac/#documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html">documentation</a> is:</p>
+
+<blockquote><p>&#8220;the <strong>release version number</strong> of the bundle which identifies a released iteration of the app.  The release version number is a string comprised of three period-separated integers.  The first integer represents major revisions to the app, such as revisions that implement new features or major changes. The second integer denotes revisions that implement less prominent features. The third integer represents maintenance releases.&#8221;</p></blockquote>
+
+<p>This differs from <code>CFBundleVersion</code> which is:</p>
+
+<blockquote><p>&#8220;the <strong>build version number</strong> of the bundle, which identifies an iteration (released or unreleased) of the bundle. The build version number should be a string comprised of three non-negative, period-separated integers with the first integer being greater than zero.&#8221;</p></blockquote>
+
+<p>Importantly, Apple uses <code>CFBundleVersion</code> to version your app and <code>CFBundleShortVersionString</code> to present the version to the user.  So, on submission, the <code>CFBundleVersion</code> must be higher than the last version submitted.  That&#8217;s why I use the following script to auto-increment the <code>CFBundleVersion</code> every time I build the source:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'><span class="nv">buildNumber</span><span class="o">=</span><span class="k">$(</span>/usr/libexec/PlistBuddy -c <span class="s2">&quot;Print CFBundleVersion&quot;</span> <span class="s2">&quot;$INFOPLIST_FILE&quot;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">buildNumber</span><span class="o">=</span><span class="k">$((</span><span class="nv">$buildNumber</span> <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+</span><span class='line'>/usr/libexec/PlistBuddy -c <span class="s2">&quot;Set :CFBundleVersion $buildNumber&quot;</span> <span class="s2">&quot;$INFOPLIST_FILE&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When I setup a new project, this script is one of the build phases.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
       
-        <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/products/regexmatch/support.html" data-via="CocoaFactory" data-counturl="http://cocoa-factory.github.com/products/regexmatch/support.html" >Tweet</a>
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Duncan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-18T05:16:00-05:00" pubdate data-updated="true">Mar 18<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/macos/'>macos</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers/" data-via="CocoaFactory" data-counturl="http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers/" >Tweet</a>
   
   
   
 </div>
 
+    
+    <p class="meta">
       
-    </footer>
-  
+        <a class="basic-alignment left" href="/blog/2013/03/11/organizing-developer-reference-materials/" title="Previous Post: Organizing developer reference materials">&laquo; Organizing developer reference materials</a>
+      
+      
+    </p>
+  </footer>
 </article>
 
 </div>

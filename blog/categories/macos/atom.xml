@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macos | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/macos/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-03-11T22:27:09-05:00</updated>
+  <updated>2013-03-18T05:32:01-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Auto-incrementing Xcode build numbers]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers/"/>
+    <updated>2013-03-18T05:16:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers</id>
+    <content type="html"><![CDATA[<p>There are as many schemes for versioning of Xcode projects as there are developers.  One of the difficulties, of course, is the way that Xcode labels the two version identifiers in the IDE.  First, there's <code>CFBundleShortVersionString</code> which according the <a href="https://developer.apple.com/library/mac/#documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html">documentation</a> is:</p>
+
+<blockquote><p>"the <strong>release version number</strong> of the bundle which identifies a released iteration of the app.  The release version number is a string comprised of three period-separated integers.  The first integer represents major revisions to the app, such as revisions that implement new features or major changes. The second integer denotes revisions that implement less prominent features. The third integer represents maintenance releases."</p></blockquote>
+
+<p>This differs from <code>CFBundleVersion</code> which is:</p>
+
+<blockquote><p>"the <strong>build version number</strong> of the bundle, which identifies an iteration (released or unreleased) of the bundle. The build version number should be a string comprised of three non-negative, period-separated integers with the first integer being greater than zero."</p></blockquote>
+
+<p>Importantly, Apple uses <code>CFBundleVersion</code> to version your app and <code>CFBundleShortVersionString</code> to present the version to the user.  So, on submission, the <code>CFBundleVersion</code> must be higher than the last version submitted.  That's why I use the following script to auto-increment the <code>CFBundleVersion</code> every time I build the source:</p>
+
+<p>``` bash</p>
+
+<h1>!/bin/bash</h1>
+
+<p>buildNumber=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$INFOPLIST_FILE")
+buildNumber=$(($buildNumber + 1))
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "$INFOPLIST_FILE"
+```</p>
+
+<p>When I setup a new project, this script is one of the build phases.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[App version icon overlays:  The Mac edition]]></title>
@@ -389,20 +417,6 @@ Setup completed (read-only access)
 
 <p>To print the current register contents in LLDB it's <code>register read</code>:
 <img src="/images/lldb.png" alt="console" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Announcing RegexMatch for Mac]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/12/15/announcing-regexmatch-for-mac/"/>
-    <updated>2012-12-15T06:44:00-06:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/12/15/announcing-regexmatch-for-mac</id>
-    <content type="html"><![CDATA[<p><img class="left" src="http://i.imgur.com/s2JWp.png">
-We're delighted to announce our newest app - <strong>RegexMatch for Mac OS</strong>! If you use regular expressions in your development process, you'll want to <a href="https://itunes.apple.com/us/app/regexmatch/id582049745?mt=12">check it out</a>.  You can write and test regular expressions, then generate and export code in your language of choice.</p>
-
-<p>Learn more about <a href="/products/regexmatch/macos">RegexMatch</a>.</p>
-
-<p>Do you like RegexMatch - drop us a line <code>@CocoaFactory</code></p>
 ]]></content>
   </entry>
   

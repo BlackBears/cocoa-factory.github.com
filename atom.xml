@@ -4,7 +4,7 @@
   <title><![CDATA[Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-03-11T22:27:09-05:00</updated>
+  <updated>2013-03-18T05:32:01-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Auto-incrementing Xcode build numbers]]></title>
+    <link href="http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers/"/>
+    <updated>2013-03-18T05:16:00-05:00</updated>
+    <id>http://cocoa-factory.github.com/blog/2013/03/18/auto-incrementing-xcode-build-numbers</id>
+    <content type="html"><![CDATA[<p>There are as many schemes for versioning of Xcode projects as there are developers.  One of the difficulties, of course, is the way that Xcode labels the two version identifiers in the IDE.  First, there&#8217;s <code>CFBundleShortVersionString</code> which according the <a href="https://developer.apple.com/library/mac/#documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html">documentation</a> is:</p>
+
+<blockquote><p>&#8220;the <strong>release version number</strong> of the bundle which identifies a released iteration of the app.  The release version number is a string comprised of three period-separated integers.  The first integer represents major revisions to the app, such as revisions that implement new features or major changes. The second integer denotes revisions that implement less prominent features. The third integer represents maintenance releases.&#8221;</p></blockquote>
+
+<p>This differs from <code>CFBundleVersion</code> which is:</p>
+
+<blockquote><p>&#8220;the <strong>build version number</strong> of the bundle, which identifies an iteration (released or unreleased) of the bundle. The build version number should be a string comprised of three non-negative, period-separated integers with the first integer being greater than zero.&#8221;</p></blockquote>
+
+<p>Importantly, Apple uses <code>CFBundleVersion</code> to version your app and <code>CFBundleShortVersionString</code> to present the version to the user.  So, on submission, the <code>CFBundleVersion</code> must be higher than the last version submitted.  That&#8217;s why I use the following script to auto-increment the <code>CFBundleVersion</code> every time I build the source:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'><span class="nv">buildNumber</span><span class="o">=</span><span class="k">$(</span>/usr/libexec/PlistBuddy -c <span class="s2">&quot;Print CFBundleVersion&quot;</span> <span class="s2">&quot;$INFOPLIST_FILE&quot;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">buildNumber</span><span class="o">=</span><span class="k">$((</span><span class="nv">$buildNumber</span> <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+</span><span class='line'>/usr/libexec/PlistBuddy -c <span class="s2">&quot;Set :CFBundleVersion $buildNumber&quot;</span> <span class="s2">&quot;$INFOPLIST_FILE&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When I setup a new project, this script is one of the build phases.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Organizing developer reference materials]]></title>
@@ -3272,43 +3302,6 @@ int main(int argc, const char * argv[]) {
 <h3>You rarely need to work directly with run loops</h3>
 
 <p>Because the main run loop is vital to the application, the <code>run</code> method on <code>NSApplication</code> and <code>UIApplication</code> start the main run loop during the startup sequence. Otherwise, even for threads that you create yourself, you probably do not need to start its run loop.  If the thread needs to work with ports, input sources, timers, or certain connections, then you need to start and manage its run loop for those events.  More on some of those situations in a future post.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[We're moving (blogs)]]></title>
-    <link href="http://cocoa-factory.github.com/blog/2012/09/06/moving-to-octopress/"/>
-    <updated>2012-09-06T15:57:00-05:00</updated>
-    <id>http://cocoa-factory.github.com/blog/2012/09/06/moving-to-octopress</id>
-    <content type="html"><![CDATA[<h2>Goodbye Wordpress, hello Octopress</h2>
-
-<p>We&#8217;re in the process of moving all of our company pages and weblog to Octopress hosted through Github.  For several years, we maintained a presence on a dedicated site mostly setup with Wordpress.  Why the switch?</p>
-
-<p>It came down to several factors:</p>
-
-<ul>
-<li><p>Lightweight vs. heavyweight solutions</p>
-
-<p>  Wordpress is a great blogging platform; but there&#8217;s a lot of &#8220;stuff&#8221; to manage.  Further, it&#8217;s a dynamic content system - meaning, your content has to be generated from a database each time the page is rendered.  Octopress, instead, serves static pages.  There&#8217;s something appealingly simple about static content.</p></li>
-<li><p>Workflow</p>
-
-<p>  We develop software first, and blog second.  Writing about our work is important; but it has to fit into our workflow.  Since we are always working in <code>git</code> using Octopress feels very comfortable.</p></li>
-<li><p>Kick-start</p>
-
-<p>  Working through the challenges of getting Octopress installed (and they were significant) was paradoxically a motivator to get down to writing more.  I mean - having spent all this time getting Octopress installed, I&#8217;m not about to let the effort be wasted!</p></li>
-<li><p>Comments</p>
-
-<p>  I got tired of seeing queues of comments 99.9% of which was spam.  I&#8217;m sure Wordpress has better ways of dealing with comment spam - but I decided it was just easier to turn comments off on the new weblog.  The thing is, the real discussion isn&#8217;t happening on the weblog; it&#8217;s happening on Twitter and everywhere else.  You really should read Matt Gemmell&#8217;s <a href="http://mattgemmell.com/2011/11/29/comments-off/">comments on comments</a> about the phenomenon.</p></li>
-</ul>
-
-
-<h2>Installing Octopress</h2>
-
-<p>Octopress installation was a little cumbersome owing mainly to difficulty with versioning of <code>rvm</code>.  After reading about the difficulties of installing on OS X 10.8, I decided to install it on Ubuntu 12.04 which I run as a virtual machine alongside Mountain Lion.  Again, it was mainly about making sure that the versioning of <code>rvm</code> was correct.  There are detailed instructions online, but I would add a couple of pointers:</p>
-
-<p>We used <a href="http://www.lennu.net/2012/05/11/octopress-installation-in-ubuntu-12-dot-04-with-rsync/">a tutorial</a> on lennu.net to get started.  Just make sure you get <code>rvm 1.9.2</code> installed.  If you install the latest stable version, you&#8217;ll come to grief later in the installation.</p>
-
-<p>Apart from that, all of the instructions are at Github and on the lennu.net tutorial.</p>
 ]]></content>
   </entry>
   

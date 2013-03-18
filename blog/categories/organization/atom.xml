@@ -4,7 +4,7 @@
   <title><![CDATA[Category: organization | Cocoa Factory]]></title>
   <link href="http://cocoa-factory.github.com/blog/categories/organization/atom.xml" rel="self"/>
   <link href="http://cocoa-factory.github.com/"/>
-  <updated>2013-03-18T05:32:01-05:00</updated>
+  <updated>2013-03-18T05:36:30-05:00</updated>
   <id>http://cocoa-factory.github.com/</id>
   <author>
     <name><![CDATA[Alan Duncan]]></name>
@@ -58,7 +58,7 @@
 <li><strong>platforms</strong> e.g. <code>platform_apple_ios</code></li>
 <li><strong>source</strong>  Where did the entity come from?</li>
 <li><strong>status</strong>  Is the item read or not?</li>
-<li><strong>use_tye</strong> Why was the item saved?  e.g. <code>use_type_reference</code> or <code>use_type_tutorial</code></li>
+<li><strong>use_type</strong> Why was the item saved?  e.g. <code>use_type_reference</code> or <code>use_type_tutorial</code></li>
 </ul>
 
 
